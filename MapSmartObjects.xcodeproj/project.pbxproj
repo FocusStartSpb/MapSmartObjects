@@ -14,6 +14,7 @@
 		4B43F6CC23A664CB003BF176 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4B43F6CA23A664CB003BF176 /* LaunchScreen.storyboard */; };
 		4B43F6D723A664CB003BF176 /* MapSmartObjectsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B43F6D623A664CB003BF176 /* MapSmartObjectsTests.swift */; };
 		5C2E5CC023A7FFFD004A105D /* Factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2E5CBF23A7FFFD004A105D /* Factory.swift */; };
+		941283A623A93AB700A0077D /* PinInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941283A523A93AB700A0077D /* PinInfoCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +39,7 @@
 		4B43F6D623A664CB003BF176 /* MapSmartObjectsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapSmartObjectsTests.swift; sourceTree = "<group>"; };
 		4B43F6D823A664CB003BF176 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5C2E5CBF23A7FFFD004A105D /* Factory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Factory.swift; sourceTree = "<group>"; };
+		941283A523A93AB700A0077D /* PinInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinInfoCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +86,7 @@
 				4B43F6C023A664C9003BF176 /* ViewController.swift */,
 				4B43F6C523A664C9003BF176 /* MapSmartObjects.xcdatamodeld */,
 				5C2E5CBF23A7FFFD004A105D /* Factory.swift */,
+				941283A523A93AB700A0077D /* PinInfoCell.swift */,
 			);
 			path = MapSmartObjects;
 			sourceTree = "<group>";
@@ -238,6 +241,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5C2E5CC023A7FFFD004A105D /* Factory.swift in Sources */,
+				941283A623A93AB700A0077D /* PinInfoCell.swift in Sources */,
 				4B43F6C123A664C9003BF176 /* ViewController.swift in Sources */,
 				4B43F6BD23A664C9003BF176 /* AppDelegate.swift in Sources */,
 				4B43F6C723A664C9003BF176 /* MapSmartObjects.xcdatamodeld in Sources */,
