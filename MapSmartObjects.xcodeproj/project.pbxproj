@@ -19,8 +19,8 @@
 		4B58C21223A971AB00A430C0 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B58C21123A971AB00A430C0 /* MapViewController.swift */; };
 		4B58C21423A971C700A430C0 /* MapPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B58C21323A971C700A430C0 /* MapPresenter.swift */; };
 		4B58C21623A971EE00A430C0 /* MapRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B58C21523A971EE00A430C0 /* MapRouter.swift */; };
+		5C028C0E23A97CE0009FA3E8 /* YandexGeocoderResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C028C0D23A97CE0009FA3E8 /* YandexGeocoderResponse.swift */; };
 		5C2E5CC023A7FFFD004A105D /* Factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2E5CBF23A7FFFD004A105D /* Factory.swift */; };
-		5C2E5CC923A94369004A105D /* YandexGeocoderResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2E5CC823A94369004A105D /* YandexGeocoderResponse.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,8 +50,8 @@
 		4B58C21123A971AB00A430C0 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		4B58C21323A971C700A430C0 /* MapPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapPresenter.swift; sourceTree = "<group>"; };
 		4B58C21523A971EE00A430C0 /* MapRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapRouter.swift; sourceTree = "<group>"; };
+		5C028C0D23A97CE0009FA3E8 /* YandexGeocoderResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = YandexGeocoderResponse.swift; path = MapSmartObjects/Model/YandexGeocoderResponse.swift; sourceTree = SOURCE_ROOT; };
 		5C2E5CBF23A7FFFD004A105D /* Factory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Factory.swift; sourceTree = "<group>"; };
-		5C2E5CC823A94369004A105D /* YandexGeocoderResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YandexGeocoderResponse.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,12 +95,12 @@
 			children = (
 				4B58C21023A9719D00A430C0 /* Map */,
 				4B58C20923A93D5F00A430C0 /* PinList */,
+				5C028C0C23A97C16009FA3E8 /* Models */,
 				4B43F6E223A664F9003BF176 /* SupportingFiles */,
 				4B43F6BC23A664C9003BF176 /* AppDelegate.swift */,
 				4B43F6C023A664C9003BF176 /* ViewController.swift */,
 				4B43F6C523A664C9003BF176 /* MapSmartObjects.xcdatamodeld */,
 				5C2E5CBF23A7FFFD004A105D /* Factory.swift */,
-				5C2E5CCA23A9436E004A105D /* Model */,
 			);
 			path = MapSmartObjects;
 			sourceTree = "<group>";
@@ -150,6 +150,14 @@
 				4B58C21523A971EE00A430C0 /* MapRouter.swift */,
 			);
 			path = Map;
+			sourceTree = "<group>";
+		};
+		5C028C0C23A97C16009FA3E8 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5C028C0D23A97CE0009FA3E8 /* YandexGeocoderResponse.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -279,6 +287,7 @@
 				4B58C21423A971C700A430C0 /* MapPresenter.swift in Sources */,
 				4B43F6C123A664C9003BF176 /* ViewController.swift in Sources */,
 				4B43F6BD23A664C9003BF176 /* AppDelegate.swift in Sources */,
+				5C028C0E23A97CE0009FA3E8 /* YandexGeocoderResponse.swift in Sources */,
 				4B58C20F23A93DDA00A430C0 /* PinListRouter.swift in Sources */,
 				4B58C20B23A93D8500A430C0 /* PinListViewController.swift in Sources */,
 				4B58C21623A971EE00A430C0 /* MapRouter.swift in Sources */,
