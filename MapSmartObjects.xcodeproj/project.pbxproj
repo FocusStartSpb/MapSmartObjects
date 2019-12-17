@@ -16,6 +16,9 @@
 		4B58C20323A93B2200A430C0 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B58C20223A93B2200A430C0 /* MapViewController.swift */; };
 		4B58C20523A93B6100A430C0 /* MapPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B58C20423A93B6100A430C0 /* MapPresenter.swift */; };
 		4B58C20723A93B9900A430C0 /* MapRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B58C20623A93B9900A430C0 /* MapRouter.swift */; };
+		4B58C20B23A93D8500A430C0 /* PinListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B58C20A23A93D8500A430C0 /* PinListViewController.swift */; };
+		4B58C20D23A93DAC00A430C0 /* PinListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B58C20C23A93DAC00A430C0 /* PinListPresenter.swift */; };
+		4B58C20F23A93DDA00A430C0 /* PinListRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B58C20E23A93DDA00A430C0 /* PinListRouter.swift */; };
 		5C2E5CC023A7FFFD004A105D /* Factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2E5CBF23A7FFFD004A105D /* Factory.swift */; };
 /* End PBXBuildFile section */
 
@@ -43,6 +46,9 @@
 		4B58C20223A93B2200A430C0 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		4B58C20423A93B6100A430C0 /* MapPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapPresenter.swift; sourceTree = "<group>"; };
 		4B58C20623A93B9900A430C0 /* MapRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapRouter.swift; sourceTree = "<group>"; };
+		4B58C20A23A93D8500A430C0 /* PinListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinListViewController.swift; sourceTree = "<group>"; };
+		4B58C20C23A93DAC00A430C0 /* PinListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinListPresenter.swift; sourceTree = "<group>"; };
+		4B58C20E23A93DDA00A430C0 /* PinListRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinListRouter.swift; sourceTree = "<group>"; };
 		5C2E5CBF23A7FFFD004A105D /* Factory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Factory.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -86,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				4B58C20123A93B0400A430C0 /* Map */,
+				4B58C20923A93D5F00A430C0 /* PinList */,
 				4B43F6E223A664F9003BF176 /* SupportingFiles */,
 				4B43F6BC23A664C9003BF176 /* AppDelegate.swift */,
 				4B43F6C023A664C9003BF176 /* ViewController.swift */,
@@ -130,6 +137,14 @@
 				4B58C20623A93B9900A430C0 /* MapRouter.swift */,
 			);
 			path = Map;
+		4B58C20923A93D5F00A430C0 /* PinList */ = {
+			isa = PBXGroup;
+			children = (
+				4B58C20A23A93D8500A430C0 /* PinListViewController.swift */,
+				4B58C20C23A93DAC00A430C0 /* PinListPresenter.swift */,
+				4B58C20E23A93DDA00A430C0 /* PinListRouter.swift */,
+			);
+			path = PinList;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -254,11 +269,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B58C20D23A93DAC00A430C0 /* PinListPresenter.swift in Sources */,
 				5C2E5CC023A7FFFD004A105D /* Factory.swift in Sources */,
 				4B43F6C123A664C9003BF176 /* ViewController.swift in Sources */,
 				4B43F6BD23A664C9003BF176 /* AppDelegate.swift in Sources */,
 				4B58C20323A93B2200A430C0 /* MapViewController.swift in Sources */,
 				4B58C20723A93B9900A430C0 /* MapRouter.swift in Sources */,
+				4B58C20F23A93DDA00A430C0 /* PinListRouter.swift in Sources */,
+				4B58C20B23A93D8500A430C0 /* PinListViewController.swift in Sources */,
 				4B43F6C723A664C9003BF176 /* MapSmartObjects.xcdatamodeld in Sources */,
 				4B58C20523A93B6100A430C0 /* MapPresenter.swift in Sources */,
 			);
