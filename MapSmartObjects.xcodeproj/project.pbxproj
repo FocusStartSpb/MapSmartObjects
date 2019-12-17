@@ -20,6 +20,7 @@
 		4B58C21423A971C700A430C0 /* MapPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B58C21323A971C700A430C0 /* MapPresenter.swift */; };
 		4B58C21623A971EE00A430C0 /* MapRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B58C21523A971EE00A430C0 /* MapRouter.swift */; };
 		5C2E5CC023A7FFFD004A105D /* Factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2E5CBF23A7FFFD004A105D /* Factory.swift */; };
+		5C2E5CC923A94369004A105D /* YandexGeocoderResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2E5CC823A94369004A105D /* YandexGeocoderResponse.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +51,7 @@
 		4B58C21323A971C700A430C0 /* MapPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapPresenter.swift; sourceTree = "<group>"; };
 		4B58C21523A971EE00A430C0 /* MapRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapRouter.swift; sourceTree = "<group>"; };
 		5C2E5CBF23A7FFFD004A105D /* Factory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Factory.swift; sourceTree = "<group>"; };
+		5C2E5CC823A94369004A105D /* YandexGeocoderResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YandexGeocoderResponse.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +100,7 @@
 				4B43F6C023A664C9003BF176 /* ViewController.swift */,
 				4B43F6C523A664C9003BF176 /* MapSmartObjects.xcdatamodeld */,
 				5C2E5CBF23A7FFFD004A105D /* Factory.swift */,
+				5C2E5CCA23A9436E004A105D /* Model */,
 			);
 			path = MapSmartObjects;
 			sourceTree = "<group>";
