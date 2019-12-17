@@ -13,6 +13,9 @@
 		4B43F6C923A664CB003BF176 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B43F6C823A664CB003BF176 /* Assets.xcassets */; };
 		4B43F6CC23A664CB003BF176 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4B43F6CA23A664CB003BF176 /* LaunchScreen.storyboard */; };
 		4B43F6D723A664CB003BF176 /* MapSmartObjectsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B43F6D623A664CB003BF176 /* MapSmartObjectsTests.swift */; };
+		4B58C20323A93B2200A430C0 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B58C20223A93B2200A430C0 /* MapViewController.swift */; };
+		4B58C20523A93B6100A430C0 /* MapPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B58C20423A93B6100A430C0 /* MapPresenter.swift */; };
+		4B58C20723A93B9900A430C0 /* MapRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B58C20623A93B9900A430C0 /* MapRouter.swift */; };
 		5C2E5CC023A7FFFD004A105D /* Factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2E5CBF23A7FFFD004A105D /* Factory.swift */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +40,9 @@
 		4B43F6D223A664CB003BF176 /* MapSmartObjectsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MapSmartObjectsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B43F6D623A664CB003BF176 /* MapSmartObjectsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapSmartObjectsTests.swift; sourceTree = "<group>"; };
 		4B43F6D823A664CB003BF176 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4B58C20223A93B2200A430C0 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		4B58C20423A93B6100A430C0 /* MapPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapPresenter.swift; sourceTree = "<group>"; };
+		4B58C20623A93B9900A430C0 /* MapRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapRouter.swift; sourceTree = "<group>"; };
 		5C2E5CBF23A7FFFD004A105D /* Factory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Factory.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -79,6 +85,7 @@
 		4B43F6BB23A664C9003BF176 /* MapSmartObjects */ = {
 			isa = PBXGroup;
 			children = (
+				4B58C20123A93B0400A430C0 /* Map */,
 				4B43F6E223A664F9003BF176 /* SupportingFiles */,
 				4B43F6BC23A664C9003BF176 /* AppDelegate.swift */,
 				4B43F6C023A664C9003BF176 /* ViewController.swift */,
@@ -113,6 +120,16 @@
 				4B43F6D823A664CB003BF176 /* Info.plist */,
 			);
 			path = SupportingFiles;
+			sourceTree = "<group>";
+		};
+		4B58C20123A93B0400A430C0 /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				4B58C20223A93B2200A430C0 /* MapViewController.swift */,
+				4B58C20423A93B6100A430C0 /* MapPresenter.swift */,
+				4B58C20623A93B9900A430C0 /* MapRouter.swift */,
+			);
+			path = Map;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -240,7 +257,10 @@
 				5C2E5CC023A7FFFD004A105D /* Factory.swift in Sources */,
 				4B43F6C123A664C9003BF176 /* ViewController.swift in Sources */,
 				4B43F6BD23A664C9003BF176 /* AppDelegate.swift in Sources */,
+				4B58C20323A93B2200A430C0 /* MapViewController.swift in Sources */,
+				4B58C20723A93B9900A430C0 /* MapRouter.swift in Sources */,
 				4B43F6C723A664C9003BF176 /* MapSmartObjects.xcdatamodeld in Sources */,
+				4B58C20523A93B6100A430C0 /* MapPresenter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
