@@ -14,4 +14,14 @@ protocol IPinListRouter
 
 final class PinListRouter
 {
+	weak var pinListViewController: PinListViewController?
+	private let factory: Factory
+
+	init(factory: Factory) {
+		self.factory = factory
+	}
+}
+
+extension PinListRouter: IPinListRouter
+{
 }

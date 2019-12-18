@@ -13,13 +13,13 @@ final class MainTabBarController: UITabBarController
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		let mapController = Factory().createMapModule()
-//		let pinListController = PinListViewController(presenter: <#T##IPinListPresenter#>)
+		let pinListController = Factory().createPinListModule()
 
 		self.addChild(mapController)
-//		self.addChild(pinListController)
+		self.addChild(pinListController)
 
 		mapController.tabBarItem = UITabBarItem(title: "Map", image: nil, tag: 1)
-//		pinListController.tabBarItem = UITabBarItem(title: "Objects", image: nil, tag: 2)
+		pinListController.tabBarItem = UITabBarItem(title: "Objects", image: nil, tag: 2)
 	}
 
 	init() {

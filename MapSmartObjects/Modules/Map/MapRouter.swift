@@ -7,13 +7,14 @@
 //
 
 import Foundation
+
 protocol IMapRouter
 {
 }
 
 final class MapRouter
 {
-	weak var mapView: MapViewController?
+	weak var mapViewController: MapViewController?
 	private let factory: Factory
 
 	init(factory: Factory) {
