@@ -17,7 +17,6 @@ final class PinListViewController: UIViewController
 	private let pinTableView = UITableView()
 	private var pins = [AnyObject]()
 	private let presenter: IPinListPresenter
-	private let cellID = "pin"
 
 	init(presenter: IPinListPresenter) {
 		self.presenter = presenter
@@ -54,7 +53,7 @@ extension PinListViewController: UITableViewDataSource
 	}
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		guard let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as? PinInfoCell
+		guard let cell = tableView.dequeueReusableCell(withIdentifier: PinListCell.cellID, for: indexPath) as? PinListCell
 		else { return UITableViewCell() }
 		//реализация ячейки
 		return cell
