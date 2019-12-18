@@ -23,6 +23,7 @@ final class PinInfoCell: UITableViewCell
 		label.textAlignment = .left
 		return label
 	}()
+	static let cellID = "pin"
 
 	// MARK: Initialization
 	override init(style: CellStyle, reuseIdentifier: String?) {
