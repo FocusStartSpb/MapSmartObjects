@@ -29,9 +29,10 @@ final class PinListViewController: UIViewController
 		super.viewDidLoad()
 		view.addSubview(pinTableView)
 		pinTableView.dataSource = self
+		setConstraints()
 	}
 
-	private func setConstraint() {
+	private func setConstraints() {
 		pinTableView.translatesAutoresizingMaskIntoConstraints = true
 		NSLayoutConstraint.activate([
 			pinTableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
@@ -42,7 +43,7 @@ final class PinListViewController: UIViewController
 	}
 }
 
-extension PinListViewController: UITableViewDelegate, UITableViewDataSource
+extension PinListViewController: UITableViewDataSource
 {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return pins.count
