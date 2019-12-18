@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol IPinListViewController
+{
+}
+
 final class PinListViewController: UIViewController
 {
 	private let pinTableView = UITableView()
@@ -55,4 +59,8 @@ extension PinListViewController: UITableViewDataSource
 		//реализация ячейки
 		return cell
 	}
+}
+
+extension PinListViewController: IPinListViewController
+{
 }

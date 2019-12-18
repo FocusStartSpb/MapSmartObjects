@@ -10,4 +10,15 @@ import Foundation
 
 final class Factory
 {
+	//create map module
+	func createMapModule() -> MapViewController {
+		let repository = Repository()
+		let mapRouter = MapRouter(factory: self)
+		let geoCoder = YandexGeocoder()
+		let mapPresenter = MapPresenter(repository: repository, router: mapRouter, geoCoder: geoCoder)
+		let mapVC = MapViewController(presenter: mapPresenter)
+		mapPresenter.mapViewController = mapVC
+		mapRouter.mapView = mapVC
+		return mapVC
+	}
 }

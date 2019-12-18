@@ -13,4 +13,14 @@ protocol IMapRouter
 
 final class MapRouter
 {
+	weak var mapView: MapViewController?
+	private let factory: Factory
+
+	init(factory: Factory) {
+		self.factory = factory
+	}
+}
+
+extension MapRouter: IMapRouter
+{
 }
