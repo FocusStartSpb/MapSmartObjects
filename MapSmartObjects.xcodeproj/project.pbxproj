@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		4B43F6BD23A664C9003BF176 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B43F6BC23A664C9003BF176 /* AppDelegate.swift */; };
-		4B43F6C123A664C9003BF176 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B43F6C023A664C9003BF176 /* ViewController.swift */; };
 		4B43F6C723A664C9003BF176 /* MapSmartObjects.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4B43F6C523A664C9003BF176 /* MapSmartObjects.xcdatamodeld */; };
 		4B43F6C923A664CB003BF176 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B43F6C823A664CB003BF176 /* Assets.xcassets */; };
 		4B43F6CC23A664CB003BF176 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4B43F6CA23A664CB003BF176 /* LaunchScreen.storyboard */; };
@@ -39,7 +38,6 @@
 /* Begin PBXFileReference section */
 		4B43F6B923A664C9003BF176 /* MapSmartObjects.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MapSmartObjects.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B43F6BC23A664C9003BF176 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		4B43F6C023A664C9003BF176 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		4B43F6C623A664C9003BF176 /* MapSmartObjects.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MapSmartObjects.xcdatamodel; sourceTree = "<group>"; };
 		4B43F6C823A664CB003BF176 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4B43F6CB23A664CB003BF176 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -53,10 +51,10 @@
 		4B58C21123A971AB00A430C0 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		4B58C21323A971C700A430C0 /* MapPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapPresenter.swift; sourceTree = "<group>"; };
 		4B58C21523A971EE00A430C0 /* MapRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapRouter.swift; sourceTree = "<group>"; };
-		5C028C1723AA920F009FA3E8 /* YandexGeocoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YandexGeocoder.swift; sourceTree = "<group>"; };
+		5C028C1723AA920F009FA3E8 /* YandexGeocoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = YandexGeocoder.swift; path = ../YandexGeocoder.swift; sourceTree = "<group>"; };
 		5C028C1923AA9235009FA3E8 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		5C028C1C23AA93CA009FA3E8 /* YandexGeocoderResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YandexGeocoderResponse.swift; sourceTree = "<group>"; };
-		5C2E5CBF23A7FFFD004A105D /* Factory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Factory.swift; sourceTree = "<group>"; };
+		5C2E5CBF23A7FFFD004A105D /* Factory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Factory.swift; path = ../Factory.swift; sourceTree = "<group>"; };
 		941283AF23AA95E700A0077D /* PinListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinListCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -99,16 +97,13 @@
 		4B43F6BB23A664C9003BF176 /* MapSmartObjects */ = {
 			isa = PBXGroup;
 			children = (
-				4B58C21023A9719D00A430C0 /* Map */,
-				4B58C20923A93D5F00A430C0 /* PinList */,
+				5C028C1F23AA9BF7009FA3E8 /* Application */,
+				5C028C1E23AA9B75009FA3E8 /* BuisnessLayer */,
+				5C028C2023AA9C3D009FA3E8 /* Modules */,
 				5C028C0C23A97C16009FA3E8 /* Models */,
-				4B43F6E223A664F9003BF176 /* SupportingFiles */,
-				4B43F6BC23A664C9003BF176 /* AppDelegate.swift */,
-				4B43F6C023A664C9003BF176 /* ViewController.swift */,
-				4B43F6C523A664C9003BF176 /* MapSmartObjects.xcdatamodeld */,
-				5C2E5CBF23A7FFFD004A105D /* Factory.swift */,
-				5C028C1723AA920F009FA3E8 /* YandexGeocoder.swift */,
 				5C028C1B23AA9263009FA3E8 /* Enums */,
+				4B43F6E223A664F9003BF176 /* SupportingFiles */,
+				4B43F6C523A664C9003BF176 /* MapSmartObjects.xcdatamodeld */,
 			);
 			path = MapSmartObjects;
 			sourceTree = "<group>";
@@ -175,6 +170,32 @@
 				5C028C1923AA9235009FA3E8 /* Constants.swift */,
 			);
 			path = Enums;
+			sourceTree = "<group>";
+		};
+		5C028C1E23AA9B75009FA3E8 /* BuisnessLayer */ = {
+			isa = PBXGroup;
+			children = (
+				5C2E5CBF23A7FFFD004A105D /* Factory.swift */,
+				5C028C1723AA920F009FA3E8 /* YandexGeocoder.swift */,
+			);
+			path = BuisnessLayer;
+			sourceTree = "<group>";
+		};
+		5C028C1F23AA9BF7009FA3E8 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				4B43F6BC23A664C9003BF176 /* AppDelegate.swift */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		5C028C2023AA9C3D009FA3E8 /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				4B58C21023A9719D00A430C0 /* Map */,
+				4B58C20923A93D5F00A430C0 /* PinList */,
+			);
+			path = Modules;
 			sourceTree = "<group>";
 		};
 		941283AE23AA95AE00A0077D /* Custom Cells */ = {
@@ -311,7 +332,6 @@
 				5C2E5CC023A7FFFD004A105D /* Factory.swift in Sources */,
 				4B58C21423A971C700A430C0 /* MapPresenter.swift in Sources */,
 				941283B023AA95E700A0077D /* PinListCell.swift in Sources */,
-				4B43F6C123A664C9003BF176 /* ViewController.swift in Sources */,
 				4B43F6BD23A664C9003BF176 /* AppDelegate.swift in Sources */,
 				4B58C20F23A93DDA00A430C0 /* PinListRouter.swift in Sources */,
 				5C028C1A23AA9235009FA3E8 /* Constants.swift in Sources */,
