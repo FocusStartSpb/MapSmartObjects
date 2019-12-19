@@ -31,17 +31,18 @@ final class PinListViewController: UIViewController
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		view.addSubview(pinTableView)
+		view.backgroundColor = .white
 		pinTableView.dataSource = self
 		setConstraints()
 	}
 
 	private func setConstraints() {
-		pinTableView.translatesAutoresizingMaskIntoConstraints = true
+		pinTableView.translatesAutoresizingMaskIntoConstraints = false
 		NSLayoutConstraint.activate([
-			pinTableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
-			pinTableView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
-			pinTableView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
-			pinTableView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
+			pinTableView.topAnchor.constraint(equalTo: view.topAnchor),
+			pinTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+			pinTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+			pinTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 		])
 	}
 }
@@ -53,7 +54,7 @@ extension PinListViewController: UITableViewDataSource
 	}
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		guard let cell = tableView.dequeueReusableCell(withIdentifier: PinListCell.cellID, for: indexPath) as? PinListCell
+		guard let cell = tableView.dequeueReusableCell(withIdentifier: PinListCell.cellID) as? PinListCell
 		else { return UITableViewCell() }
 		//реализация ячейки
 		return cell
