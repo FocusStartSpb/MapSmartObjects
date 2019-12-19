@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-final class PinInfoCell: UITableViewCell
+final class PinListCell: UITableViewCell
 {
 	// MARK: Private properties
 	private let titleLabel: UILabel = {
