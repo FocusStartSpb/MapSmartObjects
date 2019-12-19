@@ -24,7 +24,9 @@
 		5C028C2223AAA1AC009FA3E8 /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C028C2123AAA1AC009FA3E8 /* Repository.swift */; };
 		5C028C2623AAAC09009FA3E8 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C028C2523AAAC09009FA3E8 /* MainTabBarController.swift */; };
 		5C2E5CC023A7FFFD004A105D /* Factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2E5CBF23A7FFFD004A105D /* Factory.swift */; };
+		5C97899B23ABE840004F1785 /* SmartObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C97899A23ABE840004F1785 /* SmartObject.swift */; };
 		941283B023AA95E700A0077D /* PinListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941283AF23AA95E700A0077D /* PinListCell.swift */; };
+		941283B223ABA34800A0077D /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941283B123ABA34800A0077D /* DataService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,7 +61,9 @@
 		5C028C2123AAA1AC009FA3E8 /* Repository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
 		5C028C2523AAAC09009FA3E8 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		5C2E5CBF23A7FFFD004A105D /* Factory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Factory.swift; path = ../Factory.swift; sourceTree = "<group>"; };
+		5C97899A23ABE840004F1785 /* SmartObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartObject.swift; sourceTree = "<group>"; };
 		941283AF23AA95E700A0077D /* PinListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinListCell.swift; sourceTree = "<group>"; };
+		941283B123ABA34800A0077D /* DataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +168,7 @@
 			isa = PBXGroup;
 			children = (
 				5C028C1C23AA93CA009FA3E8 /* YandexGeocoderResponse.swift */,
+				5C97899A23ABE840004F1785 /* SmartObject.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -182,6 +187,7 @@
 				5C2E5CBF23A7FFFD004A105D /* Factory.swift */,
 				5C028C2123AAA1AC009FA3E8 /* Repository.swift */,
 				5C028C1723AA920F009FA3E8 /* YandexGeocoder.swift */,
+				941283B123ABA34800A0077D /* DataService.swift */,
 			);
 			path = BuisnessLayer;
 			sourceTree = "<group>";
@@ -337,10 +343,12 @@
 				4B58C20D23A93DAC00A430C0 /* PinListPresenter.swift in Sources */,
 				5C2E5CC023A7FFFD004A105D /* Factory.swift in Sources */,
 				5C028C2623AAAC09009FA3E8 /* MainTabBarController.swift in Sources */,
+				5C97899B23ABE840004F1785 /* SmartObject.swift in Sources */,
 				4B58C21423A971C700A430C0 /* MapPresenter.swift in Sources */,
 				941283B023AA95E700A0077D /* PinListCell.swift in Sources */,
 				4B43F6BD23A664C9003BF176 /* AppDelegate.swift in Sources */,
 				4B58C20F23A93DDA00A430C0 /* PinListRouter.swift in Sources */,
+				941283B223ABA34800A0077D /* DataService.swift in Sources */,
 				5C028C1A23AA9235009FA3E8 /* Constants.swift in Sources */,
 				5C028C2223AAA1AC009FA3E8 /* Repository.swift in Sources */,
 				4B58C20B23A93D8500A430C0 /* PinListViewController.swift in Sources */,
