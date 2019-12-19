@@ -17,12 +17,10 @@ final class MapPresenter
 	weak var mapViewController: MapViewController?
 	private let repository: IRepository
 	private let router: IMapRouter
-	private let geoCoder: YandexGeocoder
 
-	init(repository: IRepository, router: IMapRouter, geoCoder: YandexGeocoder) {
+	init(repository: IRepository, router: IMapRouter) {
 		self.repository = repository
 		self.router = router
-		self.geoCoder = geoCoder
 	}
 }
 
