@@ -13,7 +13,7 @@ final class MainTabBarController: UITabBarController
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		let mapController = Factory().createMapModule()
-		let pinListController = Factory().createPinListModule()
+		let pinListController = UINavigationController(rootViewController: Factory().createPinListModule())
 
 		self.addChild(mapController)
 		self.addChild(pinListController)
