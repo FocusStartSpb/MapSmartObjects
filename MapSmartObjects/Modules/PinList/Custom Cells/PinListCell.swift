@@ -11,13 +11,13 @@ import UIKit
 final class PinListCell: UITableViewCell
 {
 	// MARK: Private properties
-	private let titleLabel: UILabel = {
+	var titleLabel: UILabel = {
 		let label = UILabel()
 		label.font = UIFont.boldSystemFont(ofSize: 16)
 		label.textAlignment = .left
 		return label
 	}()
-	private let descriptionLabel: UILabel = {
+	var descriptionLabel: UILabel = {
 		let label = UILabel()
 		label.font = UIFont.systemFont(ofSize: 14)
 		label.textAlignment = .left
