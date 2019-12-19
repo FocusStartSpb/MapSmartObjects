@@ -14,6 +14,11 @@ protocol IRepository
 
 final class Repository
 {
+	let geocoder: YandexGeocoder
+
+	init(geocoder: YandexGeocoder) {
+		self.geocoder = geocoder
+	}
 }
 
 extension Repository: IRepository
