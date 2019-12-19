@@ -14,11 +14,11 @@ protocol IRepository
 
 final class Repository
 {
-	let geoCoder: YandexGeocoder
+	let geocoder: YandexGeocoder
 	let dataService: DataService
 
 	init(geocoder: YandexGeocoder, dataService: DataService) {
-		self.geoCoder = geocoder
+		self.geocoder = geocoder
 		self.dataService = dataService
 	}
 }
