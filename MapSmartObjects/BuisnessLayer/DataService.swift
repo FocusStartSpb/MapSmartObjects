@@ -11,7 +11,7 @@ import Foundation
 final class DataService
 {
 	//необходимо брать данные из репозитория
-	var pins = [GeocoderResponse]()
+	var pins = [SmartObject]()
 
 	func saveFile() {
 		let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
@@ -28,7 +28,7 @@ final class DataService
 			documentDirectory.unsafelyUnwrapped
 		guard let data = try? Data(contentsOf: archiveURL) else { return }
 		let pinListDecoder = PropertyListDecoder()
-		guard let pins = try? pinListDecoder.decode([GeocoderResponse].self, from: data) else { return }
+		guard let pins = try? pinListDecoder.decode([SmartObject].self, from: data) else { return }
 		self.pins = pins
 	}
 }
