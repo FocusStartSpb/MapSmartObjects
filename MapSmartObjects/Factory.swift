@@ -13,7 +13,8 @@ final class Factory
 	//create map module
 	func createMapModule() -> MapViewController {
 		let geoCoder = YandexGeocoder()
-		let repository = Repository(geocoder: geoCoder)
+		let dataService = DataService()
+		let repository = Repository(geocoder: geoCoder, dataService: dataService)
 		let mapRouter = MapRouter(factory: self)
 		let mapPresenter = MapPresenter(repository: repository, router: mapRouter)
 		let mapVC = MapViewController(presenter: mapPresenter)
@@ -25,7 +26,8 @@ final class Factory
 	//create pinlist module
 	func createPinListModule() -> PinListViewController {
 		let geoCoder = YandexGeocoder()
-		let repository = Repository(geocoder: geoCoder)
+		let dataService = DataService()
+		let repository = Repository(geocoder: geoCoder, dataService: dataService)
 		let pinListRouter = PinListRouter(factory: self)
 		let pinListPresenter = PinListPresenter(repository: repository, router: pinListRouter)
 		let pinListVC = PinListViewController(presenter: pinListPresenter)
