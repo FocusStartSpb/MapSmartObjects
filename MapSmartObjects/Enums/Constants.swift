@@ -12,4 +12,5 @@ enum Constants
 {
 	static let apiKey = "0bd25207-2244-4998-a106-6125d7b85900"
 	static let baseUrl = "https://geocode-maps.yandex.ru/1.x"
+	static let locationServicesString = "App-Prefs:root=LOCATION_SERVICES"
 }
