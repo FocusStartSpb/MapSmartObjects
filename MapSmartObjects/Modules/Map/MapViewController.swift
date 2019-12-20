@@ -14,8 +14,6 @@ final class MapViewController: UIViewController
 	private let presenter: IMapPresenter
 	private let mapView = MKMapView()
 	private let buttonsView = UIView()
-	private let blurEffectView = UIVisualEffectView(effect:
-		UIBlurEffect(style: UIBlurEffect.Style.regular))
 	private let addButton = UIButton(type: .contactAdd)
 	private let currentLocationButton = UIButton()
 
@@ -43,7 +41,6 @@ final class MapViewController: UIViewController
 
 	private func addSubviews() {
 		view.addSubview(mapView)
-		view.addSubview(blurEffectView)
 		mapView.addSubview(buttonsView)
 		buttonsView.addSubview(addButton)
 		buttonsView.addSubview(currentLocationButton)
@@ -53,6 +50,20 @@ final class MapViewController: UIViewController
 		buttonsView.isOpaque = false
 		buttonsView.backgroundColor = .white
 		buttonsView.alpha = 0.95
+		mapView.showsCompass = false
+		setCustomCompass()
+	}
+	private func setCustomCompass() {
+		let compassButton = MKCompassButton(mapView: mapView)
+		compassButton.compassVisibility = .visible
+		mapView.addSubview(compassButton)
+		compassButton.translatesAutoresizingMaskIntoConstraints = false
+		NSLayoutConstraint.activate([
+			compassButton.leadingAnchor.constraint(equalTo: buttonsView.leadingAnchor),
+			compassButton.topAnchor.constraint(equalTo: buttonsView.bottomAnchor, constant: 8),
+			compassButton.widthAnchor.constraint(equalTo: buttonsView.widthAnchor),
+			compassButton.heightAnchor.constraint(equalTo: buttonsView.heightAnchor, multiplier: 1 / 2),
+		])
 	}
 	private func setConstraints() {
 		mapView.translatesAutoresizingMaskIntoConstraints = false
@@ -64,21 +75,12 @@ final class MapViewController: UIViewController
 		])
 		buttonsView.translatesAutoresizingMaskIntoConstraints = false
 		NSLayoutConstraint.activate([
-			buttonsView.heightAnchor.constraint(equalTo: view.heightAnchor,
-												multiplier: 1 / 9),
-			buttonsView.widthAnchor.constraint(equalTo: view.widthAnchor,
-											   multiplier: 1 / 8),
+			buttonsView.heightAnchor.constraint(equalToConstant: 90),
+			buttonsView.widthAnchor.constraint(equalToConstant: 45),
 			buttonsView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 8),
 			buttonsView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
 		])
 
-		blurEffectView.translatesAutoresizingMaskIntoConstraints = false
-		NSLayoutConstraint.activate([
-			blurEffectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-			blurEffectView.widthAnchor.constraint(equalTo: view.widthAnchor),
-			blurEffectView.topAnchor.constraint(equalTo: view.topAnchor),
-			blurEffectView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-		])
 		mapView.layoutSubviews()
 
 		addButton.translatesAutoresizingMaskIntoConstraints = false
@@ -86,7 +88,7 @@ final class MapViewController: UIViewController
 			addButton.leadingAnchor.constraint(equalTo: buttonsView.leadingAnchor),
 			addButton.topAnchor.constraint(equalTo: buttonsView.topAnchor),
 			addButton.trailingAnchor.constraint(equalTo: buttonsView.trailingAnchor),
-			addButton.heightAnchor.constraint(equalToConstant: buttonsView.frame.height / 2),
+			addButton.heightAnchor.constraint(equalTo: buttonsView.heightAnchor, multiplier: 1 / 2),
 		])
 
 		currentLocationButton.translatesAutoresizingMaskIntoConstraints = false
