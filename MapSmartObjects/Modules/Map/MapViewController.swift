@@ -19,6 +19,7 @@ final class MapViewController: UIViewController
 	//пока заглушка, потом надо будет получать координаты и радиус из пина
 	private let pinLocation = CLLocation()
 	private let pinRadius = CLLocationDistance()
+	private let locationManeger = CLLocationManager()
 
 	init(presenter: IMapPresenter) {
 		self.presenter = presenter
@@ -35,11 +36,66 @@ final class MapViewController: UIViewController
 		addSubviews()
 		configureViews()
 		setConstraints()
+		checkLocationEnabled()
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		buttonsView.layer.cornerRadius = buttonsView.frame.size.height / 10
+	}
+
+	//проверяем включина ли служба геолокации
+	private func checkLocationEnabled() {
+		if CLLocationManager.locationServicesEnabled() {
+			setupLocationManager()
+			ckeckAutorization()
+		}
+		else {
+			showAlertLocation(title: "Your geolocation service is turned off",
+							  message: "Want to turn it on?",
+							  url: URL(string: Constants.locationServicesString))
+		}
+	}
+
+	private func setupLocationManager() {
+		locationManeger.delegate = self
+		locationManeger.desiredAccuracy = kCLLocationAccuracyBest
+	}
+
+	private func ckeckAutorization() {
+		switch CLLocationManager.authorizationStatus() {
+		case .authorizedAlways:
+			mapView.showsUserLocation = true
+			locationManeger.startUpdatingLocation()
+		case .authorizedWhenInUse:
+			mapView.showsUserLocation = true
+			locationManeger.startUpdatingLocation()
+		case .denied:
+			showAlertLocation(title: "you have banned the use of location",
+							  message: "want to allow?",
+							  url: URL(string: UIApplication.openSettingsURLString))
+		case .restricted:
+			break
+		case .notDetermined:
+			locationManeger.requestAlwaysAuthorization()
+		default:
+			break
+		}
+	}
+	private func showAlertLocation(title: String, message: String?, url: URL?) {
+		let alert = UIAlertController(title: title,
+									  message: message,
+									  preferredStyle: .alert)
+		let settingsAction = UIAlertAction(title: "Settings", style: .default) { alert in
+			print(alert) //FIX IT
+			if let url = url {
+				UIApplication.shared.open(url, options: [:], completionHandler: nil)
+			}
+		}
+		let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+		alert.addAction(settingsAction)
+		alert.addAction(cancelAction)
+		present(alert, animated: true, completion: nil)
 	}
 
 	//отрисовка области вокруг пин
@@ -125,5 +181,19 @@ extension MapViewController: MKMapViewDelegate
 			circle = circleRender
 		}
 		return circle
+	}
+}
+
+extension MapViewController: CLLocationManagerDelegate
+{
+	func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+		guard let location = locations.last?.coordinate else { return }
+		let screenZoom: Double = 5000
+		let region = MKCoordinateRegion(center: location, latitudinalMeters: screenZoom, longitudinalMeters: screenZoom)
+		mapView.setRegion(region, animated: true)
+	}
+
+	func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+		ckeckAutorization()
 	}
 }
