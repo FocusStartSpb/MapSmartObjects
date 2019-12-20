@@ -16,6 +16,9 @@ final class MapViewController: UIViewController
 	private let buttonsView = UIView()
 	private let addButton = UIButton(type: .contactAdd)
 	private let currentLocationButton = UIButton()
+	//пока заглушка, потом надо будет получать координаты и радиус из пина
+	private let pinLocation = CLLocation()
+	private let pinRadius = CLLocationDistance()
 
 	init(presenter: IMapPresenter) {
 		self.presenter = presenter
@@ -39,6 +42,12 @@ final class MapViewController: UIViewController
 		buttonsView.layer.cornerRadius = buttonsView.frame.size.height / 10
 	}
 
+	//отрисовка области вокруг пин
+	private func addPinCircle(to location: CLLocation, radius: CLLocationDistance) {
+		self.mapView.delegate = self
+		let circle = MKCircle(center: location.coordinate, radius: radius)
+		self.mapView.addOverlay(circle)
+	}
 	private func addSubviews() {
 		view.addSubview(mapView)
 		mapView.addSubview(buttonsView)
@@ -100,5 +109,21 @@ final class MapViewController: UIViewController
 		])
 
 		buttonsView.layoutSubviews()
+	}
+}
+
+extension MapViewController: MKMapViewDelegate
+{
+	//метод для отрисовки круга - красный цвет, прозрачность, ширина и цвет канта
+	func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+		var circle = MKOverlayRenderer()
+		if overlay is MKCircle {
+			let circleRender = MKCircleRenderer(overlay: overlay)
+			circleRender.strokeColor = .red
+			circleRender.fillColor = UIColor(red: 255, green: 0, blue: 0, alpha: 0.3)
+			circleRender.lineWidth = 1
+			circle = circleRender
+		}
+		return circle
 	}
 }
