@@ -60,8 +60,7 @@ final class MapViewController: UIViewController
 		compassButton.translatesAutoresizingMaskIntoConstraints = false
 		NSLayoutConstraint.activate([
 			compassButton.leadingAnchor.constraint(equalTo: buttonsView.leadingAnchor),
-			compassButton.topAnchor.constraint(equalTo: buttonsView.bottomAnchor,
-											   constant: 8),
+			compassButton.topAnchor.constraint(equalTo: buttonsView.bottomAnchor, constant: 8),
 			compassButton.widthAnchor.constraint(equalTo: buttonsView.widthAnchor),
 			compassButton.heightAnchor.constraint(equalTo: buttonsView.heightAnchor, multiplier: 1 / 2),
 		])
@@ -78,10 +77,8 @@ final class MapViewController: UIViewController
 		NSLayoutConstraint.activate([
 			buttonsView.heightAnchor.constraint(equalToConstant: 90),
 			buttonsView.widthAnchor.constraint(equalToConstant: 45),
-			buttonsView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor,
-											 constant: 8),
-			buttonsView.trailingAnchor.constraint(equalTo: view.trailingAnchor,
-												  constant: -8),
+			buttonsView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 8),
+			buttonsView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
 		])
 
 		mapView.layoutSubviews()
@@ -91,8 +88,7 @@ final class MapViewController: UIViewController
 			addButton.leadingAnchor.constraint(equalTo: buttonsView.leadingAnchor),
 			addButton.topAnchor.constraint(equalTo: buttonsView.topAnchor),
 			addButton.trailingAnchor.constraint(equalTo: buttonsView.trailingAnchor),
-			addButton.heightAnchor.constraint(equalTo: buttonsView.heightAnchor,
-											  multiplier: 1 / 2),
+			addButton.heightAnchor.constraint(equalTo: buttonsView.heightAnchor, multiplier: 1 / 2),
 		])
 
 		currentLocationButton.translatesAutoresizingMaskIntoConstraints = false
