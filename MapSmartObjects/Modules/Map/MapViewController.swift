@@ -37,6 +37,8 @@ final class MapViewController: UIViewController
 		configureViews()
 		setConstraints()
 		checkLocationEnabled()
+		showCurrentLocation()
+		addTargets()
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
@@ -118,6 +120,10 @@ final class MapViewController: UIViewController
 		mapView.showsCompass = false
 		setCustomCompass()
 	}
+	private func addTargets() {
+		currentLocationButton.addTarget(self, action: #selector(showCurrentLocation), for: .touchUpInside)
+		addButton.addTarget(self, action: #selector(showAddPinAlert), for: .touchUpInside)
+	}
 	private func setCustomCompass() {
 		let compassButton = MKCompassButton(mapView: mapView)
 		compassButton.compassVisibility = .visible
@@ -130,6 +136,33 @@ final class MapViewController: UIViewController
 			compassButton.heightAnchor.constraint(equalTo: buttonsView.heightAnchor, multiplier: 1 / 2),
 		])
 	}
+	@objc
+	private func showCurrentLocation() {
+		guard let location = locationManeger.location?.coordinate else { return }
+		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+		mapView.setRegion(region, animated: true)
+	}
+	@objc
+	private func showAddPinAlert() {
+			let alert = UIAlertController(title: "Add Pin", message: nil, preferredStyle: .alert)
+			alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+			alert.addTextField { nameTextField in
+				nameTextField.placeholder = "Name"
+			}
+			alert.addTextField { radiusTextField in
+				radiusTextField.placeholder = "Radius"
+			}
+
+			alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+				guard let location = self.locationManeger.location?.coordinate else { return }
+				if let name = alert.textFields?.first?.text, let radius = alert.textFields?[1].text {
+					print("Pin name: \(name)")
+					print("Radius = \(radius)")
+					print("Location: \(location)")
+				}
+			}))
+			present(alert, animated: true)
+		}
 	private func setConstraints() {
 		mapView.translatesAutoresizingMaskIntoConstraints = false
 		NSLayoutConstraint.activate([
@@ -186,13 +219,6 @@ extension MapViewController: MKMapViewDelegate
 
 extension MapViewController: CLLocationManagerDelegate
 {
-	func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-		guard let location = locations.last?.coordinate else { return }
-		let screenZoom: Double = 5000
-		let region = MKCoordinateRegion(center: location, latitudinalMeters: screenZoom, longitudinalMeters: screenZoom)
-		mapView.setRegion(region, animated: true)
-	}
-
 	func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
 		ckeckAutorization()
 	}
