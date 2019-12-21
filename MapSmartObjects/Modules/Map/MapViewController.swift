@@ -100,9 +100,9 @@ final class MapViewController: UIViewController
 	}
 
 	//отрисовка области вокруг пин
-	private func addPinCircle(to location: CLLocation, radius: CLLocationDistance) {
+	private func addPinCircle(to location: CLLocationCoordinate2D, radius: CLLocationDistance) {
 		self.mapView.delegate = self
-		let circle = MKCircle(center: location.coordinate, radius: radius)
+		let circle = MKCircle(center: location, radius: radius)
 		self.mapView.addOverlay(circle)
 	}
 	private func addSubviews() {
@@ -154,7 +154,10 @@ final class MapViewController: UIViewController
 
 			alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
 				guard let location = self.locationManeger.location?.coordinate else { return }
-				if let name = alert.textFields?.first?.text, let radius = alert.textFields?[1].text {
+				if let name = alert.textFields?.first?.text,
+					let radius = Int64(alert.textFields?[1].text ?? "0") {
+					self.addPinCircle(to: location,
+									  radius: CLLocationDistance(integerLiteral: radius))
 					print("Pin name: \(name)")
 					print("Radius = \(radius)")
 					print("Location: \(location)")
@@ -208,7 +211,7 @@ extension MapViewController: MKMapViewDelegate
 		if overlay is MKCircle {
 			let circleRender = MKCircleRenderer(overlay: overlay)
 			circleRender.strokeColor = .blue
-			circleRender.fillColor = UIColor.green.withAlphaComponent(0.1)
+			circleRender.fillColor = UIColor.green.withAlphaComponent(0.3)
 			circleRender.lineWidth = 1
 			circle = circleRender
 		}
