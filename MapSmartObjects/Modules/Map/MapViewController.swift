@@ -88,8 +88,7 @@ final class MapViewController: UIViewController
 		let alert = UIAlertController(title: title,
 									  message: message,
 									  preferredStyle: .alert)
-		let settingsAction = UIAlertAction(title: "Settings", style: .default) { alert in
-			print(alert) //FIX IT
+		let settingsAction = UIAlertAction(title: "Settings", style: .default) { _ in
 			if let url = url {
 				UIApplication.shared.open(url, options: [:], completionHandler: nil)
 			}
@@ -209,7 +208,7 @@ extension MapViewController: MKMapViewDelegate
 		if overlay is MKCircle {
 			let circleRender = MKCircleRenderer(overlay: overlay)
 			circleRender.strokeColor = .blue
-			circleRender.fillColor = UIColor(red: 0, green: 0, blue: 255, alpha: 0.1)
+			circleRender.fillColor = UIColor.green.withAlphaComponent(0.1)
 			circleRender.lineWidth = 1
 			circle = circleRender
 		}
