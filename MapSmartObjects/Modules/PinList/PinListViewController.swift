@@ -29,12 +29,16 @@ final class PinListViewController: UIViewController
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		self.pinTableView.register(PinListCell.self, forCellReuseIdentifier: PinListCell.cellID)
 		view.addSubview(pinTableView)
-		view.backgroundColor = .white
 		pinTableView.dataSource = self
 		pinTableView.delegate = self
+		configureViews()
 		setConstraints()
+	}
+
+	private func configureViews() {
+		title = "My Pins"
+		pinTableView.register(PinListCell.self, forCellReuseIdentifier: PinListCell.cellID)
 	}
 
 	private func setConstraints() {
@@ -57,7 +61,6 @@ extension PinListViewController: UITableViewDataSource
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: PinListCell.cellID, for: indexPath) as? PinListCell
 			else { return UITableViewCell() }
-		//реализация ячейки
 		let smartObject = presenter.getSmartObject(index: indexPath.row)
 		cell.titleLabel.text = smartObject.name
 		cell.descriptionLabel.text = smartObject.address
