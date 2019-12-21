@@ -19,7 +19,7 @@ final class MainTabBarController: UITabBarController
 		self.addChild(pinListController)
 
 		mapController.tabBarItem = UITabBarItem(title: "Map", image: nil, tag: 1)
-		pinListController.tabBarItem = UITabBarItem(title: "Objects", image: nil, tag: 2)
+		pinListController.tabBarItem = UITabBarItem(title: "My Pins", image: nil, tag: 2)
 	}
 
 	init() {
