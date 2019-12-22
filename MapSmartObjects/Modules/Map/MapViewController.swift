@@ -36,13 +36,13 @@ final class MapViewController: UIViewController
 		addSubviews()
 		configureViews()
 		setConstraints()
-		checkLocationEnabled()
 		showCurrentLocation()
 		addTargets()
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
+		checkLocationEnabled()
 		buttonsView.layer.cornerRadius = buttonsView.frame.size.height / 10
 	}
 
@@ -66,18 +66,15 @@ final class MapViewController: UIViewController
 
 	private func ckeckAutorization() {
 		switch CLLocationManager.authorizationStatus() {
-		case .authorizedAlways:
+		case .authorizedAlways, .authorizedWhenInUse:
 			mapView.showsUserLocation = true
 			locationManeger.startUpdatingLocation()
-		case .authorizedWhenInUse:
-			mapView.showsUserLocation = true
-			locationManeger.startUpdatingLocation()
-		case .denied:
-			showAlertLocation(title: "you have banned the use of location",
-							  message: "want to allow?",
+			showCurrentLocation()
+			setupLocationManager()
+		case .denied, .restricted:
+			showAlertLocation(title: "You have banned the use of location",
+							  message: "Want to allow?",
 							  url: URL(string: UIApplication.openSettingsURLString))
-		case .restricted:
-			break
 		case .notDetermined:
 			locationManeger.requestAlwaysAuthorization()
 		default:
@@ -220,6 +217,6 @@ extension MapViewController: MKMapViewDelegate
 extension MapViewController: CLLocationManagerDelegate
 {
 	func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-		ckeckAutorization()
+		checkLocationEnabled()
 	}
 }
