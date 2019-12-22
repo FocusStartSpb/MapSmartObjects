@@ -16,9 +16,6 @@ final class MapViewController: UIViewController
 	private let buttonsView = UIView()
 	private let addButton = UIButton(type: .contactAdd)
 	private let currentLocationButton = UIButton()
-	//пока заглушка, потом надо будет получать координаты и радиус из пина
-	private let pinLocation = CLLocation()
-	private let pinRadius = CLLocationDistance()
 	private let locationManeger = CLLocationManager()
 
 	init(presenter: IMapPresenter) {
@@ -38,12 +35,20 @@ final class MapViewController: UIViewController
 		setConstraints()
 		showCurrentLocation()
 		addTargets()
+		showSmartObjectsOnMap()
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		checkLocationEnabled()
 		buttonsView.layer.cornerRadius = buttonsView.frame.size.height / 10
+	}
+
+	private func showSmartObjectsOnMap() {
+		presenter.getSmartObjects().forEach { smartObject in
+			addPinCircle(to: smartObject.coordinate, radius: smartObject.circleRadius)
+			mapView.addAnnotation(smartObject)
+		}
 	}
 
 	//проверяем включина ли служба геолокации
