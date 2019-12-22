@@ -14,7 +14,7 @@ protocol IRepository
 	func loadSmartObjects() -> [SmartObject]
 	func saveSmartObjects(objects: [SmartObject])
 
-	var geocored: YandexGeocoder { get }
+	var geocoder: YandexGeocoder { get }
 }
 
 final class Repository
@@ -30,10 +30,6 @@ final class Repository
 
 extension Repository: IRepository
 {
-	var geocored: YandexGeocoder {
-		return geocoder
-	}
-
 	func loadSmartObjects() -> [SmartObject] {
 		return dataService.loadSmartObjects()
 	}

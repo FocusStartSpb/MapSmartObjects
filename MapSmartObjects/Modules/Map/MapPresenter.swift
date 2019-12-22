@@ -31,7 +31,7 @@ final class MapPresenter
 extension MapPresenter: IMapPresenter
 {
 	func addSmartObject(name: String, radius: Double, coordinate: CLLocationCoordinate2D) {
-		repository.geocored.getGeocoderRequest(coordinates: coordinate) { geocoderResult in
+		repository.geocoder.getGeocoderRequest(coordinates: coordinate) { geocoderResult in
 			switch geocoderResult {
 			case .success(let response):
 				let address = response.response.geoObjectCollection.featureMember
