@@ -36,11 +36,10 @@ extension MapPresenter: IMapPresenter
 	}
 
 	func addSmartObject(name: String, radius: Double, coordinate: CLLocationCoordinate2D) {
-		repository.geocoder.getGeocoderRequest(coordinates: coordinate) { geocoderResult in
+		repository.getGeoposition(coordinates: coordinate) { geocoderResult in
 			switch geocoderResult {
-			case .success(let response):
-				let address = response.response.geoObjectCollection.featureMember
-					.first?.geoObject.metaDataProperty?.geocoderMetaData?.text ?? ""
+			case .success(let position):
+				let address = position
 				let smartObject = SmartObject(name: name, address: address, coordinate: coordinate, circleRadius: radius)
 				self.smartObjects.append(smartObject)
 				self.repository.saveSmartObjects(objects: self.smartObjects)
