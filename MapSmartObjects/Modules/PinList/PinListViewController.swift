@@ -39,6 +39,7 @@ final class PinListViewController: UIViewController
 	private func configureViews() {
 		title = "My Pins"
 		pinTableView.register(PinListCell.self, forCellReuseIdentifier: PinListCell.cellID)
+		navigationItem.leftBarButtonItem = editButtonItem
 	}
 
 	private func setConstraints() {
@@ -49,6 +50,14 @@ final class PinListViewController: UIViewController
 			pinTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 			pinTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 		])
+	}
+
+	override func setEditing(_ editing: Bool, animated: Bool) {
+		super.setEditing(editing, animated: animated)
+		pinTableView.isEditing
+			? pinTableView.setEditing(false, animated: true)
+			: pinTableView.setEditing(true, animated: true)
+		editButtonItem.title = isEditing ? "Done" : "Edit"
 	}
 }
 
