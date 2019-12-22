@@ -11,8 +11,9 @@ import Foundation
 protocol IPinListPresenter
 {
 	func getSmartObjectsCount() -> Int
-	func getSmartObject(index: Int) -> SmartObject
-	func showSmartObject(index: Int)
+	func getSmartObject(at index: Int) -> SmartObject
+	func removeSmartObject(at index: Int)
+	func showSmartObject(at index: Int)
 	func setupView()
 }
 
@@ -41,11 +42,16 @@ extension PinListPresenter: IPinListPresenter
 		return smartObjects.count
 	}
 
-	func getSmartObject(index: Int) -> SmartObject {
+	func getSmartObject(at index: Int) -> SmartObject {
 		return smartObjects[index]
 	}
 
-	func showSmartObject(index: Int) {
+	func removeSmartObject(at index: Int) {
+		smartObjects.remove(at: index)
+		repository.saveSmartObjects(objects: smartObjects)
+	}
+
+	func showSmartObject(at index: Int) {
 		print("Show smartObject \(smartObjects[index].name)") //пока заглушка
 	}
 }
