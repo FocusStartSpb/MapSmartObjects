@@ -39,8 +39,8 @@ final class PinListCell: UITableViewCell
 
 	// MARK: Private methods
 	private func setup() {
-		addSubview(titleLabel)
-		addSubview(descriptionLabel)
+		contentView.addSubview(titleLabel)
+		contentView.addSubview(descriptionLabel)
 		accessoryType = .disclosureIndicator
 	}
 
@@ -49,14 +49,12 @@ final class PinListCell: UITableViewCell
 		titleLabel.translatesAutoresizingMaskIntoConstraints = false
 		descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
 		NSLayoutConstraint.activate([
-			titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 5),
-			titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5),
-			titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30),
+			titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
+			titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
 
-			descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 2),
-			descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5),
-			descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30),
-			descriptionLabel.bottomAnchor.constraint(lessThanOrEqualTo: readableContentGuide.bottomAnchor, constant: -8),
+			descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
+			descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+			descriptionLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -16),
 			])
 	}
 }
