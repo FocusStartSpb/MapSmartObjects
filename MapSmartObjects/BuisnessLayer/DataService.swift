@@ -10,25 +10,22 @@ import Foundation
 
 final class DataService
 {
-	//необходимо брать данные из репозитория
-	var pins = [SmartObject]()
-
-	func saveFile() {
+	func saveSmartObjects(_ objects: [SmartObject]) {
 		let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
 		let archiveURL = documentDirectory?.appendingPathComponent("data").appendingPathExtension("plist") ??
 			documentDirectory.unsafelyUnwrapped
 		let pinListEncoder = PropertyListEncoder()
-		let encodedPins = try? pinListEncoder.encode(pins)
+		let encodedPins = try? pinListEncoder.encode(objects)
 		try? encodedPins?.write(to: archiveURL, options: .noFileProtection)
 	}
 
-	func loadFile() {
+	func loadSmartObjects() -> [SmartObject] {
 		let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
 		let archiveURL = documentDirectory?.appendingPathComponent("data").appendingPathExtension("plist") ??
 			documentDirectory.unsafelyUnwrapped
-		guard let data = try? Data(contentsOf: archiveURL) else { return }
+		guard let data = try? Data(contentsOf: archiveURL) else { return [] }
 		let pinListDecoder = PropertyListDecoder()
-		guard let pins = try? pinListDecoder.decode([SmartObject].self, from: data) else { return }
-		self.pins = pins
+		guard let smartObjects = try? pinListDecoder.decode([SmartObject].self, from: data) else { return [] }
+		return smartObjects
 	}
 }

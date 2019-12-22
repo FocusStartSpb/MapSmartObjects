@@ -149,15 +149,13 @@ final class MapViewController: UIViewController
 				radiusTextField.placeholder = "Radius"
 			}
 
-			alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+			alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak self] _ in
+				guard let self = self else { return }
 				guard let location = self.locationManeger.location?.coordinate else { return }
 				if let name = alert.textFields?.first?.text,
-					let radius = Int64(alert.textFields?[1].text ?? "0") {
-					self.addPinCircle(to: location,
-									  radius: CLLocationDistance(integerLiteral: radius))
-					print("Pin name: \(name)")
-					print("Radius = \(radius)")
-					print("Location: \(location)")
+					let radius = Double(alert.textFields?[1].text ?? "0") {
+					self.addPinCircle(to: location, radius: CLLocationDistance(integerLiteral: radius))
+					self.presenter.addSmartObject(name: name, radius: radius, coordinate: location)
 				}
 			}))
 			present(alert, animated: true)

@@ -23,7 +23,7 @@ final class YandexGeocoder
 		return components?.url
 	}
 
-	func getAdress(coordinates: CLLocationCoordinate2D, completionHandler: @escaping ((GeocoderResult) -> Void)) {
+	func getGeocoderRequest(coordinates: CLLocationCoordinate2D, completionHandler: @escaping ((GeocoderResult) -> Void)) {
 		guard let url = getGeocoderAddressRequest(coordinates: coordinates) else { return }
 		URLSession.shared.dataTask(with: url) { data, response, error in
 			if let error = error {

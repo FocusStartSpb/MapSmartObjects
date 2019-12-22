@@ -7,9 +7,14 @@
 //
 
 import Foundation
+import CoreLocation
 
 protocol IRepository
 {
+	func loadSmartObjects() -> [SmartObject]
+	func saveSmartObjects(objects: [SmartObject])
+
+	var geocoder: YandexGeocoder { get }
 }
 
 final class Repository
@@ -25,4 +30,11 @@ final class Repository
 
 extension Repository: IRepository
 {
+	func loadSmartObjects() -> [SmartObject] {
+		return dataService.loadSmartObjects()
+	}
+
+	func saveSmartObjects(objects: [SmartObject]) {
+		dataService.saveSmartObjects(objects)
+	}
 }

@@ -13,6 +13,7 @@ protocol IPinListPresenter
 	func getSmartObjectsCount() -> Int
 	func getSmartObject(index: Int) -> SmartObject
 	func showSmartObject(index: Int)
+	func setupView()
 }
 
 final class PinListPresenter
@@ -20,16 +21,22 @@ final class PinListPresenter
 	weak var pinListViewController: PinListViewController?
 	private let repository: IRepository
 	private let router: IPinListRouter
-	private let smartObjects = [SmartObject]()
+	private var smartObjects = [SmartObject]()
 
 	init(repository: IRepository, router: IPinListRouter) {
 		self.repository = repository
 		self.router = router
+		setupView()
 	}
 }
 
 extension PinListPresenter: IPinListPresenter
 {
+	func setupView() {
+		smartObjects = repository.loadSmartObjects()
+		pinListViewController?.updateTableView()
+	}
+
 	func getSmartObjectsCount() -> Int {
 		return smartObjects.count
 	}
