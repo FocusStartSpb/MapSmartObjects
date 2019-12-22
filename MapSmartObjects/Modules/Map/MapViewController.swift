@@ -124,6 +124,7 @@ final class MapViewController: UIViewController
 	private func addTargets() {
 		currentLocationButton.addTarget(self, action: #selector(showCurrentLocation), for: .touchUpInside)
 		addButton.addTarget(self, action: #selector(showAddPinAlert), for: .touchUpInside)
+		mapView.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(longTap)))
 	}
 	private func setCustomCompass() {
 		let compassButton = MKCompassButton(mapView: mapView)
@@ -143,31 +144,47 @@ final class MapViewController: UIViewController
 		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
 		mapView.setRegion(region, animated: true)
 	}
+
+	@objc
+	private func longTap(gestureReconizer: UILongPressGestureRecognizer) {
+		if gestureReconizer.state == UIGestureRecognizer.State.began {
+			print("LONGTAP")
+			let location = gestureReconizer.location(in: mapView)
+			let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
+			addPinWithAlert(coordinate)
+		}
+	}
+
 	@objc
 	private func showAddPinAlert() {
-			let alert = UIAlertController(title: "Add Pin", message: nil, preferredStyle: .alert)
-			alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-			alert.addTextField { nameTextField in
-				nameTextField.placeholder = "Name"
-			}
-			alert.addTextField { radiusTextField in
-				radiusTextField.placeholder = "Radius"
-			}
-
-			alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak self] _ in
-				guard let self = self else { return }
-				guard let location = self.locationManeger.location?.coordinate else { return }
-				if let name = alert.textFields?.first?.text,
-					let radius = Double(alert.textFields?[1].text ?? "0") {
-					self.addPinCircle(to: location, radius: CLLocationDistance(integerLiteral: radius))
-					self.presenter.addSmartObject(name: name, radius: radius, coordinate: location)
-					let annotation = MKPointAnnotation()
-					annotation.coordinate = location
-					self.mapView.addAnnotation(annotation)
-				}
-			}))
-			present(alert, animated: true)
+		if let location = self.locationManeger.location?.coordinate {
+			addPinWithAlert(location)
 		}
+	}
+
+	private func addPinWithAlert(_ location: CLLocationCoordinate2D) {
+		let alert = UIAlertController(title: "Add Pin", message: nil, preferredStyle: .alert)
+		alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+		alert.addTextField { nameTextField in
+			nameTextField.placeholder = "Name"
+		}
+		alert.addTextField { radiusTextField in
+			radiusTextField.placeholder = "Radius"
+		}
+		alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak self] _ in
+			guard let self = self else { return }
+			if let name = alert.textFields?.first?.text,
+				let radius = Double(alert.textFields?[1].text ?? "0") {
+				self.addPinCircle(to: location, radius: CLLocationDistance(integerLiteral: radius))
+				self.presenter.addSmartObject(name: name, radius: radius, coordinate: location)
+				let annotation = MKPointAnnotation()
+				annotation.coordinate = location
+				self.mapView.addAnnotation(annotation)
+			}
+		}))
+		present(alert, animated: true)
+	}
+
 	private func setConstraints() {
 		mapView.translatesAutoresizingMaskIntoConstraints = false
 		NSLayoutConstraint.activate([
