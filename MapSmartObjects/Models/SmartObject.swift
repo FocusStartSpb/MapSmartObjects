@@ -7,8 +7,9 @@
 //
 
 import Foundation
+import MapKit
 
-final class SmartObject: Codable
+final class SmartObject: NSObject
 {
 	var name: String
 	var address: String
@@ -16,11 +17,22 @@ final class SmartObject: Codable
 	var longitude: Double
 	var circleRadius: Double
 
-	init(name: String, address: String, latitude: Double, longitude: Double, circleRadius: Double) {
+	init(name: String, address: String, coordinate: CLLocationCoordinate2D, circleRadius: Double) {
 		self.name = name
 		self.address = address
-		self.latitude = latitude
-		self.longitude = longitude
+		self.latitude = coordinate.latitude
+		self.longitude = coordinate.longitude
 		self.circleRadius = circleRadius
+	}
+}
+
+extension SmartObject: Codable
+{
+}
+
+extension SmartObject: MKAnnotation
+{
+	var coordinate: CLLocationCoordinate2D {
+		return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
 	}
 }

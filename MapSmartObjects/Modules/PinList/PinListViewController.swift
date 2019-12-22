@@ -10,6 +10,7 @@ import UIKit
 
 protocol IPinListViewController
 {
+	func updateTableView()
 }
 
 final class PinListViewController: UIViewController
@@ -34,6 +35,11 @@ final class PinListViewController: UIViewController
 		pinTableView.delegate = self
 		configureViews()
 		setConstraints()
+	}
+
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		presenter.setupView()
 	}
 
 	private func configureViews() {
@@ -78,4 +84,7 @@ extension PinListViewController: UITableViewDelegate
 
 extension PinListViewController: IPinListViewController
 {
+	func updateTableView() {
+		pinTableView.reloadData()
+	}
 }
