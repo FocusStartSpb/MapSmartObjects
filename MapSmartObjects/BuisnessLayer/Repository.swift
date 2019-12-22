@@ -10,12 +10,12 @@ import Foundation
 import CoreLocation
 import MapKit
 
-typealias Geoposition = Result<String, Error>
+typealias GeocoderResponseResult = Result<String, Error>
 protocol IRepository
 {
 	func loadSmartObjects() -> [SmartObject]
 	func saveSmartObjects(objects: [SmartObject])
-	func getGeoposition(coordinates: CLLocationCoordinate2D, completionHandler: @escaping (Geoposition) -> Void)
+	func getGeoposition(coordinates: CLLocationCoordinate2D, completionHandler: @escaping (GeocoderResponseResult) -> Void)
 }
 
 final class Repository
@@ -43,15 +43,16 @@ extension Repository: IRepository
 		dataService.saveData(data)
 	}
 
-	func getGeoposition(coordinates: CLLocationCoordinate2D, completionHandler: @escaping (Geoposition) -> Void) {
+	func getGeoposition(coordinates: CLLocationCoordinate2D,
+						completionHandler: @escaping (GeocoderResponseResult) -> Void) {
 		geocoder.getGeocoderRequest(coordinates: coordinates) { result in
 			switch result {
 			case .success(let data):
 				do {
-					let geoposition = try JSONDecoder().decode(GeocoderResponse.self, from: data)
-					let position = geoposition.response.geoObjectCollection.featureMember
+					let geocoderResponseResult = try JSONDecoder().decode(GeocoderResponse.self, from: data)
+					let geocoderResult = geocoderResponseResult.response.geoObjectCollection.featureMember
 					.first?.geoObject.metaDataProperty?.geocoderMetaData?.text ?? ""
-					completionHandler(.success(position))
+					completionHandler(.success(geocoderResult))
 				}
 				catch {
 					completionHandler(.failure(error))
