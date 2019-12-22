@@ -161,6 +161,9 @@ final class MapViewController: UIViewController
 					let radius = Double(alert.textFields?[1].text ?? "0") {
 					self.addPinCircle(to: location, radius: CLLocationDistance(integerLiteral: radius))
 					self.presenter.addSmartObject(name: name, radius: radius, coordinate: location)
+					let annotation = MKPointAnnotation()
+					annotation.coordinate = location
+					self.mapView.addAnnotation(annotation)
 				}
 			}))
 			present(alert, animated: true)
@@ -216,6 +219,19 @@ extension MapViewController: MKMapViewDelegate
 			circle = circleRender
 		}
 		return circle
+	}
+
+	func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+		guard annotation is MKPointAnnotation else { return nil }
+		let reuseIdentifier = "Annotation"
+		let pin = mapView.dequeueReusableAnnotationView(withIdentifier: reuseIdentifier) as? MKMarkerAnnotationView
+			?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: reuseIdentifier)
+
+		//настройка пина
+		pin.canShowCallout = true
+		pin.animatesWhenAdded = true
+		pin.isDraggable = true
+		return pin
 	}
 }
 
