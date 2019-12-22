@@ -12,6 +12,7 @@ import CoreLocation
 protocol IMapPresenter
 {
 	func addSmartObject(name: String, radius: Double, coordinate: CLLocationCoordinate2D)
+	func getSmartObjects() -> [SmartObject]
 }
 
 final class MapPresenter
@@ -30,6 +31,10 @@ final class MapPresenter
 
 extension MapPresenter: IMapPresenter
 {
+	func getSmartObjects() -> [SmartObject] {
+		return smartObjects
+	}
+
 	func addSmartObject(name: String, radius: Double, coordinate: CLLocationCoordinate2D) {
 		repository.geocoder.getGeocoderRequest(coordinates: coordinate) { geocoderResult in
 			switch geocoderResult {

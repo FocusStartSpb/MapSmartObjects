@@ -43,9 +43,16 @@ final class MapViewController: UIViewController
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		checkLocationEnabled()
+		showSmartObjectsOnMap()
 		buttonsView.layer.cornerRadius = buttonsView.frame.size.height / 10
 	}
 
+	private func showSmartObjectsOnMap() {
+		presenter.getSmartObjects().forEach { smartObject in
+			addPinCircle(to: smartObject.coordinate, radius: smartObject.circleRadius)
+			mapView.addAnnotation(smartObject)
+		}
+	}
 	//проверяем включина ли служба геолокации
 	private func checkLocationEnabled() {
 		if CLLocationManager.locationServicesEnabled() {
