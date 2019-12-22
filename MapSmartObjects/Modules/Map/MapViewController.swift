@@ -230,7 +230,6 @@ extension MapViewController: MKMapViewDelegate
 		//настройка пина
 		pin.canShowCallout = true
 		pin.animatesWhenAdded = true
-		pin.isDraggable = true
 		return pin
 	}
 }
