@@ -77,10 +77,27 @@ extension PinListViewController: UITableViewDataSource
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: PinListCell.cellID, for: indexPath) as? PinListCell
 			else { return UITableViewCell() }
-		let smartObject = presenter.getSmartObject(index: indexPath.row)
+		let smartObject = presenter.getSmartObject(at: indexPath.row)
 		cell.titleLabel.text = smartObject.name
 		cell.descriptionLabel.text = smartObject.address
 		return cell
+	}
+
+	func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+		return true
+	}
+
+	func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+		return .delete
+	}
+
+	func tableView(_ tableView: UITableView,
+				   commit editingStyle: UITableViewCell.EditingStyle,
+				   forRowAt indexPath: IndexPath) {
+		if editingStyle == .delete {
+			presenter.removeSmartObject(at: indexPath.row)
+			tableView.deleteRows(at: [indexPath], with: .automatic)
+		}
 	}
 }
 
@@ -88,7 +105,7 @@ extension PinListViewController: UITableViewDelegate
 {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)
-		presenter.showSmartObject(index: indexPath.row)
+		presenter.showSmartObject(at: indexPath.row)
 	}
 }
 
