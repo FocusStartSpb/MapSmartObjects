@@ -235,7 +235,7 @@ final class MapViewController: UIViewController
 			self.showAlert(withTitle: nil, message: message)
 		}
 		else {
-			// Пуш если фоновы режим или блок телефона
+			// Пуш если фоновый режим или на телефоне включен блок
 			guard let body = note(from: region.identifier) else { return }
 			let notificationContent = UNMutableNotificationContent()
 			notificationContent.body = body
@@ -285,12 +285,12 @@ extension MapViewController: MKMapViewDelegate
 		pin.animatesWhenAdded = true
 		return pin
 	}
-	// метод для начала мониторинга зоны когда пользователь добавляет ее
+	// метод для начала мониторинга зоны когда пользователь добавляет ее(надо добавить когда пин добавляется)
 	private func startMonitoring(with smartObject: SmartObject) {
 		let smartregion = region(with: smartObject)
 		locationManeger.startMonitoring(for: smartregion)
 	}
-	// метод для остановки мониторинга зоны когда пользователь его удаляет
+	// метод для остановки мониторинга зоны когда пользователь его удаляет(надо добавить когда удаляется пин)
 	private func stopMonitoring(smartObject: SmartObject) {
 		for region in locationManeger.monitoredRegions {
 			guard let circusRegion = region as? CLCircularRegion, circusRegion.identifier == smartObject.name else { continue }
