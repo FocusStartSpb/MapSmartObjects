@@ -46,6 +46,7 @@ final class PinListViewController: UIViewController
 		title = "My Pins"
 		pinTableView.register(PinListCell.self, forCellReuseIdentifier: PinListCell.cellID)
 		navigationItem.leftBarButtonItem = editButtonItem
+		pinTableView.tableFooterView = UIView()
 	}
 
 	private func setConstraints() {
