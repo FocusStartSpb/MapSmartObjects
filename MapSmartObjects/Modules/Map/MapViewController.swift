@@ -255,7 +255,9 @@ final class MapViewController: UIViewController
 	}
 	func note(from identifier: String) -> String? {
 		let smartObjects = presenter.getSmartObjects()
-		guard let matchedPin = smartObjects.filter({ $0.name == identifier}).first else { return nil }
+		guard let matchedPin = smartObjects.first(where: { object in
+			object.name == identifier
+		}) else { return nil }
 		return matchedPin.address
 	}
 }
