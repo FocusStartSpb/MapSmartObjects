@@ -8,7 +8,6 @@
 
 import UIKit
 import CoreData
-import CoreLocation
 import UserNotifications
 
 @UIApplicationMain

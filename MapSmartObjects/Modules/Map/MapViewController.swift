@@ -228,7 +228,8 @@ final class MapViewController: UIViewController
 
 		buttonsView.layoutSubviews()
 	}
-	func handleEvent(for region: CLRegion) {
+	//метод для уведомлений входа и выхода из зоны
+	func notifyEvent(for region: CLRegion) {
 		// Уведомление если приложение запущено
 		if UIApplication.shared.applicationState == .active {
 			guard let message = note(from: region.identifier) else { return }
@@ -254,8 +255,8 @@ final class MapViewController: UIViewController
 	}
 	func note(from identifier: String) -> String? {
 		let smartObjects = presenter.getSmartObjects()
-		guard let matched = smartObjects.first else { return nil }
-		return matched.address
+		guard let matchedPin = smartObjects.filter({ $0.name == identifier}).first else { return nil }
+		return matchedPin.address
 	}
 }
 
@@ -297,7 +298,7 @@ extension MapViewController: MKMapViewDelegate
 			locationManeger.stopMonitoring(for: circusRegion)
 		}
 	}
-	// Инициализация геозоны как CLCyrcularRadius зоны
+	// Инициализация геозоны как CLCyrcularRadius
 	private func region(with smartObject: SmartObject) -> CLCircularRegion {
 		let region = CLCircularRegion(center: smartObject.coordinate,
 									  radius: smartObject.circleRadius,
@@ -314,12 +315,12 @@ extension MapViewController: CLLocationManagerDelegate
 	}
 	func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
 		if region is CLCircularRegion {
-			handleEvent(for: region)
+			notifyEvent(for: region)
 		}
 	}
 	func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
 		if region is CLCircularRegion {
-			handleEvent(for: region)
+			notifyEvent(for: region)
 		}
 	}
 }
