@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import CoreLocation
 
 final class MapViewController: UIViewController
 {
@@ -249,11 +250,40 @@ extension MapViewController: MKMapViewDelegate
 		pin.animatesWhenAdded = true
 		return pin
 	}
+	// метод для начала мониторинга зоны когда пользователь добавляет ее
+	private func startMonitoring(with smartObject: SmartObject) {
+		let smartregion = region(with: smartObject)
+		locationManeger.startMonitoring(for: smartregion)
+	}
+	// метод для остановки мониторинга зоны когда пользователь его удаляет
+	private func stopMonitoring(smartObject: SmartObject) {
+		for region in locationManeger.monitoredRegions {
+			guard let circusRegion = region as? CLCircularRegion, circusRegion.identifier == smartObject.name else { continue }
+			locationManeger.stopMonitoring(for: circusRegion)
+		}
+	}
+	// Инициализация геозоны как CLCyrcularRadius зоны
+	private func region(with smartObject: SmartObject) -> CLCircularRegion {
+		let region = CLCircularRegion(center: smartObject.coordinate,
+									  radius: smartObject.circleRadius,
+									  identifier: smartObject.name)
+		return region
+	}
 }
 
 extension MapViewController: CLLocationManagerDelegate
 {
 	func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
 		checkLocationEnabled()
+		mapView.showsUserLocation = (status == .authorizedAlways) // проверка на включение службы определения местоположения
+	}
+}
+extension UIViewController
+{
+	func showAlert(withTitle title: String?, message: String?) {
+		let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+		let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+		alert.addAction(action)
+		present(alert, animated: true, completion: nil)
 	}
 }
