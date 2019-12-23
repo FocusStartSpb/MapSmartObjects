@@ -86,6 +86,12 @@ final class MapViewController: UIViewController
 		default:
 			break
 		}
+		let options: UNAuthorizationOptions = [.badge, .sound, .alert]
+		UNUserNotificationCenter.current().requestAuthorization(options: options){ _, error in
+				if let error = error {
+					print("Error: \(error)")
+				}
+		}
 	}
 	private func showAlertLocation(title: String, message: String?, url: URL?) {
 		let alert = UIAlertController(title: title,
@@ -222,11 +228,40 @@ final class MapViewController: UIViewController
 
 		buttonsView.layoutSubviews()
 	}
+	func handleEvent(for region: CLRegion) {
+		// Уведомление если приложение запущено
+		if UIApplication.shared.applicationState == .active {
+			guard let message = note(from: region.identifier) else { return }
+			self.showAlert(withTitle: nil, message: message)
+		}
+		else {
+			// Пуш если фоновы режим или блок телефона
+			guard let body = note(from: region.identifier) else { return }
+			let notificationContent = UNMutableNotificationContent()
+			notificationContent.body = body
+			notificationContent.sound = UNNotificationSound.default
+			notificationContent.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
+			let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+			let request = UNNotificationRequest(identifier: "location_change",
+												content: notificationContent,
+												trigger: trigger)
+			UNUserNotificationCenter.current().add(request) { error in
+				if let error = error {
+					print("Ошибка: \(error)")
+				}
+			}
+		}
+	}
+	func note(from identifier: String) -> String? {
+		let smartObjects = presenter.getSmartObjects()
+		guard let matched = smartObjects.first else { return nil }
+		return matched.address
+	}
 }
 
 extension MapViewController: MKMapViewDelegate
 {
-	//метод для отрисовки круга - красный цвет, прозрачность, ширина и цвет канта
+	//метод для отрисовки круга - цвет, прозрачность, ширина и цвет канта
 	func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
 		var circle = MKOverlayRenderer()
 		if overlay is MKCircle {
@@ -276,6 +311,16 @@ extension MapViewController: CLLocationManagerDelegate
 	func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
 		checkLocationEnabled()
 		mapView.showsUserLocation = (status == .authorizedAlways) // проверка на включение службы определения местоположения
+	}
+	func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+		if region is CLCircularRegion {
+			handleEvent(for: region)
+		}
+	}
+	func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+		if region is CLCircularRegion {
+			handleEvent(for: region)
+		}
 	}
 }
 extension UIViewController
