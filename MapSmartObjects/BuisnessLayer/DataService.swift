@@ -8,24 +8,26 @@
 
 import Foundation
 
+protocol IDataService
+{
+	func saveData(_ data: Data)
+	func loadData() -> Data?
+}
 final class DataService
 {
-	func saveSmartObjects(_ objects: [SmartObject]) {
-		let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-		let archiveURL = documentDirectory?.appendingPathComponent("data").appendingPathExtension("plist") ??
-			documentDirectory.unsafelyUnwrapped
-		let pinListEncoder = PropertyListEncoder()
-		let encodedPins = try? pinListEncoder.encode(objects)
-		try? encodedPins?.write(to: archiveURL, options: .noFileProtection)
+	private let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+	private var archiveURL: URL {
+		return documentDirectory?.appendingPathComponent("data").appendingPathExtension("plist") ??
+		documentDirectory.unsafelyUnwrapped
+	}
+}
+extension DataService: IDataService
+{
+	func saveData(_ data: Data) {
+		try? data.write(to: archiveURL, options: .noFileProtection)
 	}
 
-	func loadSmartObjects() -> [SmartObject] {
-		let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-		let archiveURL = documentDirectory?.appendingPathComponent("data").appendingPathExtension("plist") ??
-			documentDirectory.unsafelyUnwrapped
-		guard let data = try? Data(contentsOf: archiveURL) else { return [] }
-		let pinListDecoder = PropertyListDecoder()
-		guard let smartObjects = try? pinListDecoder.decode([SmartObject].self, from: data) else { return [] }
-		return smartObjects
+	func loadData() -> Data? {
+		return try? Data(contentsOf: archiveURL)
 	}
 }

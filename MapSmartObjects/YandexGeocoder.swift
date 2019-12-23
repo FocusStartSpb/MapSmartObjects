@@ -9,9 +9,17 @@
 import Foundation
 import MapKit
 
-typealias GeocoderResult = Result<GeocoderResponse, Error>
-
+typealias GeocoderResult = Result<Data, Error>
+protocol IYandexGeocoder
+{
+	func getGeocoderAddressRequest(coordinates: CLLocationCoordinate2D) -> URL?
+	func getGeocoderRequest(coordinates: CLLocationCoordinate2D, completionHandler: @escaping ((GeocoderResult) -> Void))
+}
 final class YandexGeocoder
+{
+}
+
+extension YandexGeocoder: IYandexGeocoder
 {
 	func getGeocoderAddressRequest(coordinates: CLLocationCoordinate2D) -> URL? {
 		var components = URLComponents(string: Constants.baseUrl)
@@ -34,13 +42,7 @@ final class YandexGeocoder
 				let response = response as? HTTPURLResponse,
 				response.statusCode == 200
 				else { return }
-			do {
-				let geoCoderResponse = try JSONDecoder().decode(GeocoderResponse.self, from: data)
-				completionHandler(.success(geoCoderResponse))
-			}
-			catch {
-				completionHandler(.failure(error))
-			}
+			completionHandler(.success(data))
 		}
 		.resume()
 	}
