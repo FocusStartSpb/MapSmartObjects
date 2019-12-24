@@ -11,7 +11,10 @@ import CoreLocation
 
 protocol IMapPresenter
 {
-	func addSmartObject(name: String, radius: Double, coordinate: CLLocationCoordinate2D)
+	func addSmartObject(name: String,
+						radius: Double,
+						coordinate: CLLocationCoordinate2D,
+						completion: @escaping (SmartObject) -> Void)
 	func getSmartObjects() -> [SmartObject]
 }
 
@@ -35,12 +38,16 @@ extension MapPresenter: IMapPresenter
 		return smartObjects
 	}
 
-	func addSmartObject(name: String, radius: Double, coordinate: CLLocationCoordinate2D) {
+	func addSmartObject(name: String,
+						radius: Double,
+						coordinate: CLLocationCoordinate2D,
+						completion: @escaping (SmartObject) -> Void) {
 		repository.getGeoposition(coordinates: coordinate) { geocoderResult in
 			switch geocoderResult {
 			case .success(let position):
 				let address = position
 				let smartObject = SmartObject(name: name, address: address, coordinate: coordinate, circleRadius: radius)
+				completion(smartObject)
 				self.smartObjects.append(smartObject)
 				self.repository.saveSmartObjects(objects: self.smartObjects)
 			case .failure(let error):
