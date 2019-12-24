@@ -36,11 +36,11 @@ final class MapViewController: UIViewController
 		setConstraints()
 		showCurrentLocation()
 		addTargets()
-		showSmartObjectsOnMap()
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
+		showSmartObjectsOnMap()
 		checkLocationEnabled()
 		buttonsView.layer.cornerRadius = buttonsView.frame.size.height / 10
 	}
@@ -183,10 +183,11 @@ final class MapViewController: UIViewController
 			if let name = alert.textFields?.first?.text,
 				let radius = Double(alert.textFields?[1].text ?? "0") {
 				self.addPinCircle(to: location, radius: CLLocationDistance(integerLiteral: radius))
-				self.presenter.addSmartObject(name: name, radius: radius, coordinate: location)
-				let annotation = MKPointAnnotation()
-				annotation.coordinate = location
-				self.mapView.addAnnotation(annotation)
+				self.presenter.addSmartObject(name: name, radius: radius, coordinate: location, completion: { newSmartObject in
+					DispatchQueue.main.async {
+						self.mapView.addAnnotation(newSmartObject)
+					}
+				})
 			}
 		}))
 		present(alert, animated: true)
@@ -278,12 +279,13 @@ extension MapViewController: MKMapViewDelegate
 	}
 
 	func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-		guard annotation is MKPointAnnotation else { return nil }
+		guard annotation is SmartObject else { return nil }
 		let reuseIdentifier = "Annotation"
 		let pin = mapView.dequeueReusableAnnotationView(withIdentifier: reuseIdentifier) as? MKMarkerAnnotationView
 			?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: reuseIdentifier)
 
 		//настройка пина
+		pin.displayPriority = .required
 		pin.canShowCallout = true
 		pin.animatesWhenAdded = true
 		return pin
