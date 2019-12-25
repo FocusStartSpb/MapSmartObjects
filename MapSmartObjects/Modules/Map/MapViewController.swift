@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import CoreLocation
 
 final class MapViewController: UIViewController
 {
@@ -92,6 +93,12 @@ final class MapViewController: UIViewController
 			locationManeger.requestAlwaysAuthorization()
 		default:
 			break
+		}
+		let options: UNAuthorizationOptions = [.badge, .sound, .alert]
+		UNUserNotificationCenter.current().requestAuthorization(options: options){ _, error in
+				if let error = error {
+					print("Error: \(error)")
+				}
 		}
 	}
 	private func showAlertLocation(title: String, message: String?, url: URL?) {
@@ -226,11 +233,43 @@ final class MapViewController: UIViewController
 
 		buttonsView.layoutSubviews()
 	}
+	//метод для уведомлений входа и выхода из зоны
+	func notifyEvent(for region: CLRegion) {
+		// Уведомление если приложение запущено
+		if UIApplication.shared.applicationState == .active {
+			guard let message = note(from: region.identifier) else { return }
+			self.showAlert(withTitle: nil, message: message)
+		}
+		else {
+			// Пуш если фоновый режим или на телефоне включен блок
+			guard let body = note(from: region.identifier) else { return }
+			let notificationContent = UNMutableNotificationContent()
+			notificationContent.body = body
+			notificationContent.sound = UNNotificationSound.default
+			notificationContent.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
+			let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+			let request = UNNotificationRequest(identifier: "location_change",
+												content: notificationContent,
+												trigger: trigger)
+			UNUserNotificationCenter.current().add(request) { error in
+				if let error = error {
+					print("Ошибка: \(error)")
+				}
+			}
+		}
+	}
+	func note(from identifier: String) -> String? {
+		let smartObjects = presenter.getSmartObjects()
+		guard let matchedPin = smartObjects.first(where: { object in
+			object.name == identifier
+		}) else { return nil }
+		return matchedPin.address
+	}
 }
 
 extension MapViewController: MKMapViewDelegate
 {
-	//метод для отрисовки круга - красный цвет, прозрачность, ширина и цвет канта
+	//метод для отрисовки круга - цвет, прозрачность, ширина и цвет канта
 	func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
 		var circle = MKOverlayRenderer()
 		if overlay is MKCircle {
@@ -255,11 +294,50 @@ extension MapViewController: MKMapViewDelegate
 		pin.animatesWhenAdded = true
 		return pin
 	}
+	// метод для начала мониторинга зоны когда пользователь добавляет ее(надо добавить когда пин добавляется)
+	private func startMonitoring(with smartObject: SmartObject) {
+		let smartregion = region(with: smartObject)
+		locationManeger.startMonitoring(for: smartregion)
+	}
+	// метод для остановки мониторинга зоны когда пользователь его удаляет(надо добавить когда удаляется пин)
+	private func stopMonitoring(smartObject: SmartObject) {
+		for region in locationManeger.monitoredRegions {
+			guard let circusRegion = region as? CLCircularRegion, circusRegion.identifier == smartObject.name else { continue }
+			locationManeger.stopMonitoring(for: circusRegion)
+		}
+	}
+	// Инициализация геозоны как CLCyrcularRadius
+	private func region(with smartObject: SmartObject) -> CLCircularRegion {
+		let region = CLCircularRegion(center: smartObject.coordinate,
+									  radius: smartObject.circleRadius,
+									  identifier: smartObject.name)
+		return region
+	}
 }
 
 extension MapViewController: CLLocationManagerDelegate
 {
 	func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
 		checkLocationEnabled()
+		mapView.showsUserLocation = (status == .authorizedAlways) // проверка на включение службы определения местоположения
+	}
+	func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+		if region is CLCircularRegion {
+			notifyEvent(for: region)
+		}
+	}
+	func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+		if region is CLCircularRegion {
+			notifyEvent(for: region)
+		}
+	}
+}
+extension UIViewController
+{
+	func showAlert(withTitle title: String?, message: String?) {
+		let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+		let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+		alert.addAction(action)
+		present(alert, animated: true, completion: nil)
 	}
 }

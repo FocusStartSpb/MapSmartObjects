@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import UserNotifications
 
 @UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate
@@ -20,5 +21,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate
 		self.window?.rootViewController = MainTabBarController()
 		self.window?.makeKeyAndVisible()
 		return true
+	}
+	func applicationDidBecomeActive(_ application: UIApplication) {
+		application.applicationIconBadgeNumber = 0
+		UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+		UNUserNotificationCenter.current().removeAllDeliveredNotifications()
 	}
 }
