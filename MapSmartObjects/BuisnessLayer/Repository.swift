@@ -27,7 +27,11 @@ final class Repository
 {
 	private let geocoder: IYandexGeocoder
 	private let dataService: IDataService
-	private var smartObjects = [SmartObject]()
+	private var smartObjects = [SmartObject]() {
+		didSet {
+			saveSmartObjects(objects: smartObjects)
+		}
+	}
 
 	init(geocoder: YandexGeocoder, dataService: DataService) {
 		self.geocoder = geocoder
@@ -41,11 +45,6 @@ final class Repository
 			else { return [] }
 		return smartObjects
 	}
-
-	deinit {
-		print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-		saveSmartObjects(objects: smartObjects)
-	}
 }
 
 extension Repository: IRepository
@@ -58,6 +57,7 @@ extension Repository: IRepository
 		smartObjects.append(object)
 	}
 	func removeSmartObject(at index: Int) {
+		guard index < smartObjects.count else { return }
 		smartObjects.remove(at: index)
 	}
 	func saveSmartObjects(objects: [SmartObject]) {

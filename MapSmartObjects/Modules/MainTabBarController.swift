@@ -10,10 +10,12 @@ import UIKit
 
 final class MainTabBarController: UITabBarController
 {
+	private let factory = Factory()
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		let mapController = Factory().createMapModule()
-		let pinListController = UINavigationController(rootViewController: Factory().createPinListModule())
+		let mapController = factory.createMapModule()
+		let pinListController = UINavigationController(rootViewController: factory.createPinListModule())
 
 		self.addChild(mapController)
 		self.addChild(pinListController)

@@ -36,6 +36,10 @@ final class PinListViewController: UIViewController
 		configureViews()
 		setConstraints()
 	}
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		pinTableView.reloadData()
+	}
 	private func configureViews() {
 		title = "My Pins"
 		pinTableView.register(PinListCell.self, forCellReuseIdentifier: PinListCell.cellID)
@@ -91,6 +95,8 @@ extension PinListViewController: UITableViewDataSource
 		if editingStyle == .delete {
 			presenter.removeSmartObject(at: indexPath.row)
 			tableView.deleteRows(at: [indexPath], with: .automatic)
+			print("SmartObjects after remove in pinlist")
+			print(self.presenter.getSmartObjects())
 		}
 	}
 }

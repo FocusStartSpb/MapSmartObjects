@@ -13,6 +13,7 @@ protocol IPinListPresenter
 	func getSmartObjectsCount() -> Int
 	func getSmartObject(at index: Int) -> SmartObject
 	func removeSmartObject(at index: Int)
+	func getSmartObjects() -> [SmartObject]
 }
 
 final class PinListPresenter
@@ -35,6 +36,10 @@ extension PinListPresenter: IPinListPresenter
 
 	func getSmartObject(at index: Int) -> SmartObject {
 		return repository.getSmartObjects()[index]
+	}
+
+	func getSmartObjects() -> [SmartObject] {
+		return repository.getSmartObjects()
 	}
 
 	func removeSmartObject(at index: Int) {
