@@ -233,16 +233,17 @@ final class MapViewController: UIViewController
 	}
 	//метод для уведомлений входа и выхода из зоны
 	func notifyEvent(for region: CLRegion) {
+		let	startMessage = "Вы вошли в зону: "
 		// Уведомление если приложение запущено
 		if UIApplication.shared.applicationState == .active {
 			guard let message = note(from: region.identifier) else { return }
-			self.showAlert(withTitle: nil, message: "Вы достигли зоны \n" + message)
+			self.showAlert(withTitle: nil, message: startMessage + "\n" + message)
 		}
 		else {
 			// Пуш если фоновый режим или на телефоне включен блок
 			guard let body = note(from: region.identifier) else { return }
 			let notificationContent = UNMutableNotificationContent()
-			notificationContent.body = body
+			notificationContent.body = startMessage + body
 			notificationContent.sound = UNNotificationSound.default
 			notificationContent.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
 			let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
@@ -326,7 +327,7 @@ extension MapViewController: CLLocationManagerDelegate
 	}
 	func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
 		if region is CLCircularRegion {
-			notifyEvent(for: region)
+			//notifyEvent(for: region) пока на вход только
 		}
 	}
 }
