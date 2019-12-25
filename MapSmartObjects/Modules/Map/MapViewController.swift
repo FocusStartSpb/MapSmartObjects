@@ -9,6 +9,7 @@
 import UIKit
 import MapKit
 import CoreLocation
+import UserNotifications
 
 final class MapViewController: UIViewController
 {
@@ -186,6 +187,7 @@ final class MapViewController: UIViewController
 				self.presenter.addSmartObject(name: name, radius: radius, coordinate: location, completion: { newSmartObject in
 					DispatchQueue.main.async {
 						self.mapView.addAnnotation(newSmartObject)
+						self.startMonitoring(with: newSmartObject)
 					}
 				})
 			}
@@ -234,7 +236,7 @@ final class MapViewController: UIViewController
 		// Уведомление если приложение запущено
 		if UIApplication.shared.applicationState == .active {
 			guard let message = note(from: region.identifier) else { return }
-			self.showAlert(withTitle: nil, message: message)
+			self.showAlert(withTitle: nil, message: "Вы достигли зоны \n" + message)
 		}
 		else {
 			// Пуш если фоновый режим или на телефоне включен блок
@@ -259,7 +261,7 @@ final class MapViewController: UIViewController
 		guard let matchedPin = smartObjects.first(where: { object in
 			object.name == identifier
 		}) else { return nil }
-		return matchedPin.address
+		return matchedPin.name
 	}
 }
 
