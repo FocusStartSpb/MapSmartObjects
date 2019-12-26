@@ -55,6 +55,6 @@ final class PinListCell: UITableViewCell
 			descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
 			descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
 			descriptionLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -16),
-			])
+		])
 	}
 }

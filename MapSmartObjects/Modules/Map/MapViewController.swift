@@ -228,7 +228,6 @@ final class MapViewController: UIViewController
 			currentLocationButton.trailingAnchor.constraint(equalTo: buttonsView.trailingAnchor),
 			currentLocationButton.heightAnchor.constraint(equalTo: addButton.heightAnchor),
 		])
-
 		buttonsView.layoutSubviews()
 	}
 	//метод для уведомлений входа и выхода из зоны
@@ -237,7 +236,7 @@ final class MapViewController: UIViewController
 		// Уведомление если приложение запущено
 		if UIApplication.shared.applicationState == .active {
 			guard let message = note(from: region.identifier) else { return }
-			self.showAlert(withTitle: nil, message: startMessage + "\n" + message)
+			self.showAlert(withTitle: "Внимание!", message: startMessage + "\n" + message)
 		}
 		else {
 			// Пуш если фоновый режим или на телефоне включен блок
@@ -246,7 +245,8 @@ final class MapViewController: UIViewController
 			notificationContent.body = startMessage + body
 			notificationContent.sound = UNNotificationSound.default
 			notificationContent.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
-			let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+			//let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+			let trigger = UNLocationNotificationTrigger(region: region, repeats: true)
 			let request = UNNotificationRequest(identifier: "location_change",
 												content: notificationContent,
 												trigger: trigger)
@@ -310,6 +310,8 @@ extension MapViewController: MKMapViewDelegate
 		let region = CLCircularRegion(center: smartObject.coordinate,
 									  radius: smartObject.circleRadius,
 									  identifier: smartObject.name)
+		region.notifyOnEntry = true
+		region.notifyOnExit = false
 		return region
 	}
 }
