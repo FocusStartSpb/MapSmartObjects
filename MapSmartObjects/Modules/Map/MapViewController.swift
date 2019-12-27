@@ -40,13 +40,20 @@ final class MapViewController: UIViewController
 
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		showSmartObjectsOnMap()
 		checkLocationEnabled()
+		showSmartObjectsOnMap()
 		buttonsView.layer.cornerRadius = buttonsView.frame.size.height / 10
 	}
 
-	private func showSmartObjectsOnMap() {
-		presenter.getSmartObjects().forEach { smartObject in
+	func showSmartObjectsOnMap() {
+		for annotation in mapView.annotations {
+			mapView.removeAnnotation(annotation)
+		}
+		for overlay in mapView.overlays {
+			mapView.removeOverlay(overlay)
+		}
+		let smartObjects = presenter.getSmartObjects()
+		smartObjects.forEach { smartObject in
 			addPinCircle(to: smartObject.coordinate, radius: smartObject.circleRadius)
 			mapView.addAnnotation(smartObject)
 		}
@@ -67,6 +74,7 @@ final class MapViewController: UIViewController
 
 	private func setupLocationManager() {
 		locationManeger.delegate = self
+		mapView.delegate = self
 		locationManeger.desiredAccuracy = kCLLocationAccuracyBest
 	}
 
@@ -110,9 +118,8 @@ final class MapViewController: UIViewController
 
 	//отрисовка области вокруг пин
 	private func addPinCircle(to location: CLLocationCoordinate2D, radius: CLLocationDistance) {
-		self.mapView.delegate = self
 		let circle = MKCircle(center: location, radius: radius)
-		self.mapView.addOverlay(circle)
+		mapView.addOverlay(circle)
 	}
 	private func addSubviews() {
 		view.addSubview(mapView)
@@ -182,12 +189,7 @@ final class MapViewController: UIViewController
 			guard let self = self else { return }
 			if let name = alert.textFields?.first?.text,
 				let radius = Double(alert.textFields?[1].text ?? "0") {
-				self.addPinCircle(to: location, radius: CLLocationDistance(integerLiteral: radius))
-				self.presenter.addSmartObject(name: name, radius: radius, coordinate: location, completion: { newSmartObject in
-					DispatchQueue.main.async {
-						self.mapView.addAnnotation(newSmartObject)
-					}
-				})
+				self.presenter.addSmartObject(name: name, radius: radius, coordinate: location)
 			}
 		}))
 		present(alert, animated: true)

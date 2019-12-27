@@ -36,12 +36,10 @@ final class PinListViewController: UIViewController
 		configureViews()
 		setConstraints()
 	}
-
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		presenter.setupView()
+		pinTableView.reloadData()
 	}
-
 	private func configureViews() {
 		title = "My Pins"
 		pinTableView.register(PinListCell.self, forCellReuseIdentifier: PinListCell.cellID)
@@ -105,7 +103,6 @@ extension PinListViewController: UITableViewDelegate
 {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)
-		presenter.showSmartObject(at: indexPath.row)
 	}
 }
 
