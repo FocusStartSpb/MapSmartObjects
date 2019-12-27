@@ -6,9 +6,7 @@
 //  Copyright © 2019 Максим Шалашников. All rights reserved.
 //
 
-import UIKit
 import MapKit
-import CoreLocation
 
 final class MapViewController: UIViewController
 {
@@ -17,7 +15,7 @@ final class MapViewController: UIViewController
 	private let buttonsView = UIView()
 	private let addButton = UIButton(type: .contactAdd)
 	private let currentLocationButton = UIButton()
-	private let locationManeger = CLLocationManager()
+	let locationManeger = CLLocationManager()
 
 	init(presenter: IMapPresenter) {
 		self.presenter = presenter
@@ -96,9 +94,9 @@ final class MapViewController: UIViewController
 		}
 		let options: UNAuthorizationOptions = [.badge, .sound, .alert]
 		UNUserNotificationCenter.current().requestAuthorization(options: options){ _, error in
-				if let error = error {
-					print("Error: \(error)")
-				}
+			if let error = error {
+				print("Error: \(error)")
+			}
 		}
 	}
 	private func showAlertLocation(title: String, message: String?, url: URL?) {
@@ -233,16 +231,17 @@ final class MapViewController: UIViewController
 	}
 	//метод для уведомлений входа и выхода из зоны
 	func notifyEvent(for region: CLRegion) {
+		let startMessage = "Вы вошли в зону: "
 		// Уведомление если приложение запущено
 		if UIApplication.shared.applicationState == .active {
 			guard let message = note(from: region.identifier) else { return }
-			self.showAlert(withTitle: nil, message: message)
+			self.showAlert(withTitle: "Внимание!", message: startMessage + "\n" + message)
 		}
 		else {
 			// Пуш если фоновый режим или на телефоне включен блок
 			guard let body = note(from: region.identifier) else { return }
 			let notificationContent = UNMutableNotificationContent()
-			notificationContent.body = body
+			notificationContent.body = startMessage + body
 			notificationContent.sound = UNNotificationSound.default
 			notificationContent.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
 			let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
@@ -261,7 +260,7 @@ final class MapViewController: UIViewController
 		guard let matchedPin = smartObjects.first(where: { object in
 			object.name == identifier
 		}) else { return nil }
-		return matchedPin.address
+		return matchedPin.name
 	}
 }
 
@@ -292,25 +291,6 @@ extension MapViewController: MKMapViewDelegate
 		pin.animatesWhenAdded = true
 		return pin
 	}
-	// метод для начала мониторинга зоны когда пользователь добавляет ее(надо добавить когда пин добавляется)
-	private func startMonitoring(with smartObject: SmartObject) {
-		let smartregion = region(with: smartObject)
-		locationManeger.startMonitoring(for: smartregion)
-	}
-	// метод для остановки мониторинга зоны когда пользователь его удаляет(надо добавить когда удаляется пин)
-	private func stopMonitoring(smartObject: SmartObject) {
-		for region in locationManeger.monitoredRegions {
-			guard let circusRegion = region as? CLCircularRegion, circusRegion.identifier == smartObject.name else { continue }
-			locationManeger.stopMonitoring(for: circusRegion)
-		}
-	}
-	// Инициализация геозоны как CLCyrcularRadius
-	private func region(with smartObject: SmartObject) -> CLCircularRegion {
-		let region = CLCircularRegion(center: smartObject.coordinate,
-									  radius: smartObject.circleRadius,
-									  identifier: smartObject.name)
-		return region
-	}
 }
 
 extension MapViewController: CLLocationManagerDelegate
@@ -326,7 +306,7 @@ extension MapViewController: CLLocationManagerDelegate
 	}
 	func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
 		if region is CLCircularRegion {
-			notifyEvent(for: region)
+			//notifyEvent(for: region)
 		}
 	}
 }

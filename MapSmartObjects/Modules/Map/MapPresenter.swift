@@ -44,10 +44,25 @@ extension MapPresenter: IMapPresenter
 				self.repository.addSmartObject(object: smartObject)
 				DispatchQueue.main.async {
 					self.mapViewController?.showSmartObjectsOnMap()
+					self.startMonitoring(with: smartObject)
 				}
 			case .failure(let error):
 				print(error.localizedDescription)
 			}
 		}
+	}
+	// метод для начала мониторинга зоны когда пользователь добавляет ее(надо добавить когда пин добавляется)
+	private func startMonitoring(with smartObject: SmartObject) {
+		let smartregion = region(with: smartObject)
+		mapViewController?.locationManeger.startMonitoring(for: smartregion)
+	}
+	// Инициализация геозоны как CLCyrcularRadius
+	private func region(with smartObject: SmartObject) -> CLCircularRegion {
+		let region = CLCircularRegion(center: smartObject.coordinate,
+									  radius: smartObject.circleRadius,
+									  identifier: smartObject.name)
+		region.notifyOnEntry = true
+		region.notifyOnExit = false
+		return region
 	}
 }
