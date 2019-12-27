@@ -95,8 +95,6 @@ extension PinListViewController: UITableViewDataSource
 		if editingStyle == .delete {
 			presenter.removeSmartObject(at: indexPath.row)
 			tableView.deleteRows(at: [indexPath], with: .automatic)
-			print("SmartObjects after remove in pinlist")
-			print(self.presenter.getSmartObjects())
 		}
 	}
 }

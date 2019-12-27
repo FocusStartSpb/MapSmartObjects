@@ -40,8 +40,7 @@ extension MapPresenter: IMapPresenter
 		repository.getGeoposition(coordinates: coordinate) { geocoderResult in
 			switch geocoderResult {
 			case .success(let position):
-				let address = position
-				let smartObject = SmartObject(name: name, address: address, coordinate: coordinate, circleRadius: radius)
+				let smartObject = SmartObject(name: name, address: position, coordinate: coordinate, circleRadius: radius)
 				self.repository.addSmartObject(object: smartObject)
 				DispatchQueue.main.async {
 					self.mapViewController?.showSmartObjectsOnMap()

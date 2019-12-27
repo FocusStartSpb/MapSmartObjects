@@ -183,8 +183,6 @@ final class MapViewController: UIViewController
 			if let name = alert.textFields?.first?.text,
 				let radius = Double(alert.textFields?[1].text ?? "0") {
 				self.presenter.addSmartObject(name: name, radius: radius, coordinate: location)
-				print("SmartObjects afret add in map")
-				print(self.presenter.getSmartObjects())
 			}
 		}))
 		present(alert, animated: true)

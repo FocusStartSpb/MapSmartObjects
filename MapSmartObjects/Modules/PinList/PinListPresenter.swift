@@ -31,7 +31,7 @@ final class PinListPresenter
 extension PinListPresenter: IPinListPresenter
 {
 	func getSmartObjectsCount() -> Int {
-		return repository.getSmartObjects().count
+		return repository.smartObjectsCount
 	}
 
 	func getSmartObject(at index: Int) -> SmartObject {

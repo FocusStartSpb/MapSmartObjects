@@ -12,11 +12,10 @@ final class Factory
 {
 	private let geocoder = YandexGeocoder()
 	private let dataService = DataService()
-	private var repository: Repository
+	private let repository: Repository
 
 	init() {
 		repository = Repository(geocoder: geocoder, dataService: dataService)
-		print(Unmanaged.passUnretained(repository).toOpaque())
 	}
 	//create map module
 	func createMapModule() -> MapViewController {
