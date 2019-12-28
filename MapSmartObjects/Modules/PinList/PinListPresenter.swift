@@ -20,7 +20,6 @@ protocol IPinListPresenter
 final class PinListPresenter
 {
 	weak var pinListViewController: PinListViewController?
-	weak var mapViewController: MapViewController?
 	private let repository: IRepository
 	private let router: IPinListRouter
 
@@ -29,13 +28,13 @@ final class PinListPresenter
 		self.router = router
 	}
 	// метод для остановки мониторинга зоны когда пользователь его удаляет(надо добавить когда удаляется пин)
-	private func stopMonitoring(smartObject: SmartObject) {
-		guard let regions = mapViewController?.locationManeger.monitoredRegions else { return }
-		for region in regions {
-			guard let circusRegion = region as? CLCircularRegion, circusRegion.identifier == smartObject.name else { continue }
-			mapViewController?.locationManeger.stopMonitoring(for: circusRegion)
-		}
-	}
+//	private func stopMonitoring(smartObject: SmartObject) {
+//		guard let regions = mapViewController?.locationManeger.monitoredRegions else { return }
+//		for region in regions {
+//			guard let circusRegion = region as? CLCircularRegion, circusRegion.identifier == smartObject.name else { continue }
+//			mapViewController?.locationManeger.stopMonitoring(for: circusRegion)
+//		}
+//	}
 }
 
 extension PinListPresenter: IPinListPresenter
@@ -53,7 +52,6 @@ extension PinListPresenter: IPinListPresenter
 	}
 
 	func removeSmartObject(at index: Int) {
-		stopMonitoring(smartObject: repository.getSmartObjects()[index])
 		repository.removeSmartObject(at: index)
 	}
 }
