@@ -96,9 +96,9 @@ final class MapViewController: UIViewController
 		}
 		let options: UNAuthorizationOptions = [.badge, .sound, .alert]
 		UNUserNotificationCenter.current().requestAuthorization(options: options){ _, error in
-				if let error = error {
-					print("Error: \(error)")
-				}
+			if let error = error {
+				print("Error: \(error)")
+			}
 		}
 	}
 	private func showAlertLocation(title: String, message: String?, url: URL?) {
@@ -118,8 +118,10 @@ final class MapViewController: UIViewController
 
 	//отрисовка области вокруг пин
 	private func addPinCircle(to location: CLLocationCoordinate2D, radius: CLLocationDistance) {
-		let circle = MKCircle(center: location, radius: radius)
-		mapView.addOverlay(circle)
+		if radius <= locationManeger.maximumRegionMonitoringDistance {
+			let circle = MKCircle(center: location, radius: radius)
+			mapView.addOverlay(circle)
+		}
 	}
 	private func addSubviews() {
 		view.addSubview(mapView)
