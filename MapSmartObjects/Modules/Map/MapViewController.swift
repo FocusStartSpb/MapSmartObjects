@@ -35,6 +35,7 @@ final class MapViewController: UIViewController
 		configureViews()
 		setConstraints()
 		showCurrentLocation()
+		showSmartObjectsOnMap()
 		addTargets()
 	}
 
@@ -58,8 +59,10 @@ final class MapViewController: UIViewController
 		mapView.overlays.forEach { mapView.removeOverlay($0) } //убираем круги с карты
 		let smartObjects = presenter.getSmartObjects()
 		smartObjects.forEach { smartObject in
-			addPinCircle(to: smartObject.coordinate, radius: smartObject.circleRadius)
-			mapView.addAnnotation(smartObject)
+			self.addPinCircle(to: smartObject.coordinate, radius: smartObject.circleRadius)
+			DispatchQueue.main.async {
+				self.mapView.addAnnotation(smartObject)
+			}
 		}
 	}
 
@@ -296,6 +299,8 @@ extension MapViewController: MKMapViewDelegate
 	}
 
 	func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+		print(mapView.annotations.count)
+		print(annotation)
 		guard annotation is SmartObject else { return nil }
 		let reuseIdentifier = "Annotation"
 		let pin = mapView.dequeueReusableAnnotationView(withIdentifier: reuseIdentifier) as? MKMarkerAnnotationView
@@ -305,6 +310,7 @@ extension MapViewController: MKMapViewDelegate
 		pin.displayPriority = .required
 		pin.canShowCallout = true
 		pin.animatesWhenAdded = true
+		pin.isDraggable = true
 		return pin
 	}
 	// метод для начала мониторинга зоны когда пользователь добавляет ее(надо добавить когда пин добавляется)
