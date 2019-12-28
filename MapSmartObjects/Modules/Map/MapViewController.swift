@@ -8,6 +8,11 @@
 
 import MapKit
 
+protocol IMapViewController
+{
+	func getLocationManager() -> CLLocationManager
+}
+
 final class MapViewController: UIViewController
 {
 	private let presenter: IMapPresenter
@@ -15,7 +20,7 @@ final class MapViewController: UIViewController
 	private let buttonsView = UIView()
 	private let addButton = UIButton(type: .contactAdd)
 	private let currentLocationButton = UIButton()
-	let locationManeger = CLLocationManager()
+	private let locationManeger = CLLocationManager()
 
 	init(presenter: IMapPresenter) {
 		self.presenter = presenter
@@ -319,5 +324,11 @@ extension UIViewController
 		let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
 		alert.addAction(action)
 		present(alert, animated: true, completion: nil)
+	}
+}
+extension MapViewController: IMapViewController
+{
+	func getLocationManager() -> CLLocationManager {
+		return self.locationManeger
 	}
 }

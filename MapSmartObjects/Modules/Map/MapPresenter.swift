@@ -54,7 +54,7 @@ extension MapPresenter: IMapPresenter
 	// метод для начала мониторинга зоны когда пользователь добавляет ее(надо добавить когда пин добавляется)
 	private func startMonitoring(with smartObject: SmartObject) {
 		let smartRegion = region(with: smartObject)
-		mapViewController?.locationManeger.startMonitoring(for: smartRegion)
+		mapViewController?.getLocationManager().startMonitoring(for: smartRegion)
 	}
 	// Инициализация геозоны как CLCyrcularRadius
 	private func region(with smartObject: SmartObject) -> CLCircularRegion {
