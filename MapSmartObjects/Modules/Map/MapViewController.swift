@@ -55,7 +55,7 @@ final class MapViewController: UIViewController
 		let difference = annotationsFromMap.difference(from: annotationsFromDB) //находим разницу между 2 массивами
 		//вот тут можно отписывать difference от мониторинга (но дальше это надо будет переносить в презентер)
 		mapView.removeAnnotations(difference) // убираем разницу с карты
-		mapView.overlays.forEach { mapView.renderer(for: $0) } //убираем круги с карты
+		mapView.overlays.forEach { mapView.removeOverlay($0) } //убираем круги с карты
 		let smartObjects = presenter.getSmartObjects()
 		smartObjects.forEach { smartObject in
 			addPinCircle(to: smartObject.coordinate, radius: smartObject.circleRadius)
