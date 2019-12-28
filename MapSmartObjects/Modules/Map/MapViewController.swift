@@ -50,9 +50,9 @@ final class MapViewController: UIViewController
 	}
 
 	func showSmartObjectsOnMap() {
-		let annotationsFromDB = presenter.getSmartObjects() // получаем данные из базы данных
-		let annotationsFromMap = getSmartObjectsFromMap(annotations: mapView.annotations) // получаем данные с карты
-		let difference = annotationsFromMap.difference(from: annotationsFromDB) //находим разницу между 2 массивами
+		let smartObjectsFromDB = presenter.getSmartObjects() // получаем данные из базы данных
+		let smartObjectsFromMap = getSmartObjectsFromMap(annotations: mapView.annotations) // получаем данные с карты
+		let difference = smartObjectsFromMap.difference(from: smartObjectsFromDB) //находим разницу между 2 массивами
 		//вот тут можно отписывать difference от мониторинга (но дальше это надо будет переносить в презентер)
 		mapView.removeAnnotations(difference) // убираем разницу с карты
 		mapView.overlays.forEach { mapView.removeOverlay($0) } //убираем круги с карты
