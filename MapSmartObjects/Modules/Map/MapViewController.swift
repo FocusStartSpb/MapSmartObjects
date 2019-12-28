@@ -57,7 +57,7 @@ final class MapViewController: UIViewController
 		}
 	}
 
-	//проверяем включина ли служба геолокации
+	//проверяем включена ли служба геолокации
 	private func checkLocationEnabled() {
 		if CLLocationManager.locationServicesEnabled() {
 			setupLocationManager()
@@ -116,8 +116,10 @@ final class MapViewController: UIViewController
 
 	//отрисовка области вокруг пин
 	private func addPinCircle(to location: CLLocationCoordinate2D, radius: CLLocationDistance) {
-		let circle = MKCircle(center: location, radius: radius)
-		mapView.addOverlay(circle)
+		if radius <= locationManeger.maximumRegionMonitoringDistance {
+			let circle = MKCircle(center: location, radius: radius)
+			mapView.addOverlay(circle)
+		}
 	}
 	private func addSubviews() {
 		view.addSubview(mapView)
@@ -234,12 +236,12 @@ final class MapViewController: UIViewController
 		let startMessage = "Вы вошли в зону: "
 		// Уведомление если приложение запущено
 		if UIApplication.shared.applicationState == .active {
-			guard let message = note(from: region.identifier) else { return }
+			guard let message = getName(from: region.identifier) else { return }
 			self.showAlert(withTitle: "Внимание!", message: startMessage + "\n" + message)
 		}
 		else {
 			// Пуш если фоновый режим или на телефоне включен блок
-			guard let body = note(from: region.identifier) else { return }
+			guard let body = getName(from: region.identifier) else { return }
 			let notificationContent = UNMutableNotificationContent()
 			notificationContent.body = startMessage + body
 			notificationContent.sound = UNNotificationSound.default
@@ -255,7 +257,7 @@ final class MapViewController: UIViewController
 			}
 		}
 	}
-	func note(from identifier: String) -> String? {
+	func getName(from identifier: String) -> String? {
 		let smartObjects = presenter.getSmartObjects()
 		guard let matchedPin = smartObjects.first(where: { object in
 			object.name == identifier
