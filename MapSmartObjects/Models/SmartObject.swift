@@ -11,7 +11,6 @@ import MapKit
 
 final class SmartObject: NSObject
 {
-	private let uuid = UUID()
 	private(set) var name: String
 	private(set) var coordinate: CLLocationCoordinate2D
 	private(set) var circleRadius: Double
