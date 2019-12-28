@@ -8,7 +8,7 @@
 
 import UIKit
 import MapKit
-import CoreLocation
+import UserNotifications
 
 final class MapViewController: UIViewController
 {
@@ -41,14 +41,28 @@ final class MapViewController: UIViewController
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		checkLocationEnabled()
-		showSmartObjectsOnMap()
 		buttonsView.layer.cornerRadius = buttonsView.frame.size.height / 10
 	}
 
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		showSmartObjectsOnMap()
+	}
+
 	func showSmartObjectsOnMap() {
-		for annotation in mapView.annotations {
-			mapView.removeAnnotation(annotation)
-		}
+		let annotationsFromDB = presenter.getSmartObjects() // получаем данные из базы данных
+		let annotationsFromMap = getSmartObjectsFromMap(annotations: mapView.annotations) // получаем данные с карты
+		print("From bd = \(annotationsFromDB.count)")
+		print("From map = \(annotationsFromMap.count)")
+
+		let difference = annotationsFromMap.difference(from: annotationsFromDB) //находим разницу между 2 массивами
+		print(difference.debugDescription)
+
+		//вот тут можно отписывать difference от мониторинга (но дальше это надо будет переносить в презентер)
+
+		mapView.removeAnnotations(difference) // убираем разницу с карты
+		mapView.overlays.forEach { mapView.renderer(for: $0) } //убираем круги с карты
+
 		for overlay in mapView.overlays {
 			mapView.removeOverlay(overlay)
 		}
@@ -57,6 +71,17 @@ final class MapViewController: UIViewController
 			addPinCircle(to: smartObject.coordinate, radius: smartObject.circleRadius)
 			mapView.addAnnotation(smartObject)
 		}
+	}
+
+	//берем объекты с карты, исключаем userLocation и кастим в SmartObject
+	private func getSmartObjectsFromMap(annotations: [MKAnnotation]) -> [SmartObject] {
+		var result = [SmartObject]()
+		annotations.forEach { annotaion in
+			if let smartObject = annotaion as? SmartObject  {
+				result.append(smartObject)
+			}
+		}
+		return result
 	}
 
 	//проверяем включина ли служба геолокации

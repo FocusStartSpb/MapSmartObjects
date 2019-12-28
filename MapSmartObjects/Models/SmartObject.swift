@@ -11,18 +11,37 @@ import MapKit
 
 final class SmartObject: NSObject
 {
+	private let uuid = UUID()
 	private(set) var name: String
-	private(set) var latitude: Double
-	private(set) var longitude: Double
+	private(set) var coordinate: CLLocationCoordinate2D
 	private(set) var circleRadius: Double
-	var address: String
+	private(set) var address: String
 
 	init(name: String, address: String, coordinate: CLLocationCoordinate2D, circleRadius: Double) {
 		self.name = name
 		self.address = address
-		self.latitude = coordinate.latitude
-		self.longitude = coordinate.longitude
+		self.coordinate = coordinate
 		self.circleRadius = circleRadius
+	}
+
+	// MARK: Codable
+	required init(from decoder: Decoder) throws {
+		let values = try decoder.container(keyedBy: CodingKeys.self)
+		let latitude = try values.decode(Double.self, forKey: .latitude)
+		let longitude = try values.decode(Double.self, forKey: .longitude)
+		coordinate = CLLocationCoordinate2DMake(latitude, longitude)
+		circleRadius = try values.decode(Double.self, forKey: .circleRadius)
+		name = try values.decode(String.self, forKey: .name)
+		address = try values.decode(String.self, forKey: .address)
+	}
+
+	func encode(to encoder: Encoder) throws {
+		var container = encoder.container(keyedBy: CodingKeys.self)
+		try container.encode(coordinate.latitude, forKey: .latitude)
+		try container.encode(coordinate.longitude, forKey: .longitude)
+		try container.encode(circleRadius, forKey: .circleRadius)
+		try container.encode(name, forKey: .name)
+		try container.encode(address, forKey: .address)
 	}
 }
 
@@ -32,10 +51,6 @@ extension SmartObject: Codable
 
 extension SmartObject: MKAnnotation
 {
-	var coordinate: CLLocationCoordinate2D {
-		return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-	}
-
 	var title: String? {
 		return name
 	}
