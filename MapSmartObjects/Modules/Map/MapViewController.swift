@@ -121,10 +121,8 @@ final class MapViewController: UIViewController
 
 	//отрисовка области вокруг пин
 	private func addPinCircle(to location: CLLocationCoordinate2D, radius: CLLocationDistance) {
-		if radius <= locationManeger.maximumRegionMonitoringDistance {
 			let circle = MKCircle(center: location, radius: radius)
 			mapView.addOverlay(circle)
-		}
 	}
 	private func addSubviews() {
 		view.addSubview(mapView)
