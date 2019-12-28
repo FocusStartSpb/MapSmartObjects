@@ -299,8 +299,6 @@ extension MapViewController: MKMapViewDelegate
 	}
 
 	func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-		print(mapView.annotations.count)
-		print(annotation)
 		guard annotation is SmartObject else { return nil }
 		let reuseIdentifier = "Annotation"
 		let pin = mapView.dequeueReusableAnnotationView(withIdentifier: reuseIdentifier) as? MKMarkerAnnotationView
