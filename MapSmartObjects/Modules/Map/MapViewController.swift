@@ -13,6 +13,7 @@ import UserNotifications
 protocol IMapViewController
 {
 	func showAlert(withTitle title: String?, message: String?)
+	func getMapView() -> MKMapView
 }
 
 final class MapViewController: UIViewController
@@ -52,34 +53,23 @@ final class MapViewController: UIViewController
 
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		showSmartObjectsOnMap()
+		presenter.updateSmartObjects(on: mapView)
 	}
 
 	func showSmartObjectsOnMap() {
-		let smartObjectsFromDB = presenter.getSmartObjects() // получаем данные из базы данных
-		let smartObjectsFromMap = getSmartObjectsFromMap(annotations: mapView.annotations) // получаем данные с карты
-		let difference = smartObjectsFromMap.difference(from: smartObjectsFromDB) //находим разницу между 2 массивами
-		//вот тут можно отписывать difference от мониторинга (но дальше это надо будет переносить в презентер)
-		mapView.removeAnnotations(difference) // убираем разницу с карты
-		mapView.overlays.forEach { mapView.removeOverlay($0) } //убираем круги с карты
-		let smartObjects = presenter.getSmartObjects()
-		smartObjects.forEach { smartObject in
-			self.addPinCircle(to: smartObject.coordinate, radius: smartObject.circleRadius)
-			DispatchQueue.main.async {
-				self.mapView.addAnnotation(smartObject)
-			}
-		}
-	}
-
-	//берем объекты с карты, исключаем userLocation и кастим в SmartObject
-	private func getSmartObjectsFromMap(annotations: [MKAnnotation]) -> [SmartObject] {
-		var result = [SmartObject]()
-		annotations.forEach { annotaion in
-			if let smartObject = annotaion as? SmartObject  {
-				result.append(smartObject)
-			}
-		}
-		return result
+//		let smartObjectsFromDB = presenter.getSmartObjects() // получаем данные из базы данных
+//		let smartObjectsFromMap = getSmartObjectsFromMap(annotations: mapView.annotations) // получаем данные с карты
+//		let difference = smartObjectsFromMap.difference(from: smartObjectsFromDB) //находим разницу между 2 массивами
+//		//вот тут можно отписывать difference от мониторинга (но дальше это надо будет переносить в презентер)
+//		mapView.removeAnnotations(difference) // убираем разницу с карты
+//		mapView.overlays.forEach { mapView.removeOverlay($0) } //убираем круги с карты
+//		let smartObjects = presenter.getSmartObjects()
+//		smartObjects.forEach { smartObject in
+//			self.addPinCircle(to: smartObject.coordinate, radius: smartObject.circleRadius)
+//			DispatchQueue.main.async {
+//				self.mapView.addAnnotation(smartObject)
+//			}
+//		}
 	}
 
 	//проверяем включина ли служба геолокации
@@ -139,11 +129,6 @@ final class MapViewController: UIViewController
 		present(alert, animated: true, completion: nil)
 	}
 
-	//отрисовка области вокруг пин
-	private func addPinCircle(to location: CLLocationCoordinate2D, radius: CLLocationDistance) {
-		let circle = MKCircle(center: location, radius: radius)
-		mapView.addOverlay(circle)
-	}
 	private func addSubviews() {
 		view.addSubview(mapView)
 		mapView.addSubview(buttonsView)
@@ -354,12 +339,16 @@ extension MapViewController: CLLocationManagerDelegate
 		}
 	}
 }
-extension UIViewController: IMapViewController
+extension MapViewController: IMapViewController
 {
 	func showAlert(withTitle title: String?, message: String?) {
 		let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 		let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
 		alert.addAction(action)
 		present(alert, animated: true, completion: nil)
+	}
+
+	func getMapView() -> MKMapView {
+		return mapView
 	}
 }

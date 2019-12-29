@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import MapKit
 
 protocol IMapPresenter
 {
@@ -15,6 +16,7 @@ protocol IMapPresenter
 						radius: Double,
 						coordinate: CLLocationCoordinate2D)
 	func getSmartObjects() -> [SmartObject]
+	func updateSmartObjects(on mapView: MKMapView)
 }
 
 final class MapPresenter
@@ -26,6 +28,17 @@ final class MapPresenter
 	init(repository: IRepository, router: IMapRouter) {
 		self.repository = repository
 		self.router = router
+	}
+
+	//берем объекты с карты, исключаем userLocation и кастим в SmartObject
+	private func getSmartObjectsFromMap(annotations: [MKAnnotation]) -> [SmartObject] {
+		var result = [SmartObject]()
+		annotations.forEach { annotaion in
+			if let smartObject = annotaion as? SmartObject  {
+				result.append(smartObject)
+			}
+		}
+		return result
 	}
 }
 
@@ -44,9 +57,27 @@ extension MapPresenter: IMapPresenter
 				self.repository.addSmartObject(object: smartObject)
 				DispatchQueue.main.async {
 					self.mapViewController?.showSmartObjectsOnMap()
+					guard let mapVC = self.mapViewController else { return }
+					self.updateSmartObjects(on: mapVC.getMapView())
 				}
 			case .failure(let error):
 				self.mapViewController?.showAlert(withTitle: "Внимание!", message: error.localizedDescription)
+			}
+		}
+	}
+
+	func updateSmartObjects(on mapView: MKMapView) {
+		let smartObjectsFromDB = repository.getSmartObjects() // получаем данные из базы данных
+		let smartObjectsFromMap = getSmartObjectsFromMap(annotations: mapView.annotations) // получаем данные с карты
+		let difference = smartObjectsFromMap.difference(from: smartObjectsFromDB) //находим разницу между 2 массивами
+		//вот тут можно отписывать difference от мониторинга (но дальше это надо будет переносить в презентер)
+		mapView.removeAnnotations(difference) // убираем разницу с карты
+		mapView.overlays.forEach { mapView.removeOverlay($0) } //убираем круги с карты
+		repository.getSmartObjects().forEach { smartObject in
+			//отрисовка области вокруг пин
+			mapView.addOverlay(MKCircle(center: smartObject.coordinate, radius: smartObject.circleRadius))
+			DispatchQueue.main.async {
+				mapView.addAnnotation(smartObject)
 			}
 		}
 	}
