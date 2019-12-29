@@ -17,6 +17,15 @@ final class PinListViewController: UIViewController
 {
 	private let pinTableView = UITableView()
 	private let presenter: IPinListPresenter
+	private let searchController = UISearchController(searchResultsController: nil)
+	private var filtredPins = [SmartObject]()
+	private var searchBarIsEmpty: Bool {
+		guard let text = searchController.searchBar.text else { return false }
+		return text.isEmpty
+	}
+	private var isFiltering: Bool {
+		return searchController.isActive && searchBarIsEmpty == false
+	}
 
 	init(presenter: IPinListPresenter) {
 		self.presenter = presenter
@@ -33,12 +42,22 @@ final class PinListViewController: UIViewController
 		view.addSubview(pinTableView)
 		pinTableView.dataSource = self
 		pinTableView.delegate = self
+		setupSearchController()
 		configureViews()
 		setConstraints()
 	}
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		pinTableView.reloadData()
+	}
+
+	private func setupSearchController() {
+		searchController.searchResultsUpdater = self
+		searchController.obscuresBackgroundDuringPresentation = false
+		searchController.searchBar.placeholder = "Enter pin name"
+		navigationItem.hidesSearchBarWhenScrolling = false
+		navigationItem.searchController = self.searchController
+		definesPresentationContext = true
 	}
 	private func configureViews() {
 		title = "My Pins"
@@ -54,7 +73,7 @@ final class PinListViewController: UIViewController
 			pinTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
 			pinTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 			pinTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-		])
+			])
 	}
 
 	override func setEditing(_ editing: Bool, animated: Bool) {
@@ -69,13 +88,13 @@ final class PinListViewController: UIViewController
 extension PinListViewController: UITableViewDataSource
 {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return  presenter.getSmartObjectsCount()
+		return isFiltering ? filtredPins.count : presenter.getSmartObjectsCount()
 	}
 
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		guard let cell = tableView.dequeueReusableCell(withIdentifier: PinListCell.cellID, for: indexPath) as? PinListCell
 			else { return UITableViewCell() }
-		let smartObject = presenter.getSmartObject(at: indexPath.row)
+		let smartObject = isFiltering ? filtredPins[indexPath.row] : presenter.getSmartObject(at: indexPath.row)
 		cell.titleLabel.text = smartObject.name
 		cell.descriptionLabel.text = smartObject.address
 		return cell
@@ -93,7 +112,11 @@ extension PinListViewController: UITableViewDataSource
 				   commit editingStyle: UITableViewCell.EditingStyle,
 				   forRowAt indexPath: IndexPath) {
 		if editingStyle == .delete {
-			presenter.removeSmartObject(at: indexPath.row)
+			let smartObject = isFiltering ? filtredPins[indexPath.row] : presenter.getSmartObject(at: indexPath.row)
+			presenter.removeSmartObject(at: presenter.getSmartObjects().firstIndex(of: smartObject) ?? 0)
+			if isFiltering {
+				filtredPins.remove(at: indexPath.row)
+			}
 			tableView.deleteRows(at: [indexPath], with: .automatic)
 		}
 	}
@@ -109,6 +132,20 @@ extension PinListViewController: UITableViewDelegate
 extension PinListViewController: IPinListViewController
 {
 	func updateTableView() {
+		pinTableView.reloadData()
+	}
+}
+
+extension PinListViewController: UISearchResultsUpdating
+{
+	func updateSearchResults(for searchController: UISearchController) {
+		filterContentForSearchText(searchController.searchBar.text ?? "")
+	}
+
+	private func filterContentForSearchText(_ searchText: String) {
+		filtredPins = presenter.getSmartObjects().filter { (smartObject: SmartObject) -> Bool in
+			return smartObject.name.lowercased().contains(searchText.lowercased())
+		}
 		pinTableView.reloadData()
 	}
 }
