@@ -47,6 +47,7 @@ final class MapViewController: UIViewController
 		super.viewDidAppear(animated)
 		presenter.checkLocationEnabled()
 		mapScreen.buttonsView.layer.cornerRadius = mapScreen.buttonsView.frame.size.height / 10
+		mapScreen.layoutSubviews()
 	}
 
 	override func viewWillAppear(_ animated: Bool) {
