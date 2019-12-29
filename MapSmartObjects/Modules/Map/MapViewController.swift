@@ -8,7 +8,6 @@
 
 import UIKit
 import MapKit
-import CoreLocation
 import UserNotifications
 
 final class MapViewController: UIViewController
@@ -36,28 +35,46 @@ final class MapViewController: UIViewController
 		configureViews()
 		setConstraints()
 		showCurrentLocation()
+		showSmartObjectsOnMap()
 		addTargets()
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		checkLocationEnabled()
-		showSmartObjectsOnMap()
 		buttonsView.layer.cornerRadius = buttonsView.frame.size.height / 10
 	}
 
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		showSmartObjectsOnMap()
+	}
+
 	func showSmartObjectsOnMap() {
-		for annotation in mapView.annotations {
-			mapView.removeAnnotation(annotation)
-		}
-		for overlay in mapView.overlays {
-			mapView.removeOverlay(overlay)
-		}
+		let smartObjectsFromDB = presenter.getSmartObjects() // получаем данные из базы данных
+		let smartObjectsFromMap = getSmartObjectsFromMap(annotations: mapView.annotations) // получаем данные с карты
+		let difference = smartObjectsFromMap.difference(from: smartObjectsFromDB) //находим разницу между 2 массивами
+		//вот тут можно отписывать difference от мониторинга (но дальше это надо будет переносить в презентер)
+		mapView.removeAnnotations(difference) // убираем разницу с карты
+		mapView.overlays.forEach { mapView.removeOverlay($0) } //убираем круги с карты
 		let smartObjects = presenter.getSmartObjects()
 		smartObjects.forEach { smartObject in
-			addPinCircle(to: smartObject.coordinate, radius: smartObject.circleRadius)
-			mapView.addAnnotation(smartObject)
+			self.addPinCircle(to: smartObject.coordinate, radius: smartObject.circleRadius)
+			DispatchQueue.main.async {
+				self.mapView.addAnnotation(smartObject)
+			}
 		}
+	}
+
+	//берем объекты с карты, исключаем userLocation и кастим в SmartObject
+	private func getSmartObjectsFromMap(annotations: [MKAnnotation]) -> [SmartObject] {
+		var result = [SmartObject]()
+		annotations.forEach { annotaion in
+			if let smartObject = annotaion as? SmartObject  {
+				result.append(smartObject)
+			}
+		}
+		return result
 	}
 
 	//проверяем включина ли служба геолокации
@@ -291,6 +308,7 @@ extension MapViewController: MKMapViewDelegate
 		pin.displayPriority = .required
 		pin.canShowCallout = true
 		pin.animatesWhenAdded = true
+		pin.isDraggable = true
 		return pin
 	}
 	// метод для начала мониторинга зоны когда пользователь добавляет ее(надо добавить когда пин добавляется)
