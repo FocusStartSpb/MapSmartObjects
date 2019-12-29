@@ -14,6 +14,7 @@ protocol IMapViewController
 {
 	func showAlert(withTitle title: String?, message: String?)
 	func getMapView() -> MKMapView
+	func showAlertLocation(title: String, message: String?, url: URL?)
 }
 
 final class MapViewController: UIViewController
@@ -23,7 +24,6 @@ final class MapViewController: UIViewController
 	private let buttonsView = UIView()
 	private let addButton = UIButton(type: .contactAdd)
 	private let currentLocationButton = UIButton()
-	private let locationManeger = CLLocationManager()
 
 	init(presenter: IMapPresenter) {
 		self.presenter = presenter
@@ -37,96 +37,24 @@ final class MapViewController: UIViewController
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		mapView.delegate = self
+		mapView.showsUserLocation = true
 		addSubviews()
 		configureViews()
 		setConstraints()
-		showCurrentLocation()
-		showSmartObjectsOnMap()
+		presenter.showCurrentLocation()
 		addTargets()
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		checkLocationEnabled()
+		presenter.checkLocationEnabled()
 		buttonsView.layer.cornerRadius = buttonsView.frame.size.height / 10
 	}
 
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		presenter.updateSmartObjects(on: mapView)
-	}
-
-	func showSmartObjectsOnMap() {
-//		let smartObjectsFromDB = presenter.getSmartObjects() // получаем данные из базы данных
-//		let smartObjectsFromMap = getSmartObjectsFromMap(annotations: mapView.annotations) // получаем данные с карты
-//		let difference = smartObjectsFromMap.difference(from: smartObjectsFromDB) //находим разницу между 2 массивами
-//		//вот тут можно отписывать difference от мониторинга (но дальше это надо будет переносить в презентер)
-//		mapView.removeAnnotations(difference) // убираем разницу с карты
-//		mapView.overlays.forEach { mapView.removeOverlay($0) } //убираем круги с карты
-//		let smartObjects = presenter.getSmartObjects()
-//		smartObjects.forEach { smartObject in
-//			self.addPinCircle(to: smartObject.coordinate, radius: smartObject.circleRadius)
-//			DispatchQueue.main.async {
-//				self.mapView.addAnnotation(smartObject)
-//			}
-//		}
-	}
-
-	//проверяем включина ли служба геолокации
-	private func checkLocationEnabled() {
-		if CLLocationManager.locationServicesEnabled() {
-			setupLocationManager()
-			ckeckAutorization()
-		}
-		else {
-			showAlertLocation(title: "Your geolocation service is turned off",
-							  message: "Want to turn it on?",
-							  url: URL(string: Constants.locationServicesString))
-		}
-	}
-
-	private func setupLocationManager() {
-		locationManeger.delegate = self
-		mapView.delegate = self
-		locationManeger.desiredAccuracy = kCLLocationAccuracyBest
-	}
-
-	private func ckeckAutorization() {
-		switch CLLocationManager.authorizationStatus() {
-		case .authorizedAlways, .authorizedWhenInUse:
-			mapView.showsUserLocation = true
-			locationManeger.startUpdatingLocation()
-			showCurrentLocation()
-			setupLocationManager()
-		case .denied, .restricted:
-			showAlertLocation(title: "You have banned the use of location",
-							  message: "Want to allow?",
-							  url: URL(string: UIApplication.openSettingsURLString))
-		case .notDetermined:
-			locationManeger.requestAlwaysAuthorization()
-		default:
-			break
-		}
-		let options: UNAuthorizationOptions = [.badge, .sound, .alert]
-		UNUserNotificationCenter.current().requestAuthorization(options: options){ _, error in
-				if let error = error {
-					print("Error: \(error)")
-				}
-		}
-	}
-	private func showAlertLocation(title: String, message: String?, url: URL?) {
-		let alert = UIAlertController(title: title,
-									  message: message,
-									  preferredStyle: .alert)
-		let settingsAction = UIAlertAction(title: "Settings", style: .default) { _ in
-			if let url = url {
-				UIApplication.shared.open(url, options: [:], completionHandler: nil)
-			}
-		}
-		let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-		alert.addAction(settingsAction)
-		alert.addAction(cancelAction)
-		present(alert, animated: true, completion: nil)
 	}
 
 	private func addSubviews() {
@@ -144,10 +72,27 @@ final class MapViewController: UIViewController
 		setCustomCompass()
 	}
 	private func addTargets() {
-		currentLocationButton.addTarget(self, action: #selector(showCurrentLocation), for: .touchUpInside)
-		addButton.addTarget(self, action: #selector(showAddPinAlert), for: .touchUpInside)
-		mapView.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(longTap)))
+		currentLocationButton.addTarget(self, action: #selector(currentLocationButtonPressed), for: .touchUpInside)
+		addButton.addTarget(self, action: #selector(addTargetButtonPressed), for: .touchUpInside)
+		mapView.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(longTapPressed)))
 	}
+
+	@objc func currentLocationButtonPressed() {
+		presenter.showCurrentLocation()
+	}
+
+	@objc func addTargetButtonPressed() {
+		presenter.addPinWithAlert(nil)
+	}
+
+	@objc func longTapPressed(gestureReconizer: UILongPressGestureRecognizer) {
+		if gestureReconizer.state == UIGestureRecognizer.State.began {
+			let location = gestureReconizer.location(in: mapView)
+			let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
+			presenter.addPinWithAlert(coordinate)
+		}
+	}
+
 	private func setCustomCompass() {
 		let compassButton = MKCompassButton(mapView: mapView)
 		compassButton.compassVisibility = .visible
@@ -158,51 +103,9 @@ final class MapViewController: UIViewController
 			compassButton.topAnchor.constraint(equalTo: buttonsView.bottomAnchor, constant: 8),
 			compassButton.widthAnchor.constraint(equalTo: buttonsView.widthAnchor),
 			compassButton.heightAnchor.constraint(equalTo: buttonsView.heightAnchor, multiplier: 1 / 2),
-		])
+			])
 	}
-	@objc
-	private func showCurrentLocation() {
-		guard let location = locationManeger.location?.coordinate else { return }
-		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-		mapView.setRegion(region, animated: true)
-	}
-
-	@objc
-	private func longTap(gestureReconizer: UILongPressGestureRecognizer) {
-		if gestureReconizer.state == UIGestureRecognizer.State.began {
-			print("LONGTAP")
-			let location = gestureReconizer.location(in: mapView)
-			let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
-			addPinWithAlert(coordinate)
-		}
-	}
-
-	@objc
-	private func showAddPinAlert() {
-		if let location = self.locationManeger.location?.coordinate {
-			addPinWithAlert(location)
-		}
-	}
-
-	private func addPinWithAlert(_ location: CLLocationCoordinate2D) {
-		let alert = UIAlertController(title: "Add Pin", message: nil, preferredStyle: .alert)
-		alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-		alert.addTextField { nameTextField in
-			nameTextField.placeholder = "Name"
-		}
-		alert.addTextField { radiusTextField in
-			radiusTextField.placeholder = "Radius"
-		}
-		alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak self] _ in
-			guard let self = self else { return }
-			if let name = alert.textFields?.first?.text,
-				let radius = Double(alert.textFields?[1].text ?? "0") {
-				self.presenter.addSmartObject(name: name, radius: radius, coordinate: location)
-			}
-		}))
-		present(alert, animated: true)
-	}
-
+	
 	private func setConstraints() {
 		mapView.translatesAutoresizingMaskIntoConstraints = false
 		NSLayoutConstraint.activate([
@@ -301,31 +204,12 @@ extension MapViewController: MKMapViewDelegate
 		pin.isDraggable = true
 		return pin
 	}
-	// метод для начала мониторинга зоны когда пользователь добавляет ее(надо добавить когда пин добавляется)
-	private func startMonitoring(with smartObject: SmartObject) {
-		let smartregion = region(with: smartObject)
-		locationManeger.startMonitoring(for: smartregion)
-	}
-	// метод для остановки мониторинга зоны когда пользователь его удаляет(надо добавить когда удаляется пин)
-	private func stopMonitoring(smartObject: SmartObject) {
-		for region in locationManeger.monitoredRegions {
-			guard let circusRegion = region as? CLCircularRegion, circusRegion.identifier == smartObject.name else { continue }
-			locationManeger.stopMonitoring(for: circusRegion)
-		}
-	}
-	// Инициализация геозоны как CLCyrcularRadius
-	private func region(with smartObject: SmartObject) -> CLCircularRegion {
-		let region = CLCircularRegion(center: smartObject.coordinate,
-									  radius: smartObject.circleRadius,
-									  identifier: smartObject.name)
-		return region
-	}
 }
 
 extension MapViewController: CLLocationManagerDelegate
 {
 	func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-		checkLocationEnabled()
+		presenter.checkLocationEnabled()
 		mapView.showsUserLocation = (status == .authorizedAlways) // проверка на включение службы определения местоположения
 	}
 	func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
@@ -350,5 +234,20 @@ extension MapViewController: IMapViewController
 
 	func getMapView() -> MKMapView {
 		return mapView
+	}
+
+	func showAlertLocation(title: String, message: String?, url: URL?) {
+		let alert = UIAlertController(title: title,
+									  message: message,
+									  preferredStyle: .alert)
+		let settingsAction = UIAlertAction(title: "Settings", style: .default) { _ in
+			if let url = url {
+				UIApplication.shared.open(url, options: [:], completionHandler: nil)
+			}
+		}
+		let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+		alert.addAction(settingsAction)
+		alert.addAction(cancelAction)
+		present(alert, animated: true, completion: nil)
 	}
 }
