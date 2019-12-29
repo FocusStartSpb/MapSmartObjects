@@ -10,6 +10,11 @@ import UIKit
 import MapKit
 import UserNotifications
 
+protocol IMapViewController
+{
+	func showAlert(withTitle title: String?, message: String?)
+}
+
 final class MapViewController: UIViewController
 {
 	private let presenter: IMapPresenter
@@ -349,7 +354,7 @@ extension MapViewController: CLLocationManagerDelegate
 		}
 	}
 }
-extension UIViewController
+extension UIViewController: IMapViewController
 {
 	func showAlert(withTitle title: String?, message: String?) {
 		let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)

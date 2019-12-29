@@ -46,7 +46,7 @@ extension MapPresenter: IMapPresenter
 					self.mapViewController?.showSmartObjectsOnMap()
 				}
 			case .failure(let error):
-				print(error.localizedDescription)
+				self.mapViewController?.showAlert(withTitle: "Внимание!", message: error.localizedDescription)
 			}
 		}
 	}
