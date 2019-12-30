@@ -93,7 +93,7 @@ final class MapViewController: UIViewController
 		mapScreen.mapView.setRegion(region, animated: true)
 	}
 
-	func removeRadiusOverlay(forPin pin: SmartObject) {
+	private func removeRadiusOverlay(forPin pin: SmartObject) {
 		// Find exactly one overlay which has the same coordinates & radius to remove
 		let overlays = mapScreen.mapView.overlays
 		for overlay in overlays {
