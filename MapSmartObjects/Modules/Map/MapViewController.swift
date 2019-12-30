@@ -40,6 +40,7 @@ final class MapViewController: UIViewController
 		mapScreen.mapView.delegate = self
 		mapScreen.mapView.showsUserLocation = true
 		addTargets()
+		setSmartObjectsOnMap()
 		showCurrentLocation(presenter.getCurrentLocation())
 	}
 	override func viewWillAppear(_ animated: Bool) {
@@ -90,6 +91,32 @@ final class MapViewController: UIViewController
 		guard let location = location else { return }
 		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
 		mapScreen.mapView.setRegion(region, animated: true)
+	}
+
+	func removeRadiusOverlay(forPin pin: SmartObject) {
+		// Find exactly one overlay which has the same coordinates & radius to remove
+		let overlays = mapScreen.mapView.overlays
+		for overlay in overlays {
+			guard let circleOverlay = overlay as? MKCircle else { continue }
+			let coord = circleOverlay.coordinate
+			if coord.latitude == pin.coordinate.latitude &&
+				coord.longitude == pin.coordinate.longitude &&
+				circleOverlay.radius == pin.circleRadius {
+				mapScreen.mapView.removeOverlay(circleOverlay)
+				break
+			}
+		}
+	}
+
+	private func setSmartObjectsOnMap() {
+		presenter.getSmartObjects().forEach { [weak self] smartObject in
+			guard let self = self else { return }
+			//отрисовка области вокруг пин
+			DispatchQueue.main.async {
+				self.mapScreen.mapView.addOverlay(MKCircle(center: smartObject.coordinate, radius: smartObject.circleRadius))
+				self.mapScreen.mapView.addAnnotation(smartObject)
+			}
+		}
 	}
 }
 
@@ -146,14 +173,13 @@ extension MapViewController: IMapViewController
 	func updateSmartObjects(_ smartObjects: [SmartObject]) {
 		let smartObjectsFromDB = presenter.getSmartObjects() // получаем данные из базы данных
 		let smartObjectsFromMap = getSmartObjectsFromMap(annotations: mapScreen.mapView.annotations)
-		let difference = smartObjectsFromMap.difference(from: smartObjectsFromDB) //находим разницу между 2 массивами
+		//находим разницу между 2 массивами
+		let differenceSmartObjects = smartObjectsFromMap.difference(from: smartObjectsFromDB)
 		//вот тут можно отписывать difference от мониторинга (но дальше это надо будет переносить в презентер)
-		mapScreen.mapView.removeAnnotations(difference) // убираем разницу с карты
-		mapScreen.mapView.overlays.forEach { mapScreen.mapView.removeOverlay($0) } //убираем круги с карты
+		mapScreen.mapView.removeAnnotations(differenceSmartObjects) // убираем объекты с карты
+		differenceSmartObjects.forEach { removeRadiusOverlay(forPin: $0) } //убираем круги у удаленных объектов
 		presenter.getSmartObjects().forEach { [weak self] smartObject in
 			guard let self = self else { return }
-			//отрисовка области вокруг пин
-			mapScreen.mapView.addOverlay(MKCircle(center: smartObject.coordinate, radius: smartObject.circleRadius))
 			DispatchQueue.main.async {
 				self.mapScreen.mapView.addAnnotation(smartObject)
 			}
