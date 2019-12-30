@@ -11,7 +11,6 @@ import MapKit
 
 final class MapView: UIView
 {
-
 	let mapView = MKMapView()
 	let buttonsView = UIView()
 	let addButton = UIButton(type: .contactAdd)

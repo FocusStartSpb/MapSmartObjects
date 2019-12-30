@@ -14,9 +14,8 @@ protocol IMapPresenter
 {
 	func addSmartObject(name: String, radius: Double, coordinate: CLLocationCoordinate2D)
 	func getSmartObjects() -> [SmartObject]
-	func updateSmartObjects(on mapView: MKMapView)
 	func checkLocationEnabled()
-	func showCurrentLocation()
+	func getCurrentLocation() -> CLLocationCoordinate2D?
 	func addPinWithAlert(_ location: CLLocationCoordinate2D?)
 }
 
@@ -31,35 +30,30 @@ final class MapPresenter
 		self.repository = repository
 		self.router = router
 	}
-
-	//берем объекты с карты, исключаем userLocation и кастим в SmartObject
-	private func getSmartObjectsFromMap(annotations: [MKAnnotation]) -> [SmartObject] {
-		var result = [SmartObject]()
-		annotations.forEach { annotaion in
-			if let smartObject = annotaion as? SmartObject  {
-				result.append(smartObject)
-			}
-		}
-		return result
-	}
 }
 
 extension MapPresenter: IMapPresenter
 {
+	func getCurrentLocation() -> CLLocationCoordinate2D? {
+		guard let location = locationManeger.location?.coordinate else { return nil }
+		return location
+	}
+
 	func getSmartObjects() -> [SmartObject] {
 		return repository.getSmartObjects()
 	}
 	func addSmartObject(name: String,
 						radius: Double,
 						coordinate: CLLocationCoordinate2D) {
-		repository.getGeoposition(coordinates: coordinate) { geocoderResult in
+		repository.getGeoposition(coordinates: coordinate) { [weak self] geocoderResult in
+			guard let self = self else { return }
 			switch geocoderResult {
 			case .success(let position):
 				let smartObject = SmartObject(name: name, address: position, coordinate: coordinate, circleRadius: radius)
 				self.repository.addSmartObject(object: smartObject)
 				DispatchQueue.main.async {
 					guard let mapVC = self.mapViewController else { return }
-					self.updateSmartObjects(on: mapVC.getMapView())
+					mapVC.updateSmartObjects(self.repository.getSmartObjects())
 				}
 			case .failure(let error):
 				self.mapViewController?.showAlert(withTitle: "Внимание!", message: error.localizedDescription)
@@ -67,21 +61,6 @@ extension MapPresenter: IMapPresenter
 		}
 	}
 
-	func updateSmartObjects(on mapView: MKMapView) {
-		let smartObjectsFromDB = repository.getSmartObjects() // получаем данные из базы данных
-		let smartObjectsFromMap = getSmartObjectsFromMap(annotations: mapView.annotations) // получаем данные с карты
-		let difference = smartObjectsFromMap.difference(from: smartObjectsFromDB) //находим разницу между 2 массивами
-		//вот тут можно отписывать difference от мониторинга (но дальше это надо будет переносить в презентер)
-		mapView.removeAnnotations(difference) // убираем разницу с карты
-		mapView.overlays.forEach { mapView.removeOverlay($0) } //убираем круги с карты
-		repository.getSmartObjects().forEach { smartObject in
-			//отрисовка области вокруг пин
-			mapView.addOverlay(MKCircle(center: smartObject.coordinate, radius: smartObject.circleRadius))
-			DispatchQueue.main.async {
-				mapView.addAnnotation(smartObject)
-			}
-		}
-	}
 	//проверяем включина ли служба геолокации
 	func checkLocationEnabled() {
 		if CLLocationManager.locationServicesEnabled() {
@@ -115,13 +94,6 @@ extension MapPresenter: IMapPresenter
 		default:
 			break
 		}
-	}
-
-	func showCurrentLocation() {
-		guard let location = locationManeger.location?.coordinate else { return }
-		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-		guard let mapVC = self.mapViewController else { return }
-		mapVC.getMapView().setRegion(region, animated: true)
 	}
 
 	func addPinWithAlert(_ location: CLLocationCoordinate2D?) {

@@ -40,7 +40,11 @@ final class MapViewController: UIViewController
 		mapScreen.mapView.delegate = self
 		mapScreen.mapView.showsUserLocation = true
 		addTargets()
-		presenter.showCurrentLocation()
+		showCurrentLocation(presenter.getCurrentLocation())
+	}
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		updateSmartObjects(presenter.getSmartObjects())
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
@@ -50,31 +54,42 @@ final class MapViewController: UIViewController
 		mapScreen.layoutSubviews()
 	}
 
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
-		presenter.updateSmartObjects(on: mapScreen.mapView)
-	}
-
 	private func addTargets() {
 		mapScreen.currentLocationButton.addTarget(self, action: #selector(currentLocationButtonPressed), for: .touchUpInside)
 		mapScreen.addButton.addTarget(self, action: #selector(addTargetButtonPressed), for: .touchUpInside)
-		mapScreen.mapView.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(longTapPressed)))
+		mapScreen.mapView.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(longTapped)))
 	}
 
 	@objc private func currentLocationButtonPressed() {
-		presenter.showCurrentLocation()
+		showCurrentLocation(presenter.getCurrentLocation())
 	}
 
 	@objc private func addTargetButtonPressed() {
 		presenter.addPinWithAlert(nil)
 	}
 
-	@objc private func longTapPressed(gestureReconizer: UILongPressGestureRecognizer) {
+	@objc private func longTapped(gestureReconizer: UILongPressGestureRecognizer) {
 		if gestureReconizer.state == UIGestureRecognizer.State.began {
 			let location = gestureReconizer.location(in: mapScreen.mapView)
 			let coordinate = mapScreen.mapView.convert(location, toCoordinateFrom: mapScreen.mapView)
 			presenter.addPinWithAlert(coordinate)
 		}
+	}
+	//берем объекты с карты, исключаем userLocation и кастим в SmartObject
+	private func getSmartObjectsFromMap(annotations: [MKAnnotation]) -> [SmartObject] {
+		var result = [SmartObject]()
+		annotations.forEach { annotaion in
+			if let smartObject = annotaion as? SmartObject  {
+				result.append(smartObject)
+			}
+		}
+		return result
+	}
+
+	private func showCurrentLocation(_ location: CLLocationCoordinate2D?) {
+		guard let location = location else { return }
+		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+		mapScreen.mapView.setRegion(region, animated: true)
 	}
 }
 
@@ -126,6 +141,23 @@ extension MapViewController: IMapViewController
 
 	func getMapView() -> MKMapView {
 		return mapScreen.mapView
+	}
+
+	func updateSmartObjects(_ smartObjects: [SmartObject]) {
+		let smartObjectsFromDB = presenter.getSmartObjects() // получаем данные из базы данных
+		let smartObjectsFromMap = getSmartObjectsFromMap(annotations: mapScreen.mapView.annotations)
+		let difference = smartObjectsFromMap.difference(from: smartObjectsFromDB) //находим разницу между 2 массивами
+		//вот тут можно отписывать difference от мониторинга (но дальше это надо будет переносить в презентер)
+		mapScreen.mapView.removeAnnotations(difference) // убираем разницу с карты
+		mapScreen.mapView.overlays.forEach { mapScreen.mapView.removeOverlay($0) } //убираем круги с карты
+		presenter.getSmartObjects().forEach { [weak self] smartObject in
+			guard let self = self else { return }
+			//отрисовка области вокруг пин
+			mapScreen.mapView.addOverlay(MKCircle(center: smartObject.coordinate, radius: smartObject.circleRadius))
+			DispatchQueue.main.async {
+				self.mapScreen.mapView.addAnnotation(smartObject)
+			}
+		}
 	}
 
 	func showAlertLocation(title: String, message: String?, url: URL?) {
