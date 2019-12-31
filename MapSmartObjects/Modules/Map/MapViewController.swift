@@ -148,7 +148,7 @@ extension MapViewController: MKMapViewDelegate
 		pin.displayPriority = .required
 		pin.canShowCallout = true
 		pin.animatesWhenAdded = true
-		pin.isDraggable = true
+		pin.isDraggable = false // заглушка, круг не перетаскивается и остается постоянно на карте
 		return pin
 	}
 	//метод для уведомлений входа в зоны
