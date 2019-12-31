@@ -55,14 +55,14 @@ extension MapPresenter: IMapPresenter
 				DispatchQueue.main.async {
 					self.mapViewController?.updateSmartObjects(self.repository.getSmartObjects())
 					self.mapViewController?.addCircle(smartObject)
+					self.startMonitoring(with: smartObject)
 				}
 			case .failure(let error):
 				self.mapViewController?.showAlert(withTitle: "Внимание!", message: error.localizedDescription)
 			}
 		}
 	}
-
-	//проверяем включина ли служба геолокации
+	//проверяем включена ли служба геолокации
 	func checkLocationEnabled() {
 		if CLLocationManager.locationServicesEnabled() {
 			setupLocationManager()
@@ -96,7 +96,6 @@ extension MapPresenter: IMapPresenter
 			break
 		}
 	}
-
 	func addPinWithAlert(_ location: CLLocationCoordinate2D?) {
 		let alert = UIAlertController(title: "Add Pin", message: nil, preferredStyle: .alert)
 		alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -120,5 +119,18 @@ extension MapPresenter: IMapPresenter
 			}
 		}))
 		mapViewController?.present(alert, animated: true)
+	}
+	private func startMonitoring(with smartObject: SmartObject) {
+		let smartRegion = region(with: smartObject)
+		locationManeger.startMonitoring(for: smartRegion)
+	}
+	// Инициализация геозоны как CLCyrcularRadius
+	private func region(with smartObject: SmartObject) -> CLCircularRegion {
+		let region = CLCircularRegion(center: smartObject.coordinate,
+									  radius: smartObject.circleRadius,
+									  identifier: smartObject.name)
+		region.notifyOnEntry = true
+		region.notifyOnExit = false
+		return region
 	}
 }
