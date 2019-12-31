@@ -152,12 +152,48 @@ extension MapViewController: MKMapViewDelegate
 		pin.isDraggable = true
 		return pin
 	}
+	//метод для уведомлений входа в зоны
+	func notifyEvent(for region: CLRegion) {
+		let startMessage = "Вы вошли в зону: "
+		// Уведомление если приложение запущено
+		if UIApplication.shared.applicationState == .active {
+			guard let message = getName(from: region.identifier) else { return }
+			self.showAlert(withTitle: "Внимание!", message: startMessage + "\n" + message)
+		}
+		else {
+			// Пуш если фоновый режим или на телефоне включен блок
+			guard let body = getName(from: region.identifier) else { return }
+			let notificationContent = UNMutableNotificationContent()
+			notificationContent.body = startMessage + body
+			notificationContent.sound = UNNotificationSound.default
+			notificationContent.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
+			let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+			let request = UNNotificationRequest(identifier: "location_change",
+												content: notificationContent,
+												trigger: trigger)
+			UNUserNotificationCenter.current().add(request) { error in
+				if let error = error {
+					print("Ошибка: \(error)")
+				}
+			}
+		}
+	}
+	func getName(from identifier: String) -> String? {
+		let smartObjects = presenter.getSmartObjects()
+		guard let matchedPin = smartObjects.first(where: { object in
+			object.name == identifier
+		}) else { return nil }
+		return matchedPin.name
+	}
 }
 
 extension MapViewController: CLLocationManagerDelegate
 {
 	func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
 		presenter.checkLocationEnabled()
+	}
+	func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+		notifyEvent(for: region)
 	}
 }
 
