@@ -52,8 +52,8 @@ extension MapPresenter: IMapPresenter
 				let smartObject = SmartObject(name: name, address: position, coordinate: coordinate, circleRadius: radius)
 				self.repository.addSmartObject(object: smartObject)
 				DispatchQueue.main.async {
-					guard let mapVC = self.mapViewController else { return }
-					mapVC.updateSmartObjects(self.repository.getSmartObjects())
+					self.mapViewController?.updateSmartObjects(self.repository.getSmartObjects())
+					self.mapViewController?.addCircle(smartObject)
 				}
 			case .failure(let error):
 				self.mapViewController?.showAlert(withTitle: "Внимание!", message: error.localizedDescription)
