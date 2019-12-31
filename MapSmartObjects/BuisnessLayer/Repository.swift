@@ -85,7 +85,7 @@ extension Repository: IRepository
 					completionHandler(.failure(error))
 				}
 			case .failure(let message):
-				print(message.localizedDescription)// Сюда - алерт
+				completionHandler(.failure(message))
 			}
 		}
 	}
