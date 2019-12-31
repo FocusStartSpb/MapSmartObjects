@@ -45,11 +45,12 @@ extension MapPresenter: IMapPresenter
 	func addSmartObject(name: String,
 						radius: Double,
 						coordinate: CLLocationCoordinate2D) {
+		let checkRadius = min(radius, locationManeger.maximumRegionMonitoringDistance)
 		repository.getGeoposition(coordinates: coordinate) { [weak self] geocoderResult in
 			guard let self = self else { return }
 			switch geocoderResult {
 			case .success(let position):
-				let smartObject = SmartObject(name: name, address: position, coordinate: coordinate, circleRadius: radius)
+				let smartObject = SmartObject(name: name, address: position, coordinate: coordinate, circleRadius: checkRadius)
 				self.repository.addSmartObject(object: smartObject)
 				DispatchQueue.main.async {
 					self.mapViewController?.updateSmartObjects(self.repository.getSmartObjects())
