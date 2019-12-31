@@ -217,7 +217,10 @@ extension MapViewController: IMapViewController
 		let differenceSmartObjects = smartObjectsFromMap.difference(from: smartObjectsFromDB)
 		//вот тут можно отписывать difference от мониторинга (но дальше это надо будет переносить в презентер)
 		mapScreen.mapView.removeAnnotations(differenceSmartObjects) // убираем объекты с карты
-		differenceSmartObjects.forEach { removeRadiusOverlay(forPin: $0) } //убираем круги у удаленных объектов
+		differenceSmartObjects.forEach {
+			removeRadiusOverlay(forPin: $0) //убираем круги у удаленных объектов
+			presenter.stopMonitoring(smartObject: $0)
+		}
 		presenter.getSmartObjects().forEach { [weak self] smartObject in
 			guard let self = self else { return }
 			DispatchQueue.main.async {

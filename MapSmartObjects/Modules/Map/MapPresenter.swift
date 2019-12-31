@@ -17,6 +17,8 @@ protocol IMapPresenter
 	func checkLocationEnabled()
 	func getCurrentLocation() -> CLLocationCoordinate2D?
 	func addPinWithAlert(_ location: CLLocationCoordinate2D?)
+	func getLocationManager() -> CLLocationManager
+	func stopMonitoring(smartObject: SmartObject)
 }
 
 final class MapPresenter
@@ -34,6 +36,10 @@ final class MapPresenter
 
 extension MapPresenter: IMapPresenter
 {
+	func getLocationManager() -> CLLocationManager {
+		return locationManeger
+	}
+
 	func getCurrentLocation() -> CLLocationCoordinate2D? {
 		guard let location = locationManeger.location?.coordinate else { return nil }
 		return location
@@ -123,6 +129,12 @@ extension MapPresenter: IMapPresenter
 	private func startMonitoring(with smartObject: SmartObject) {
 		let smartRegion = region(with: smartObject)
 		locationManeger.startMonitoring(for: smartRegion)
+	}
+	func stopMonitoring(smartObject: SmartObject) {
+		for region in locationManeger.monitoredRegions {
+			guard let circusRegion = region as? CLCircularRegion, circusRegion.identifier == smartObject.name else { continue }
+			locationManeger.stopMonitoring(for: circusRegion)
+		}
 	}
 	// Инициализация геозоны как CLCyrcularRadius
 	private func region(with smartObject: SmartObject) -> CLCircularRegion {
