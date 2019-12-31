@@ -15,6 +15,7 @@ protocol IMapViewController
 	func showAlert(withTitle title: String?, message: String?)
 	func getMapView() -> MKMapView
 	func showAlertLocation(title: String, message: String?, url: URL?)
+	func addCircle(_ smartObject: SmartObject)
 }
 
 final class MapViewController: UIViewController
@@ -113,7 +114,7 @@ final class MapViewController: UIViewController
 			guard let self = self else { return }
 			//отрисовка области вокруг пин
 			DispatchQueue.main.async {
-				self.mapScreen.mapView.addOverlay(MKCircle(center: smartObject.coordinate, radius: smartObject.circleRadius))
+				self.addCircle(smartObject)
 				self.mapScreen.mapView.addAnnotation(smartObject)
 			}
 		}
@@ -122,6 +123,9 @@ final class MapViewController: UIViewController
 
 extension MapViewController: MKMapViewDelegate
 {
+	func addCircle(_ smartObject: SmartObject) {
+		self.mapScreen.mapView.addOverlay(MKCircle(center: smartObject.coordinate, radius: smartObject.circleRadius))
+	}
 	//метод для отрисовки круга - цвет, прозрачность, ширина и цвет канта
 	func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
 		var circle = MKOverlayRenderer()
