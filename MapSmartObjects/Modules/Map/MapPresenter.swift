@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import CoreLocation
 import MapKit
 
 protocol IMapPresenter

@@ -6,7 +6,6 @@
 //  Copyright © 2019 Максим Шалашников. All rights reserved.
 //
 
-import UIKit
 import MapKit
 import UserNotifications
 
