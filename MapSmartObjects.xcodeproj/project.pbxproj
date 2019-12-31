@@ -25,6 +25,7 @@
 		5C028C2623AAAC09009FA3E8 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C028C2523AAAC09009FA3E8 /* MainTabBarController.swift */; };
 		5C1F9B5323B748B100A3D1C9 /* Array+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F9B5223B748B100A3D1C9 /* Array+Extension.swift */; };
 		5C1F9B5623B748FE00A3D1C9 /* CodingKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F9B5523B748FE00A3D1C9 /* CodingKeys.swift */; };
+		5C1F9B5823B8E09C00A3D1C9 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1F9B5723B8E09C00A3D1C9 /* MapView.swift */; };
 		5C2E5CC023A7FFFD004A105D /* Factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2E5CBF23A7FFFD004A105D /* Factory.swift */; };
 		5C97899B23ABE840004F1785 /* SmartObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C97899A23ABE840004F1785 /* SmartObject.swift */; };
 		941283B023AA95E700A0077D /* PinListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941283AF23AA95E700A0077D /* PinListCell.swift */; };
@@ -64,6 +65,7 @@
 		5C028C2523AAAC09009FA3E8 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		5C1F9B5223B748B100A3D1C9 /* Array+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extension.swift"; sourceTree = "<group>"; };
 		5C1F9B5523B748FE00A3D1C9 /* CodingKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodingKeys.swift; sourceTree = "<group>"; };
+		5C1F9B5723B8E09C00A3D1C9 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		5C2E5CBF23A7FFFD004A105D /* Factory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Factory.swift; path = ../Factory.swift; sourceTree = "<group>"; };
 		5C97899A23ABE840004F1785 /* SmartObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartObject.swift; sourceTree = "<group>"; };
 		941283AF23AA95E700A0077D /* PinListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinListCell.swift; sourceTree = "<group>"; };
@@ -162,6 +164,7 @@
 		4B58C21023A9719D00A430C0 /* Map */ = {
 			isa = PBXGroup;
 			children = (
+				5C1F9B5923B9549B00A3D1C9 /* Views */,
 				4B58C21123A971AB00A430C0 /* MapViewController.swift */,
 				4B58C21323A971C700A430C0 /* MapPresenter.swift */,
 				4B58C21523A971EE00A430C0 /* MapRouter.swift */,
@@ -222,6 +225,14 @@
 				5C1F9B5223B748B100A3D1C9 /* Array+Extension.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		5C1F9B5923B9549B00A3D1C9 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				5C1F9B5723B8E09C00A3D1C9 /* MapView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		941283AE23AA95AE00A0077D /* Custom Cells */ = {
@@ -371,6 +382,7 @@
 				5C028C1823AA920F009FA3E8 /* YandexGeocoder.swift in Sources */,
 				4B58C21623A971EE00A430C0 /* MapRouter.swift in Sources */,
 				4B43F6C723A664C9003BF176 /* MapSmartObjects.xcdatamodeld in Sources */,
+				5C1F9B5823B8E09C00A3D1C9 /* MapView.swift in Sources */,
 				4B58C21223A971AB00A430C0 /* MapViewController.swift in Sources */,
 				4B58C21723AA98FC00A430C0 /* YandexGeocoderResponse.swift in Sources */,
 			);
