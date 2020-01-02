@@ -15,12 +15,14 @@ protocol IMapViewController
 	func getMapView() -> MKMapView
 	func showAlertLocation(title: String, message: String?, url: URL?)
 	func addCircle(_ smartObject: SmartObject)
+	func getLocationManager() -> CLLocationManager
 }
 
 final class MapViewController: UIViewController
 {
 	private let presenter: IMapPresenter
 	private let mapScreen = MapView()
+	private let locationManeger = CLLocationManager()
 
 	init(presenter: IMapPresenter) {
 		self.presenter = presenter
@@ -37,6 +39,8 @@ final class MapViewController: UIViewController
 	}
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		locationManeger.delegate = self
+		locationManeger.desiredAccuracy = kCLLocationAccuracyBest
 		mapScreen.mapView.delegate = self
 		mapScreen.mapView.showsUserLocation = true
 		addTargets()
@@ -198,6 +202,9 @@ extension MapViewController: CLLocationManagerDelegate
 
 extension MapViewController: IMapViewController
 {
+	func getLocationManager() -> CLLocationManager {
+		return locationManeger
+	}
 	func showAlert(withTitle title: String?, message: String?) {
 		let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 		let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)

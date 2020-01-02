@@ -16,7 +16,6 @@ protocol IMapPresenter
 	func checkLocationEnabled()
 	func getCurrentLocation() -> CLLocationCoordinate2D?
 	func addPinWithAlert(_ location: CLLocationCoordinate2D?)
-	func getLocationManager() -> CLLocationManager
 	func stopMonitoring(smartObject: SmartObject)
 }
 
@@ -25,7 +24,6 @@ final class MapPresenter
 	weak var mapViewController: MapViewController?
 	private let repository: IRepository
 	private let router: IMapRouter
-	private let locationManeger = CLLocationManager()
 
 	init(repository: IRepository, router: IMapRouter) {
 		self.repository = repository
@@ -35,12 +33,8 @@ final class MapPresenter
 
 extension MapPresenter: IMapPresenter
 {
-	func getLocationManager() -> CLLocationManager {
-		return locationManeger
-	}
-
 	func getCurrentLocation() -> CLLocationCoordinate2D? {
-		guard let location = locationManeger.location?.coordinate else { return nil }
+		guard let location = mapViewController?.getLocationManager().location?.coordinate else { return nil }
 		return location
 	}
 
@@ -50,7 +44,7 @@ extension MapPresenter: IMapPresenter
 	func addSmartObject(name: String,
 						radius: Double,
 						coordinate: CLLocationCoordinate2D) {
-		let checkRadius = min(radius, locationManeger.maximumRegionMonitoringDistance)
+		let checkRadius = min(radius, mapViewController?.getLocationManager().maximumRegionMonitoringDistance ?? radius)
 		repository.getGeoposition(coordinates: coordinate) { [weak self] geocoderResult in
 			guard let self = self else { return }
 			switch geocoderResult {
@@ -70,7 +64,6 @@ extension MapPresenter: IMapPresenter
 	//проверяем включена ли служба геолокации
 	func checkLocationEnabled() {
 		if CLLocationManager.locationServicesEnabled() {
-			setupLocationManager()
 			ckeckAutorization()
 		}
 		else {
@@ -80,23 +73,17 @@ extension MapPresenter: IMapPresenter
 		}
 	}
 
-	private func setupLocationManager() {
-		locationManeger.delegate = mapViewController
-		locationManeger.desiredAccuracy = kCLLocationAccuracyBest
-	}
-
 	private func ckeckAutorization() {
 		switch CLLocationManager.authorizationStatus() {
 		case .authorizedAlways, .authorizedWhenInUse:
-			locationManeger.startUpdatingLocation()
+			mapViewController?.getLocationManager().startUpdatingLocation()
 			//			showCurrentLocation()
-			setupLocationManager()
 		case .denied, .restricted:
 			mapViewController?.showAlertLocation(title: "You have banned the use of location",
 												 message: "Want to allow?",
 												 url: URL(string: UIApplication.openSettingsURLString))
 		case .notDetermined:
-			locationManeger.requestAlwaysAuthorization()
+			mapViewController?.getLocationManager().requestAlwaysAuthorization()
 		default:
 			break
 		}
@@ -118,7 +105,7 @@ extension MapPresenter: IMapPresenter
 					self.addSmartObject(name: name, radius: radius, coordinate: longTaplocation)
 				}
 				else {
-					guard let currentUserLocation = self.locationManeger.location?.coordinate else { return }
+					guard let currentUserLocation = self.mapViewController?.getLocationManager().location?.coordinate else { return }
 					self.addSmartObject(name: name, radius: radius, coordinate: currentUserLocation)
 				}
 			}
@@ -127,12 +114,12 @@ extension MapPresenter: IMapPresenter
 	}
 	private func startMonitoring(with smartObject: SmartObject) {
 		let smartRegion = region(with: smartObject)
-		locationManeger.startMonitoring(for: smartRegion)
+		mapViewController?.getLocationManager().startMonitoring(for: smartRegion)
 	}
 	func stopMonitoring(smartObject: SmartObject) {
-		for region in locationManeger.monitoredRegions {
+		for region in mapViewController?.getLocationManager().monitoredRegions ?? [] {
 			guard let circusRegion = region as? CLCircularRegion, circusRegion.identifier == smartObject.name else { continue }
-			locationManeger.stopMonitoring(for: circusRegion)
+			mapViewController?.getLocationManager().stopMonitoring(for: circusRegion)
 		}
 	}
 	// Инициализация геозоны как CLCyrcularRadius
