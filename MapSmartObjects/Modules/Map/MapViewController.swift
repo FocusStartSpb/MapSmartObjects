@@ -42,6 +42,7 @@ final class MapViewController: UIViewController
 		locationManeger.delegate = self
 		locationManeger.desiredAccuracy = kCLLocationAccuracyBest
 		locationManeger.startUpdatingLocation()
+		locationManeger.allowsBackgroundLocationUpdates = true
 		mapScreen.mapView.delegate = self
 		mapScreen.mapView.showsUserLocation = true
 		addTargets()

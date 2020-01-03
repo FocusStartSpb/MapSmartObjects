@@ -51,11 +51,11 @@ final class PinListCell: UITableViewCell
 		NSLayoutConstraint.activate([
 			titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
 			titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-			titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+			titleLabel.trailingAnchor.constraint(equalToSystemSpacingAfter: contentView.trailingAnchor, multiplier: -10),
 
 			descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
 			descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-			descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+			descriptionLabel.trailingAnchor.constraint(equalToSystemSpacingAfter: contentView.trailingAnchor, multiplier: -10),
 			descriptionLabel.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -16),
 			])
 	}
