@@ -75,9 +75,8 @@ extension MapPresenter: IMapPresenter
 
 	private func ckeckAutorization() {
 		switch CLLocationManager.authorizationStatus() {
-		case.authorizedWhenInUse:
-			mapViewController?.getLocationManager().requestWhenInUseAuthorization()
-		case .authorizedAlways, .notDetermined:
+		case .authorizedWhenInUse, .authorizedAlways, .notDetermined:
+			mapViewController?.getLocationManager().startUpdatingLocation()
 			mapViewController?.getLocationManager().requestAlwaysAuthorization()
 		case .denied, .restricted:
 			mapViewController?.showAlertLocation(title: "You have banned the use of location",
