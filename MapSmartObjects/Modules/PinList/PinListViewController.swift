@@ -81,7 +81,7 @@ final class PinListViewController: UIViewController
 		pinTableView.isEditing
 			? pinTableView.setEditing(false, animated: true)
 			: pinTableView.setEditing(true, animated: true)
-		editButtonItem.title = isEditing ? "Done" : "Edit"
+		editButtonItem.title = pinTableView.isEditing ? "Done" : "Edit"
 	}
 }
 
