@@ -17,6 +17,10 @@ protocol IMapPresenter
 	func checkLocationEnabled()
 	func getCurrentLocation() -> CLLocationCoordinate2D?
 	func addPinWithAlert(_ location: CLLocationCoordinate2D?)
+	func startMonitoring(_ smartObject: SmartObject)
+	func stopMonitoring(_ smartObject: SmartObject)
+	func getMonitoringRegions() -> [CLRegion]
+	func checkMonitoringRegions()
 }
 
 final class MapPresenter
@@ -34,6 +38,18 @@ final class MapPresenter
 
 extension MapPresenter: IMapPresenter
 {
+	func getMonitoringRegions() -> [CLRegion] {
+		return Array(locationManeger.monitoredRegions)
+	}
+
+	func checkMonitoringRegions() {
+		print(locationManeger.monitoredRegions.count)
+		locationManeger.monitoredRegions.forEach { locationManeger.stopMonitoring(for: $0) }
+		for smartObject in repository.getSmartObjects() {
+			self.startMonitoring(smartObject)
+		}
+	}
+
 	func getCurrentLocation() -> CLLocationCoordinate2D? {
 		guard let location = locationManeger.location?.coordinate else { return nil }
 		return location
@@ -54,10 +70,30 @@ extension MapPresenter: IMapPresenter
 				DispatchQueue.main.async {
 					self.mapViewController?.updateSmartObjects(self.repository.getSmartObjects())
 					self.mapViewController?.addCircle(smartObject)
+					self.startMonitoring(smartObject)
 				}
 			case .failure(let error):
 				self.mapViewController?.showAlert(withTitle: "Внимание!", message: error.localizedDescription)
 			}
+		}
+	}
+
+	private func getRegion(with smartObject: SmartObject) -> CLCircularRegion {
+		let region = CLCircularRegion(center: smartObject.coordinate,
+									  radius: smartObject.circleRadius,
+									  identifier: smartObject.identifier)
+		region.notifyOnEntry = true
+		region.notifyOnExit = false
+		return region
+	}
+
+	func startMonitoring(_ smartObject: SmartObject) {
+		locationManeger.startMonitoring(for: getRegion(with: smartObject))
+	}
+
+	func stopMonitoring(_ smartObject: SmartObject) {
+		for region in locationManeger.monitoredRegions where smartObject.identifier == region.identifier {
+			locationManeger.stopMonitoring(for: region)
 		}
 	}
 

@@ -54,6 +54,7 @@ final class MapViewController: UIViewController
 		presenter.checkLocationEnabled()
 		mapScreen.buttonsView.layer.cornerRadius = mapScreen.buttonsView.frame.size.height / 10
 		mapScreen.layoutSubviews()
+		print("Monitoring count = \(presenter.getMonitoringRegions().count)")
 	}
 
 	private func addTargets() {
@@ -110,6 +111,7 @@ final class MapViewController: UIViewController
 	}
 
 	private func setSmartObjectsOnMap() {
+		presenter.checkMonitoringRegions()
 		presenter.getSmartObjects().forEach { [weak self] smartObject in
 			guard let self = self else { return }
 			//отрисовка области вокруг пин
@@ -181,7 +183,8 @@ extension MapViewController: IMapViewController
 		let differenceSmartObjects = smartObjectsFromMap.difference(from: smartObjectsFromDB)
 		//вот тут можно отписывать difference от мониторинга (но дальше это надо будет переносить в презентер)
 		mapScreen.mapView.removeAnnotations(differenceSmartObjects) // убираем объекты с карты
-		differenceSmartObjects.forEach { removeRadiusOverlay(forPin: $0) } //убираем круги у удаленных объектов
+		differenceSmartObjects.forEach { removeRadiusOverlay(forPin: $0 ) } //убираем круги у удаленных объектов
+		differenceSmartObjects.forEach { presenter.stopMonitoring($0) } //снимаем мониторинг с объекта
 		presenter.getSmartObjects().forEach { [weak self] smartObject in
 			guard let self = self else { return }
 			DispatchQueue.main.async {
