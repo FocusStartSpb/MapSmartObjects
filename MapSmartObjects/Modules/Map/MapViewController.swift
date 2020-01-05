@@ -16,6 +16,7 @@ protocol IMapViewController
 	func getMapView() -> MKMapView
 	func showAlertLocation(title: String, message: String?, url: URL?)
 	func addCircle(_ smartObject: SmartObject)
+	func setMonitoringPlacecesCount(number: Int)
 }
 
 final class MapViewController: UIViewController
@@ -54,7 +55,6 @@ final class MapViewController: UIViewController
 		presenter.checkLocationEnabled()
 		mapScreen.buttonsView.layer.cornerRadius = mapScreen.buttonsView.frame.size.height / 10
 		mapScreen.layoutSubviews()
-		print("Monitoring count = \(presenter.getMonitoringRegions().count)")
 	}
 
 	private func addTargets() {
@@ -169,6 +169,10 @@ extension MapViewController: CLLocationManagerDelegate
 
 extension MapViewController: IMapViewController
 {
+	func setMonitoringPlacecesCount(number: Int) {
+		navigationItem.title = "Monitoring places: \(number)"
+	}
+
 	func showAlert(withTitle title: String?, message: String?) {
 		let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 		let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
@@ -195,6 +199,7 @@ extension MapViewController: IMapViewController
 				self.mapScreen.mapView.addAnnotation(smartObject)
 			}
 		}
+		setMonitoringPlacecesCount(number: presenter.getMonitoringRegions().count)
 	}
 
 	func showAlertLocation(title: String, message: String?, url: URL?) {

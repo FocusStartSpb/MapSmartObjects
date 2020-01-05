@@ -19,6 +19,7 @@ protocol IRepository
 	func removeSmartObject(at index: Int)
 	func addSmartObject(object: SmartObject)
 	func getSmartObject(at index: Int) -> SmartObject
+	func getSmartObject(with identifier: String) -> SmartObject?
 	func getGeoposition(coordinates: CLLocationCoordinate2D,
 						completionHandler: @escaping (GeocoderResponseResult) -> Void)
 }
@@ -51,6 +52,13 @@ extension Repository: IRepository
 {
 	var smartObjectsCount: Int {
 		return smartObjects.count
+	}
+
+	func getSmartObject(with identifier: String) -> SmartObject? {
+		if let index = smartObjects.firstIndex(where: { $0.identifier == identifier }) {
+			return smartObjects[index]
+		}
+		return nil
 	}
 
 	func addSmartObject(object: SmartObject) {

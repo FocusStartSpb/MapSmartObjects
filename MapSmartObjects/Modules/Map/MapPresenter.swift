@@ -45,14 +45,16 @@ extension MapPresenter: IMapPresenter
 	}
 
 	func handleEvent(for region: CLRegion) {
+		guard let currentObject = repository.getSmartObject(with: region.identifier) else { return }
+		let message = "Вы вошли в зону \(currentObject.name)"
 		// показать алерт, если приложение активно
 		if UIApplication.shared.applicationState == .active {
-			mapViewController?.showAlert(withTitle: "Внимание!", message: region.identifier)
+			mapViewController?.showAlert(withTitle: "Внимание!", message: message)
 		}
 		else {
 			// отправить нотификацию, если приложение не активно
 			let notificationContent = UNMutableNotificationContent()
-			notificationContent.body = region.identifier
+			notificationContent.body = message
 			notificationContent.sound = UNNotificationSound.default
 			notificationContent.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
 			let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
@@ -73,6 +75,7 @@ extension MapPresenter: IMapPresenter
 		for smartObject in repository.getSmartObjects() {
 			self.startMonitoring(smartObject)
 		}
+		mapViewController?.setMonitoringPlacecesCount(number: locationManeger.monitoredRegions.count)
 	}
 
 	func getCurrentLocation() -> CLLocationCoordinate2D? {
@@ -90,12 +93,17 @@ extension MapPresenter: IMapPresenter
 			guard let self = self else { return }
 			switch geocoderResult {
 			case .success(let position):
-				let smartObject = SmartObject(name: name, address: position, coordinate: coordinate, circleRadius: radius)
+				let maxRadius = radius > self.locationManeger.maximumRegionMonitoringDistance
+					? self.locationManeger.maximumRegionMonitoringDistance
+					: radius
+				print(maxRadius)
+				let smartObject = SmartObject(name: name, address: position, coordinate: coordinate, circleRadius: maxRadius)
 				self.repository.addSmartObject(object: smartObject)
 				DispatchQueue.main.async {
 					self.mapViewController?.updateSmartObjects(self.repository.getSmartObjects())
 					self.mapViewController?.addCircle(smartObject)
 					self.startMonitoring(smartObject)
+					self.mapViewController?.setMonitoringPlacecesCount(number: self.locationManeger.monitoredRegions.count)
 				}
 			case .failure(let error):
 				self.mapViewController?.showAlert(withTitle: "Внимание!", message: error.localizedDescription)
