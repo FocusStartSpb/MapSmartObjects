@@ -9,6 +9,7 @@
 import Foundation
 import CoreLocation
 import MapKit
+import UserNotifications
 
 protocol IMapPresenter
 {
@@ -21,6 +22,7 @@ protocol IMapPresenter
 	func stopMonitoring(_ smartObject: SmartObject)
 	func getMonitoringRegions() -> [CLRegion]
 	func checkMonitoringRegions()
+	func handleEvent(for region: CLRegion)
 }
 
 final class MapPresenter
@@ -38,8 +40,31 @@ final class MapPresenter
 
 extension MapPresenter: IMapPresenter
 {
-	func getMonitoringRegions() -> [CLRegion] {
+	func getMonitoringRegions() -> [CLRegion] { //Проверить нужен ли этот метод
 		return Array(locationManeger.monitoredRegions)
+	}
+
+	func handleEvent(for region: CLRegion) {
+		// показать алерт, если приложение активно
+		if UIApplication.shared.applicationState == .active {
+			mapViewController?.showAlert(withTitle: "Внимание!", message: region.identifier)
+		}
+		else {
+			// отправить нотификацию, если приложение не активно
+			let notificationContent = UNMutableNotificationContent()
+			notificationContent.body = region.identifier
+			notificationContent.sound = UNNotificationSound.default
+			notificationContent.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
+			let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+			let request = UNNotificationRequest(identifier: "location_change",
+												content: notificationContent,
+												trigger: trigger)
+			UNUserNotificationCenter.current().add(request) { error in
+				if let error = error {
+					print("Error: \(error)")
+				}
+			}
+		}
 	}
 
 	func checkMonitoringRegions() {

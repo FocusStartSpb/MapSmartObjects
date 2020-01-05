@@ -20,6 +20,10 @@ final class AppDelegate: UIResponder, UIApplicationDelegate
 		self.window = UIWindow(frame: UIScreen.main.bounds)
 		self.window?.rootViewController = MainTabBarController()
 		self.window?.makeKeyAndVisible()
+		UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, error in
+			print(granted)
+			print(error)
+		}
 		return true
 	}
 	func applicationDidBecomeActive(_ application: UIApplication) {

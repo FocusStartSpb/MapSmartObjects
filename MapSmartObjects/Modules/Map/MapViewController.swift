@@ -161,6 +161,10 @@ extension MapViewController: CLLocationManagerDelegate
 	func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
 		presenter.checkLocationEnabled()
 	}
+
+	func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+		presenter.handleEvent(for: region)
+	}
 }
 
 extension MapViewController: IMapViewController
