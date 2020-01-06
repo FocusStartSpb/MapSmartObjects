@@ -221,12 +221,9 @@ extension MapViewController: IMapViewController
 			removeRadiusOverlay(forPin: $0) //убираем круги у удаленных объектов
 			presenter.stopMonitoring($0)
 		}
-		presenter.getSmartObjects().forEach { [weak self] smartObject in
-			guard let self = self else { return }
-			DispatchQueue.main.async {
-				self.mapScreen.mapView.addAnnotation(smartObject)
-				self.setMonitoringPlacecesCount(number: self.presenter.getMonitoringRegionsCount())
-			}
+		presenter.getSmartObjects().forEach { smartObject in
+			mapScreen.mapView.addAnnotation(smartObject)
+			setMonitoringPlacecesCount(number: presenter.getMonitoringRegionsCount())
 		}
 	}
 
