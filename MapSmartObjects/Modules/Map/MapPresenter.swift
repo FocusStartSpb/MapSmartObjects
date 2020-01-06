@@ -19,7 +19,7 @@ protocol IMapPresenter
 	func addPinWithAlert(_ location: CLLocationCoordinate2D?)
 	func startMonitoring(_ smartObject: SmartObject)
 	func stopMonitoring(_ smartObject: SmartObject)
-	func getMonitoringRegions() -> [CLRegion]
+	func getMonitoringRegionsCount() -> Int
 	func checkMonitoringRegions()
 	func handleEvent(for region: CLRegion)
 }
@@ -39,8 +39,8 @@ final class MapPresenter
 
 extension MapPresenter: IMapPresenter
 {
-	func getMonitoringRegions() -> [CLRegion] { //Проверить нужен ли этот метод
-		return Array(locationManeger.monitoredRegions)
+	func getMonitoringRegionsCount() -> Int { //Проверить нужен ли этот метод
+		return locationManeger.monitoredRegions.count
 	}
 
 	func handleEvent(for region: CLRegion) {
@@ -69,7 +69,6 @@ extension MapPresenter: IMapPresenter
 	}
 
 	func checkMonitoringRegions() {
-		print(locationManeger.monitoredRegions.count)
 		locationManeger.monitoredRegions.forEach { locationManeger.stopMonitoring(for: $0) }
 		for smartObject in repository.getSmartObjects() {
 			self.startMonitoring(smartObject)
@@ -95,7 +94,6 @@ extension MapPresenter: IMapPresenter
 				let maxRadius = radius > self.locationManeger.maximumRegionMonitoringDistance
 					? self.locationManeger.maximumRegionMonitoringDistance
 					: radius
-				print(maxRadius)
 				let smartObject = SmartObject(name: name, address: position, coordinate: coordinate, circleRadius: maxRadius)
 				self.repository.addSmartObject(object: smartObject)
 				DispatchQueue.main.async {

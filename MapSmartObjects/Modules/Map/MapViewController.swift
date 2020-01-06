@@ -112,13 +112,10 @@ final class MapViewController: UIViewController
 	}
 	// Установка объектов и кругов на карте из базы при первом запуске
 	private func setSmartObjectsOnMap() {
-		presenter.checkMonitoringRegions()
-		presenter.getSmartObjects().forEach { [weak self] smartObject in
-			guard let self = self else { return }
-			DispatchQueue.main.async {
-				self.addCircle(smartObject)
-				self.mapScreen.mapView.addAnnotation(smartObject)
-			}
+		presenter.getSmartObjects().forEach { smartObject in
+			presenter.checkMonitoringRegions()
+			addCircle(smartObject)
+			mapScreen.mapView.addAnnotation(smartObject)
 		}
 	}
 }
@@ -228,9 +225,9 @@ extension MapViewController: IMapViewController
 			guard let self = self else { return }
 			DispatchQueue.main.async {
 				self.mapScreen.mapView.addAnnotation(smartObject)
+				self.setMonitoringPlacecesCount(number: self.presenter.getMonitoringRegionsCount())
 			}
 		}
-		setMonitoringPlacecesCount(number: presenter.getMonitoringRegions().count)
 	}
 
 	func showAlertRequestLocation(title: String, message: String?, url: URL?) {
