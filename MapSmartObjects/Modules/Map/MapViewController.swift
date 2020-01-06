@@ -223,8 +223,8 @@ extension MapViewController: IMapViewController
 		}
 		presenter.getSmartObjects().forEach { smartObject in
 			mapScreen.mapView.addAnnotation(smartObject)
-			setMonitoringPlacecesCount(number: presenter.getMonitoringRegionsCount())
 		}
+		setMonitoringPlacecesCount(number: presenter.getMonitoringRegionsCount())
 	}
 
 	func showAlertRequestLocation(title: String, message: String?, url: URL?) {
