@@ -12,8 +12,7 @@ import UserNotifications
 protocol IMapViewController
 {
 	func showAlert(withTitle title: String?, message: String?)
-	func getMapView() -> MKMapView
-	func showAlertLocation(title: String, message: String?, url: URL?)
+	func showAlertRequestLocation(title: String, message: String?, url: URL?)
 	func addCircle(_ smartObject: SmartObject)
 	func setMonitoringPlacecesCount(number: Int)
 }
@@ -22,7 +21,6 @@ final class MapViewController: UIViewController
 {
 	private let presenter: IMapPresenter
 	private let mapScreen = MapView()
-	private let locationManeger = CLLocationManager()
 
 	init(presenter: IMapPresenter) {
 		self.presenter = presenter
@@ -39,11 +37,7 @@ final class MapViewController: UIViewController
 	}
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		locationManeger.delegate = self
-		locationManeger.desiredAccuracy = kCLLocationAccuracyBest
-		locationManeger.startUpdatingLocation()
-		mapScreen.mapView.delegate = self
-		mapScreen.mapView.showsUserLocation = true
+		setupMapScreen()
 		addTargets()
 		setSmartObjectsOnMap()
 		showCurrentLocation(presenter.getCurrentLocation())
@@ -58,6 +52,11 @@ final class MapViewController: UIViewController
 		presenter.checkLocationEnabled()
 		mapScreen.buttonsView.layer.cornerRadius = mapScreen.buttonsView.frame.size.height / 10
 		mapScreen.layoutSubviews()
+	}
+
+	private func setupMapScreen() {
+		mapScreen.mapView.delegate = self
+		mapScreen.mapView.showsUserLocation = true
 	}
 
 	private func addTargets() {
@@ -81,7 +80,7 @@ final class MapViewController: UIViewController
 			presenter.addPinWithAlert(coordinate)
 		}
 	}
-	//берем объекты с карты, исключаем userLocation и кастим в SmartObject
+	//берем объекты с карты, исключаем userLocation, кастим в SmartObject
 	private func getSmartObjectsFromMap(annotations: [MKAnnotation]) -> [SmartObject] {
 		var result = [SmartObject]()
 		annotations.forEach { annotaion in
@@ -97,9 +96,9 @@ final class MapViewController: UIViewController
 		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
 		mapScreen.mapView.setRegion(region, animated: true)
 	}
-
+	
+	// Находит один радиус с одинаковыми координатами и радиусом
 	private func removeRadiusOverlay(forPin pin: SmartObject) {
-		// Find exactly one overlay which has the same coordinates & radius to remove
 		let overlays = mapScreen.mapView.overlays
 		for overlay in overlays {
 			guard let circleOverlay = overlay as? MKCircle else { continue }
@@ -112,12 +111,11 @@ final class MapViewController: UIViewController
 			}
 		}
 	}
-
+	// Установка объектов и кругов на карте из базы при первом запуске
 	private func setSmartObjectsOnMap() {
 		presenter.checkMonitoringRegions()
 		presenter.getSmartObjects().forEach { [weak self] smartObject in
 			guard let self = self else { return }
-			//отрисовка области вокруг пин
 			DispatchQueue.main.async {
 				self.addCircle(smartObject)
 				self.mapScreen.mapView.addAnnotation(smartObject)
@@ -215,11 +213,7 @@ extension MapViewController: IMapViewController
 		alert.addAction(action)
 		present(alert, animated: true, completion: nil)
 	}
-
-	func getMapView() -> MKMapView {
-		return mapScreen.mapView
-	}
-
+	// Обновление объектов и кругов на карте при удалении или добавлении
 	func updateSmartObjects(_ smartObjects: [SmartObject]) {
 		let smartObjectsFromDB = presenter.getSmartObjects() // получаем данные из базы данных
 		let smartObjectsFromMap = getSmartObjectsFromMap(annotations: mapScreen.mapView.annotations)
@@ -229,7 +223,7 @@ extension MapViewController: IMapViewController
 		mapScreen.mapView.removeAnnotations(differenceSmartObjects) // убираем объекты с карты
 		differenceSmartObjects.forEach {
 			removeRadiusOverlay(forPin: $0) //убираем круги у удаленных объектов
-			presenter.stopMonitoring(smartObject: $0)
+			presenter.stopMonitoring($0)
 		}
 		presenter.getSmartObjects().forEach { [weak self] smartObject in
 			guard let self = self else { return }
@@ -240,7 +234,7 @@ extension MapViewController: IMapViewController
 		setMonitoringPlacecesCount(number: presenter.getMonitoringRegions().count)
 	}
 
-	func showAlertLocation(title: String, message: String?, url: URL?) {
+	func showAlertRequestLocation(title: String, message: String?, url: URL?) {
 		let alert = UIAlertController(title: title,
 									  message: message,
 									  preferredStyle: .alert)
