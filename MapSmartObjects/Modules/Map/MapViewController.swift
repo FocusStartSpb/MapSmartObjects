@@ -96,7 +96,6 @@ final class MapViewController: UIViewController
 		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
 		mapScreen.mapView.setRegion(region, animated: true)
 	}
-	
 	// Находит один радиус с одинаковыми координатами и радиусом
 	private func removeRadiusOverlay(forPin pin: SmartObject) {
 		let overlays = mapScreen.mapView.overlays
