@@ -15,7 +15,7 @@ protocol IMapViewController
 	func getMapView() -> MKMapView
 	func showAlertLocation(title: String, message: String?, url: URL?)
 	func addCircle(_ smartObject: SmartObject)
-	func getLocationManager() -> CLLocationManager
+	func setMonitoringPlacecesCount(number: Int)
 }
 
 final class MapViewController: UIViewController
@@ -114,6 +114,7 @@ final class MapViewController: UIViewController
 	}
 
 	private func setSmartObjectsOnMap() {
+		presenter.checkMonitoringRegions()
 		presenter.getSmartObjects().forEach { [weak self] smartObject in
 			guard let self = self else { return }
 			//отрисовка области вокруг пин
@@ -196,16 +197,18 @@ extension MapViewController: CLLocationManagerDelegate
 	func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
 		presenter.checkLocationEnabled()
 	}
+
 	func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-		notifyEvent(for: region)
+		presenter.handleEvent(for: region)
 	}
 }
 
 extension MapViewController: IMapViewController
 {
-	func getLocationManager() -> CLLocationManager {
-		return locationManeger
+	func setMonitoringPlacecesCount(number: Int) {
+		navigationItem.title = "Monitoring places: \(number)"
 	}
+
 	func showAlert(withTitle title: String?, message: String?) {
 		let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 		let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
@@ -234,6 +237,7 @@ extension MapViewController: IMapViewController
 				self.mapScreen.mapView.addAnnotation(smartObject)
 			}
 		}
+		setMonitoringPlacecesCount(number: presenter.getMonitoringRegions().count)
 	}
 
 	func showAlertLocation(title: String, message: String?, url: URL?) {

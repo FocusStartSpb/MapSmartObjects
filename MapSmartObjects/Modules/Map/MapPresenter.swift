@@ -8,6 +8,7 @@
 
 import Foundation
 import MapKit
+import UserNotifications
 
 protocol IMapPresenter
 {
@@ -16,7 +17,11 @@ protocol IMapPresenter
 	func checkLocationEnabled()
 	func getCurrentLocation() -> CLLocationCoordinate2D?
 	func addPinWithAlert(_ location: CLLocationCoordinate2D?)
-	func stopMonitoring(smartObject: SmartObject)
+	func startMonitoring(_ smartObject: SmartObject)
+	func stopMonitoring(_ smartObject: SmartObject)
+	func getMonitoringRegions() -> [CLRegion]
+	func checkMonitoringRegions()
+	func handleEvent(for region: CLRegion)
 }
 
 final class MapPresenter
@@ -33,6 +38,44 @@ final class MapPresenter
 
 extension MapPresenter: IMapPresenter
 {
+	func getMonitoringRegions() -> [CLRegion] { //Проверить нужен ли этот метод
+		return Array(locationManeger.monitoredRegions)
+	}
+
+	func handleEvent(for region: CLRegion) {
+		guard let currentObject = repository.getSmartObject(with: region.identifier) else { return }
+		let message = "Вы вошли в зону \(currentObject.name)"
+		// показать алерт, если приложение активно
+		if UIApplication.shared.applicationState == .active {
+			mapViewController?.showAlert(withTitle: "Внимание!", message: message)
+		}
+		else {
+			// отправить нотификацию, если приложение не активно
+			let notificationContent = UNMutableNotificationContent()
+			notificationContent.body = message
+			notificationContent.sound = UNNotificationSound.default
+			notificationContent.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
+			let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+			let request = UNNotificationRequest(identifier: "location_change",
+												content: notificationContent,
+												trigger: trigger)
+			UNUserNotificationCenter.current().add(request) { error in
+				if let error = error {
+					print("Error: \(error)")
+				}
+			}
+		}
+	}
+
+	func checkMonitoringRegions() {
+		print(locationManeger.monitoredRegions.count)
+		locationManeger.monitoredRegions.forEach { locationManeger.stopMonitoring(for: $0) }
+		for smartObject in repository.getSmartObjects() {
+			self.startMonitoring(smartObject)
+		}
+		mapViewController?.setMonitoringPlacecesCount(number: locationManeger.monitoredRegions.count)
+	}
+
 	func getCurrentLocation() -> CLLocationCoordinate2D? {
 		guard let location = mapViewController?.getLocationManager().location?.coordinate else { return nil }
 		return location
@@ -49,19 +92,44 @@ extension MapPresenter: IMapPresenter
 			guard let self = self else { return }
 			switch geocoderResult {
 			case .success(let position):
-				let smartObject = SmartObject(name: name, address: position, coordinate: coordinate, circleRadius: checkRadius)
+				let maxRadius = radius > self.locationManeger.maximumRegionMonitoringDistance
+					? self.locationManeger.maximumRegionMonitoringDistance
+					: radius
+				print(maxRadius)
+				let smartObject = SmartObject(name: name, address: position, coordinate: coordinate, circleRadius: maxRadius)
 				self.repository.addSmartObject(object: smartObject)
 				DispatchQueue.main.async {
 					self.mapViewController?.updateSmartObjects(self.repository.getSmartObjects())
 					self.mapViewController?.addCircle(smartObject)
-					self.startMonitoring(with: smartObject)
+					self.startMonitoring(smartObject)
+					self.mapViewController?.setMonitoringPlacecesCount(number: self.locationManeger.monitoredRegions.count)
 				}
 			case .failure(let error):
 				self.mapViewController?.showAlert(withTitle: "Внимание!", message: error.localizedDescription)
 			}
 		}
 	}
-	//проверяем включена ли служба геолокации
+
+	private func getRegion(with smartObject: SmartObject) -> CLCircularRegion {
+		let region = CLCircularRegion(center: smartObject.coordinate,
+									  radius: smartObject.circleRadius,
+									  identifier: smartObject.identifier)
+		region.notifyOnEntry = true
+		region.notifyOnExit = false
+		return region
+	}
+
+	func startMonitoring(_ smartObject: SmartObject) {
+		locationManeger.startMonitoring(for: getRegion(with: smartObject))
+	}
+
+	func stopMonitoring(_ smartObject: SmartObject) {
+		for region in locationManeger.monitoredRegions where smartObject.identifier == region.identifier {
+			locationManeger.stopMonitoring(for: region)
+		}
+	}
+
+	//проверяем включина ли служба геолокации
 	func checkLocationEnabled() {
 		if CLLocationManager.locationServicesEnabled() {
 			ckeckAutorization()
