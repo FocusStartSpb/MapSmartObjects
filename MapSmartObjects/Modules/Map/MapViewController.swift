@@ -114,8 +114,8 @@ final class MapViewController: UIViewController
 	private func setSmartObjectsOnMap() {
 		presenter.getSmartObjects().forEach { smartObject in
 			presenter.checkMonitoringRegions()
-			addCircle(smartObject)
 			mapScreen.mapView.addAnnotation(smartObject)
+			presenter.startMonitoring(smartObject)
 		}
 	}
 }
@@ -212,19 +212,19 @@ extension MapViewController: IMapViewController
 	// Обновление объектов и кругов на карте при удалении или добавлении
 	func updateSmartObjects(_ smartObjects: [SmartObject]) {
 		let smartObjectsFromDB = presenter.getSmartObjects() // получаем данные из базы данных
-		print(smartObjectsFromDB.first?.name)
 		let smartObjectsFromMap = getSmartObjectsFromMap(annotations: mapScreen.mapView.annotations)
-		print(smartObjectsFromMap.first?.name)
 		//находим разницу между 2 массивами
 		let differenceSmartObjects = smartObjectsFromMap.difference(from: smartObjectsFromDB)
 		//вот тут можно отписывать difference от мониторинга (но дальше это надо будет переносить в презентер)
 		mapScreen.mapView.removeAnnotations(differenceSmartObjects) // убираем объекты с карты
 		differenceSmartObjects.forEach {
 			removeRadiusOverlay(forPin: $0) //убираем круги у удаленных объектов
-			presenter.stopMonitoring($0)
+			presenter.stopMonitoring($0) // убираем мониторинг удаленных объектов
 		}
 		presenter.getSmartObjects().forEach { smartObject in
 			mapScreen.mapView.addAnnotation(smartObject)
+			presenter.startMonitoring(smartObject)
+			addCircle(smartObject)
 		}
 		setMonitoringPlacecesCount(number: presenter.getMonitoringRegionsCount())
 		print("MAP UPDATED")

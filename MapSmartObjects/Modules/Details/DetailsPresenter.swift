@@ -11,7 +11,7 @@ import MapKit
 protocol IDetailsPresenter
 {
 	func getSmartObject() -> SmartObject
-	func updateSmartObject(with identifier: String, coordinate: CLLocationCoordinate2D, name: String, radius: Double)
+	func changeSmartObjects(from old: SmartObject, coordinate: CLLocationCoordinate2D, name: String, radius: Double)
 }
 
 final class DetailsPresenter
@@ -31,8 +31,8 @@ final class DetailsPresenter
 
 extension DetailsPresenter: IDetailsPresenter
 {
-	func updateSmartObject(with identifier: String, coordinate: CLLocationCoordinate2D, name: String, radius: Double) {
-		repository.updateSmartObject(with: identifier, coordinate: coordinate, name: name, radius: radius)
+	func changeSmartObjects(from old: SmartObject, coordinate: CLLocationCoordinate2D, name: String, radius: Double) {
+		repository.changeSmartObjects(from: old, coordinate: coordinate, name: name, radius: radius)
 	}
 
 	func getSmartObject() -> SmartObject {
