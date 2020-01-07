@@ -10,6 +10,7 @@ import Foundation
 
 protocol IPinListRouter
 {
+	func showDetails(_ smartObject: SmartObject)
 }
 
 final class PinListRouter
@@ -24,4 +25,8 @@ final class PinListRouter
 
 extension PinListRouter: IPinListRouter
 {
+	func showDetails(_ smartObject: SmartObject) {
+		let ditailsVC = factory.createDetailsModule(with: smartObject)
+		pinListViewController?.navigationController?.pushViewController(ditailsVC, animated: true)
+	}
 }

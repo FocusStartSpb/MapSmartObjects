@@ -212,7 +212,9 @@ extension MapViewController: IMapViewController
 	// Обновление объектов и кругов на карте при удалении или добавлении
 	func updateSmartObjects(_ smartObjects: [SmartObject]) {
 		let smartObjectsFromDB = presenter.getSmartObjects() // получаем данные из базы данных
+		print(smartObjectsFromDB.first?.name)
 		let smartObjectsFromMap = getSmartObjectsFromMap(annotations: mapScreen.mapView.annotations)
+		print(smartObjectsFromMap.first?.name)
 		//находим разницу между 2 массивами
 		let differenceSmartObjects = smartObjectsFromMap.difference(from: smartObjectsFromDB)
 		//вот тут можно отписывать difference от мониторинга (но дальше это надо будет переносить в презентер)
@@ -225,6 +227,7 @@ extension MapViewController: IMapViewController
 			mapScreen.mapView.addAnnotation(smartObject)
 		}
 		setMonitoringPlacecesCount(number: presenter.getMonitoringRegionsCount())
+		print("MAP UPDATED")
 	}
 
 	func showAlertRequestLocation(title: String, message: String?, url: URL?) {

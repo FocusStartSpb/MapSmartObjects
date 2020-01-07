@@ -16,9 +16,15 @@ protocol IRepository
 
 	func getSmartObjects() -> [SmartObject]
 	func removeSmartObject(at index: Int)
+	func removeSmartObject(with identifier: String)
 	func addSmartObject(object: SmartObject)
 	func getSmartObject(at index: Int) -> SmartObject
 	func getSmartObject(with identifier: String) -> SmartObject?
+	func saveSmartObjects()
+	func updateSmartObject(with identifier: String,
+						   coordinate: CLLocationCoordinate2D,
+						   name: String,
+						   radius: Double)
 	func getGeoposition(coordinates: CLLocationCoordinate2D,
 						completionHandler: @escaping (GeocoderResponseResult) -> Void)
 }
@@ -29,7 +35,7 @@ final class Repository
 	private let dataService: IDataService
 	private var smartObjects = [SmartObject]() {
 		didSet {
-			saveSmartObjects(objects: smartObjects)
+			saveSmartObjects()
 		}
 	}
 
@@ -53,6 +59,32 @@ extension Repository: IRepository
 		return smartObjects.count
 	}
 
+	func updateSmartObject(with identifier: String,
+						   coordinate: CLLocationCoordinate2D,
+						   name: String,
+						   radius: Double) {
+		guard let smartObject = smartObjects.first(where: { $0.identifier == identifier }) else { return }
+		smartObject.name = name
+		smartObject.coordinate = coordinate
+		smartObject.circleRadius = radius
+		getGeoposition(coordinates: coordinate) { geocoderResult in
+			switch geocoderResult {
+			case .success(let position):
+				DispatchQueue.main.async {
+					smartObject.address = position
+					self.saveSmartObjects()
+					print("CHANGES SAVED")
+				}
+			case .failure(let error):
+				print(error.localizedDescription)
+			}
+		}
+	}
+
+	func removeSmartObject(with identifier: String) {
+		smartObjects = smartObjects.filter { $0.identifier != identifier }
+	}
+
 	func getSmartObject(with identifier: String) -> SmartObject? {
 		if let index = smartObjects.firstIndex(where: { $0.identifier == identifier }) {
 			return smartObjects[index]
@@ -67,8 +99,8 @@ extension Repository: IRepository
 		guard index < smartObjects.count else { return }
 		smartObjects.remove(at: index)
 	}
-	func saveSmartObjects(objects: [SmartObject]) {
-		guard let data = try? PropertyListEncoder().encode(objects) else { return }
+	func saveSmartObjects() {
+		guard let data = try? PropertyListEncoder().encode(smartObjects) else { return }
 		dataService.saveData(data)
 	}
 	func getSmartObjects() -> [SmartObject] {

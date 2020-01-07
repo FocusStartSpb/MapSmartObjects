@@ -11,11 +11,11 @@ import MapKit
 
 final class SmartObject: NSObject
 {
-	private(set) var name: String
-	private(set) var coordinate: CLLocationCoordinate2D
-	private(set) var circleRadius: Double
-	private(set) var address: String
-	private(set) var identifier = UUID().uuidString
+	var name: String
+	var coordinate: CLLocationCoordinate2D
+	var circleRadius: Double
+	var address: String
+	var identifier = UUID().uuidString
 
 	init(name: String, address: String, coordinate: CLLocationCoordinate2D, circleRadius: Double) {
 		self.name = name
