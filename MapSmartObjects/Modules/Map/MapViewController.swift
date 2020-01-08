@@ -44,7 +44,7 @@ final class MapViewController: UIViewController
 	}
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		updateSmartObjects(presenter.getSmartObjects())
+		updateSmartObjects()
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
@@ -113,9 +113,7 @@ final class MapViewController: UIViewController
 	// Установка объектов и кругов на карте из базы при первом запуске
 	private func setSmartObjectsOnMap() {
 		presenter.getSmartObjects().forEach { smartObject in
-			presenter.checkMonitoringRegions()
 			mapScreen.mapView.addAnnotation(smartObject)
-			presenter.startMonitoring(smartObject)
 			addCircle(smartObject)
 		}
 	}
@@ -211,26 +209,24 @@ extension MapViewController: IMapViewController
 		present(alert, animated: true, completion: nil)
 	}
 	// Обновление объектов и кругов на карте при удалении или добавлении
-	func updateSmartObjects(_ smartObjects: [SmartObject]) {
+	func updateSmartObjects() {
 		let smartObjectsFromDB = presenter.getSmartObjects() // получаем данные из базы данных
 		let smartObjectsFromMap = getSmartObjectsFromMap(annotations: mapScreen.mapView.annotations)
 		let objectsToAdd = smartObjectsFromDB.filter { smartObjectsFromMap.contains($0) == false }
-		print("To add: \(objectsToAdd)")
 		let objectsToRemove = smartObjectsFromMap.filter { smartObjectsFromDB.contains($0) == false }
-		print("To remove: \(objectsToRemove)")
-		objectsToAdd.forEach { smartObject in
-			mapScreen.mapView.addAnnotation(smartObject)
-			presenter.startMonitoring(smartObject)
-			addCircle(smartObject)
-		}
-		print("Circles on map: \(mapScreen.mapView.overlays.count)")
 		objectsToRemove.forEach { smartObject in
 			mapScreen.mapView.removeAnnotation(smartObject)
 			presenter.stopMonitoring(smartObject)
 			removeRadiusOverlay(forPin: smartObject)
+			setMonitoringPlacecesCount(number: presenter.getMonitoringRegionsCount())
+		}
+		objectsToAdd.forEach { smartObject in
+			mapScreen.mapView.addAnnotation(smartObject)
+			presenter.startMonitoring(smartObject)
+			addCircle(smartObject)
+			setMonitoringPlacecesCount(number: presenter.getMonitoringRegionsCount())
 		}
 		setMonitoringPlacecesCount(number: presenter.getMonitoringRegionsCount())
-		print("MAP UPDATED")
 	}
 
 	func showAlertRequestLocation(title: String, message: String?, url: URL?) {

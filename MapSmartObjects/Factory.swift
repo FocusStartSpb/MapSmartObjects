@@ -24,6 +24,7 @@ final class Factory
 		let mapVC = MapViewController(presenter: mapPresenter)
 		mapPresenter.mapViewController = mapVC
 		mapRouter.mapViewController = mapVC
+		repository.mapViewController = mapVC
 		return mapVC
 	}
 

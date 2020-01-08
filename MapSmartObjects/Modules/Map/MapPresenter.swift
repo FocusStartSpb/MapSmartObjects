@@ -20,7 +20,6 @@ protocol IMapPresenter
 	func startMonitoring(_ smartObject: SmartObject)
 	func stopMonitoring(_ smartObject: SmartObject)
 	func getMonitoringRegionsCount() -> Int
-	func checkMonitoringRegions()
 	func handleEvent(for region: CLRegion)
 }
 
@@ -68,14 +67,6 @@ extension MapPresenter: IMapPresenter
 		}
 	}
 
-	func checkMonitoringRegions() {
-		locationManeger.monitoredRegions.forEach { locationManeger.stopMonitoring(for: $0) }
-		for smartObject in repository.getSmartObjects() {
-			self.startMonitoring(smartObject)
-		}
-		mapViewController?.setMonitoringPlacecesCount(number: locationManeger.monitoredRegions.count)
-	}
-
 	func getCurrentLocation() -> CLLocationCoordinate2D? {
 		guard let location = locationManeger.location?.coordinate else { return nil }
 		return location
@@ -97,8 +88,7 @@ extension MapPresenter: IMapPresenter
 				let smartObject = SmartObject(name: name, address: position, coordinate: coordinate, circleRadius: maxRadius)
 				self.repository.addSmartObject(object: smartObject)
 				DispatchQueue.main.async {
-					self.mapViewController?.updateSmartObjects(self.repository.getSmartObjects())
-					self.startMonitoring(smartObject)
+					self.mapViewController?.updateSmartObjects()
 					self.mapViewController?.setMonitoringPlacecesCount(number: self.locationManeger.monitoredRegions.count)
 				}
 			case .failure(let error):
@@ -117,12 +107,15 @@ extension MapPresenter: IMapPresenter
 	}
 
 	func startMonitoring(_ smartObject: SmartObject) {
-		locationManeger.startMonitoring(for: getRegion(with: smartObject))
+		let fenceRegion = getRegion(with: smartObject)
+		locationManeger.startMonitoring(for: fenceRegion)
 	}
 
 	func stopMonitoring(_ smartObject: SmartObject) {
-		for region in locationManeger.monitoredRegions where smartObject.identifier == region.identifier {
-			locationManeger.stopMonitoring(for: region)
+		for region in locationManeger.monitoredRegions {
+			guard let circularRegion = region as? CLCircularRegion,
+				circularRegion.identifier == smartObject.identifier else { continue }
+			locationManeger.stopMonitoring(for: circularRegion)
 		}
 	}
 

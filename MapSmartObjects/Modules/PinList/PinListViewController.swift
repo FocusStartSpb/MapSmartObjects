@@ -88,7 +88,6 @@ final class PinListViewController: UIViewController
 extension PinListViewController: UITableViewDataSource
 {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		print("PINLIST SHOWED")
 		return isFiltering ? filtredPins.count : presenter.getSmartObjectsCount()
 	}
 

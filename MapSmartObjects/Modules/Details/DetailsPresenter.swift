@@ -50,7 +50,7 @@ extension DetailsPresenter: IDetailsPresenter
 					let smartObject = SmartObject(name: name, address: position, coordinate: coordinate, circleRadius: radius)
 					self.repository.addSmartObject(object: smartObject)
 					self.repository.updatePinList()
-					print("CHANGES SAVED")
+					self.repository.updateMap()
 				}
 			case .failure(let error):
 				print(error.localizedDescription)

@@ -22,6 +22,7 @@ protocol IRepository
 	func getSmartObject(with identifier: String) -> SmartObject?
 	func saveSmartObjects()
 	func updatePinList()
+	func updateMap()
 	func getGeoposition(coordinates: CLLocationCoordinate2D,
 						completionHandler: @escaping (GeocoderResponseResult) -> Void)
 }
@@ -29,6 +30,7 @@ protocol IRepository
 final class Repository
 {
 	weak var pinListViewController: PinListViewController?
+	weak var mapViewController: MapViewController?
 	private let geocoder: IYandexGeocoder
 	private let dataService: IDataService
 	private var smartObjects = [SmartObject]() {
@@ -57,6 +59,10 @@ extension Repository: IRepository
 		return smartObjects.count
 	}
 
+	func updateMap() {
+		mapViewController?.updateSmartObjects()
+	}
+
 	func updatePinList() {
 		pinListViewController?.updateTableView()
 	}
@@ -74,21 +80,27 @@ extension Repository: IRepository
 
 	func addSmartObject(object: SmartObject) {
 		smartObjects.append(object)
+		saveSmartObjects()
 	}
+
 	func removeSmartObject(at index: Int) {
 		guard index < smartObjects.count else { return }
 		smartObjects.remove(at: index)
 	}
+
 	func saveSmartObjects() {
 		guard let data = try? PropertyListEncoder().encode(smartObjects) else { return }
 		dataService.saveData(data)
 	}
+
 	func getSmartObjects() -> [SmartObject] {
 		return smartObjects
 	}
+
 	func getSmartObject(at index: Int) -> SmartObject {
 		return smartObjects[index]
 	}
+
 	func getGeoposition(coordinates: CLLocationCoordinate2D,
 						completionHandler: @escaping (GeocoderResponseResult) -> Void) {
 		geocoder.getGeocoderRequest(coordinates: coordinates) { result in
