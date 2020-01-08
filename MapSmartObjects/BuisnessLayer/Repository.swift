@@ -68,7 +68,6 @@ extension Repository: IRepository
 	func addSmartObject(object: SmartObject) {
 		smartObjects.append(object)
 		saveSmartObjects()
-		print("SAVED")
 	}
 
 	func removeSmartObject(at index: Int) {
