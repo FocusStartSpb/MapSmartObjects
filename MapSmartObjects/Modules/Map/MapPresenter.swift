@@ -89,7 +89,6 @@ extension MapPresenter: IMapPresenter
 				self.repository.addSmartObject(object: smartObject)
 				DispatchQueue.main.async {
 					self.mapViewController?.updateSmartObjects()
-					self.mapViewController?.setMonitoringPlacecesCount(number: self.locationManeger.monitoredRegions.count)
 				}
 			case .failure(let error):
 				self.mapViewController?.showAlert(withTitle: "Внимание!", message: error.localizedDescription)
