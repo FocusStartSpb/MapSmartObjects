@@ -34,6 +34,7 @@ final class Factory
 		let pinListVC = PinListViewController(presenter: pinListPresenter)
 		pinListPresenter.pinListViewController = pinListVC
 		pinListRouter.pinListViewController = pinListVC
+		repository.pinListViewController = pinListVC
 		return pinListVC
 	}
 

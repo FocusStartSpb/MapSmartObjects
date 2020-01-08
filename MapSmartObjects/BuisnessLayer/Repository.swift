@@ -21,14 +21,14 @@ protocol IRepository
 	func getSmartObject(at index: Int) -> SmartObject
 	func getSmartObject(with identifier: String) -> SmartObject?
 	func saveSmartObjects()
-	func createSmartObject(coordinate: CLLocationCoordinate2D, name: String, radius: Double)
-	func changeSmartObjects(from old: SmartObject, coordinate: CLLocationCoordinate2D, name: String, radius: Double)
+	func updatePinList()
 	func getGeoposition(coordinates: CLLocationCoordinate2D,
 						completionHandler: @escaping (GeocoderResponseResult) -> Void)
 }
 
 final class Repository
 {
+	weak var pinListViewController: PinListViewController?
 	private let geocoder: IYandexGeocoder
 	private let dataService: IDataService
 	private var smartObjects = [SmartObject]() {
@@ -57,24 +57,8 @@ extension Repository: IRepository
 		return smartObjects.count
 	}
 
-	func changeSmartObjects(from old: SmartObject, coordinate: CLLocationCoordinate2D, name: String, radius: Double) {
-		removeSmartObject(with: old.identifier)
-		createSmartObject(coordinate: coordinate, name: name, radius: radius)
-	}
-
-	func createSmartObject(coordinate: CLLocationCoordinate2D, name: String, radius: Double) {
-		getGeoposition(coordinates: coordinate) { geocoderResult in
-			switch geocoderResult {
-			case .success(let position):
-				DispatchQueue.main.async {
-					let smartObject = SmartObject(name: name, address: position, coordinate: coordinate, circleRadius: radius)
-					self.addSmartObject(object: smartObject)
-					print("CHANGES SAVED")
-				}
-			case .failure(let error):
-				print(error.localizedDescription)
-			}
-		}
+	func updatePinList() {
+		pinListViewController?.updateTableView()
 	}
 
 	func removeSmartObject(with identifier: String) {

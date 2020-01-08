@@ -45,8 +45,6 @@ final class DetailsViewController: UIViewController
 
 	@objc private func saveBarButtonPressed() {
 		let oldSmartObject = presenter.getSmartObject()
-		print(oldSmartObject.coordinate)
-		print(detailsView.mapView.centerCoordinate)
 		if oldSmartObject.coordinate.latitude != detailsView.mapView.centerCoordinate.latitude
 			|| oldSmartObject.coordinate.longitude != detailsView.mapView.centerCoordinate.longitude
 			|| oldSmartObject.name != detailsView.nameTextField.text

@@ -31,8 +31,31 @@ final class DetailsPresenter
 
 extension DetailsPresenter: IDetailsPresenter
 {
+//	func changeSmartObjects(from old: SmartObject, coordinate: CLLocationCoordinate2D, name: String, radius: Double) {
+//		repository.changeSmartObjects(from: old, coordinate: coordinate, name: name, radius: radius)
+//		if let vc = viewController?.navigationController?.viewControllers[0] as? PinListViewController {
+//			vc.updateTableView()
+//		}
+//	}
 	func changeSmartObjects(from old: SmartObject, coordinate: CLLocationCoordinate2D, name: String, radius: Double) {
-		repository.changeSmartObjects(from: old, coordinate: coordinate, name: name, radius: radius)
+		repository.removeSmartObject(with: old.identifier)
+		createSmartObject(coordinate: coordinate, name: name, radius: radius)
+	}
+
+	func createSmartObject(coordinate: CLLocationCoordinate2D, name: String, radius: Double) {
+		repository.getGeoposition(coordinates: coordinate) { geocoderResult in
+			switch geocoderResult {
+			case .success(let position):
+				DispatchQueue.main.async {
+					let smartObject = SmartObject(name: name, address: position, coordinate: coordinate, circleRadius: radius)
+					self.repository.addSmartObject(object: smartObject)
+					self.repository.updatePinList()
+					print("CHANGES SAVED")
+				}
+			case .failure(let error):
+				print(error.localizedDescription)
+			}
+		}
 	}
 
 	func getSmartObject() -> SmartObject {
