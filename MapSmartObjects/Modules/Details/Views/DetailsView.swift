@@ -93,7 +93,7 @@ final class DetailsView: UIView
 		setTranslatesAutoresizingMaskIntoConstraints()
 
 		NSLayoutConstraint.activate([
-			mapView.topAnchor.constraint(equalTo: self.topAnchor),
+			mapView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor),
 			mapView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor),
 			mapView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor),
 			mapView.heightAnchor.constraint(equalTo: self.mapView.widthAnchor),
