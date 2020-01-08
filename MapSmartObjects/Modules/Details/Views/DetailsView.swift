@@ -10,10 +10,29 @@ import MapKit
 
 final class DetailsView: UIView
 {
-	private let nameLabel = UILabel()
-	private let radiusLabel = UILabel()
-	private let addressLabel = UILabel()
 	let mapView = MKMapView()
+
+	private lazy var nameLabel: UILabel = {
+		let label = UILabel()
+		label.text = "Name:"
+		label.font = UIFont(name: "HelveticaNeue-Bold", size: 18.0)
+		return label
+	}()
+
+	private lazy var radiusLabel: UILabel = {
+		let label = UILabel()
+		label.text = "Radius:"
+		label.font = UIFont(name: "HelveticaNeue-Bold", size: 18.0)
+		return label
+	}()
+
+	private lazy var addressLabel: UILabel = {
+		let label = UILabel()
+		label.text = "Address:"
+		label.font = UIFont(name: "HelveticaNeue-Bold", size: 18.0)
+		return label
+	}()
+
 	let addressInfoLabel = UILabel()
 	let nameTextField = UITextField()
 	let radiusTextField = UITextField()
@@ -40,16 +59,13 @@ final class DetailsView: UIView
 		self.addSubview(nameTextField)
 		self.addSubview(radiusTextField)
 		self.mapView.addSubview(pinImage)
-//		self.subviews.map { $0.backgroundColor = .lightGray } // для тестирования
 	}
+
 	private func configureViews() {
 		self.backgroundColor = .white
-		nameLabel.text = "Name"
-		radiusLabel.text = "Radius"
-		addressLabel.text = "Address"
+		addressInfoLabel.numberOfLines = 0
 		nameTextField.placeholder = "Enter place name"
 		radiusTextField.placeholder = "Enter moitoring radius"
-		addressInfoLabel.numberOfLines = 0
 	}
 
 	private func setTranslatesAutoresizingMaskIntoConstraints() {
