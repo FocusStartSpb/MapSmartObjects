@@ -24,9 +24,6 @@ final class DetailsPresenter
 		self.smartObject = smartObject
 		self.repository = repository
 	}
-	deinit {
-		print("Presenter deinited")
-	}
 }
 
 extension DetailsPresenter: IDetailsPresenter

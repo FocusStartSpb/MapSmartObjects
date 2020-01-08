@@ -31,8 +31,10 @@ final class DetailsViewController: UIViewController
 		super.viewDidLoad()
 		let saveBarButton = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveBarButtonPressed))
 		navigationItem.rightBarButtonItem = saveBarButton
-		saveBarButton.isEnabled = true
-		let selectedSmartObject = presenter.getSmartObject()
+		setupView(presenter.getSmartObject())
+	}
+
+	private func setupView(_ selectedSmartObject: SmartObject) {
 		self.navigationItem.title = selectedSmartObject.name
 		detailsView.nameTextField.text = selectedSmartObject.name
 		detailsView.radiusTextField.text = String(selectedSmartObject.circleRadius)
@@ -55,8 +57,5 @@ final class DetailsViewController: UIViewController
 										 radius: Double(detailsView.radiusTextField.text ?? "") ?? 0)
 		}
 		self.navigationController?.popViewController(animated: true)
-	}
-	deinit {
-		print("Controller deinited")
 	}
 }

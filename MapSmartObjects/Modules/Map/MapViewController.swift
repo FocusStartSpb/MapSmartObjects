@@ -15,6 +15,7 @@ protocol IMapViewController
 	func showAlertRequestLocation(title: String, message: String?, url: URL?)
 	func addCircle(_ smartObject: SmartObject)
 	func setMonitoringPlacecesCount(number: Int)
+	func updateSmartObjects()
 }
 
 final class MapViewController: UIViewController

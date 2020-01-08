@@ -12,21 +12,21 @@ final class DetailsView: UIView
 {
 	let mapView = MKMapView()
 
-	private lazy var nameLabel: UILabel = {
+	private let nameLabel: UILabel = {
 		let label = UILabel()
 		label.text = "Name:"
 		label.font = UIFont(name: "HelveticaNeue-Bold", size: 18.0)
 		return label
 	}()
 
-	private lazy var radiusLabel: UILabel = {
+	private let radiusLabel: UILabel = {
 		let label = UILabel()
 		label.text = "Radius:"
 		label.font = UIFont(name: "HelveticaNeue-Bold", size: 18.0)
 		return label
 	}()
 
-	private lazy var addressLabel: UILabel = {
+	private let addressLabel: UILabel = {
 		let label = UILabel()
 		label.text = "Address:"
 		label.font = UIFont(name: "HelveticaNeue-Bold", size: 18.0)

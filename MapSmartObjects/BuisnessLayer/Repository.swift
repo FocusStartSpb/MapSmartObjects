@@ -29,8 +29,8 @@ protocol IRepository
 
 final class Repository
 {
-	weak var pinListViewController: PinListViewController?
-	weak var mapViewController: MapViewController?
+	var pinListViewController: IPinListViewController?
+	var mapViewController: IMapViewController?
 	private let geocoder: IYandexGeocoder
 	private let dataService: IDataService
 	private var smartObjects = [SmartObject]() {
