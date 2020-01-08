@@ -116,6 +116,7 @@ final class MapViewController: UIViewController
 			presenter.checkMonitoringRegions()
 			mapScreen.mapView.addAnnotation(smartObject)
 			presenter.startMonitoring(smartObject)
+			addCircle(smartObject)
 		}
 	}
 }
@@ -213,18 +214,20 @@ extension MapViewController: IMapViewController
 	func updateSmartObjects(_ smartObjects: [SmartObject]) {
 		let smartObjectsFromDB = presenter.getSmartObjects() // получаем данные из базы данных
 		let smartObjectsFromMap = getSmartObjectsFromMap(annotations: mapScreen.mapView.annotations)
-		//находим разницу между 2 массивами
-		let differenceSmartObjects = smartObjectsFromMap.difference(from: smartObjectsFromDB)
-		//вот тут можно отписывать difference от мониторинга (но дальше это надо будет переносить в презентер)
-		mapScreen.mapView.removeAnnotations(differenceSmartObjects) // убираем объекты с карты
-		differenceSmartObjects.forEach {
-			removeRadiusOverlay(forPin: $0) //убираем круги у удаленных объектов
-			presenter.stopMonitoring($0) // убираем мониторинг удаленных объектов
-		}
-		presenter.getSmartObjects().forEach { smartObject in
+		let objectsToAdd = smartObjectsFromDB.filter { smartObjectsFromMap.contains($0) == false }
+		print("To add: \(objectsToAdd)")
+		let objectsToRemove = smartObjectsFromMap.filter { smartObjectsFromDB.contains($0) == false }
+		print("To remove: \(objectsToRemove)")
+		objectsToAdd.forEach { smartObject in
 			mapScreen.mapView.addAnnotation(smartObject)
 			presenter.startMonitoring(smartObject)
 			addCircle(smartObject)
+		}
+		print("Circles on map: \(mapScreen.mapView.overlays.count)")
+		objectsToRemove.forEach { smartObject in
+			mapScreen.mapView.removeAnnotation(smartObject)
+			presenter.stopMonitoring(smartObject)
+			removeRadiusOverlay(forPin: smartObject)
 		}
 		setMonitoringPlacecesCount(number: presenter.getMonitoringRegionsCount())
 		print("MAP UPDATED")

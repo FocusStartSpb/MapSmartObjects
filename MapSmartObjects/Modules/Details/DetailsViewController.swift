@@ -57,6 +57,7 @@ final class DetailsViewController: UIViewController
 										 radius: Double(detailsView.radiusTextField.text ?? "") ?? 0)
 		}
 		self.navigationController?.popViewController(animated: true)
+		print("SAVEBUTTON PRESSED")
 	}
 	deinit {
 		print("Controller deinited")

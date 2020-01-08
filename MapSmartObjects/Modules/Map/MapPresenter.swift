@@ -98,7 +98,6 @@ extension MapPresenter: IMapPresenter
 				self.repository.addSmartObject(object: smartObject)
 				DispatchQueue.main.async {
 					self.mapViewController?.updateSmartObjects(self.repository.getSmartObjects())
-					self.mapViewController?.addCircle(smartObject)
 					self.startMonitoring(smartObject)
 					self.mapViewController?.setMonitoringPlacecesCount(number: self.locationManeger.monitoredRegions.count)
 				}
