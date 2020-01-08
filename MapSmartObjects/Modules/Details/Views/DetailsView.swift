@@ -11,6 +11,7 @@ import MapKit
 final class DetailsView: UIView
 {
 	let mapView = MKMapView()
+	let pinImage = UIImageView(image: #imageLiteral(resourceName: "LocationPin"))
 
 	private let nameLabel: UILabel = {
 		let label = UILabel()
@@ -33,10 +34,25 @@ final class DetailsView: UIView
 		return label
 	}()
 
-	let addressInfoLabel = UILabel()
-	let nameTextField = UITextField()
-	let radiusTextField = UITextField()
-	let pinImage = UIImageView(image: #imageLiteral(resourceName: "LocationPin"))
+	let addressInfoLabel: UILabel = {
+		let label = UILabel()
+		label.numberOfLines = 0
+		return label
+	}()
+
+	let nameTextField: UITextField = {
+		let textField = UITextField()
+		textField.placeholder = "Enter place name"
+		textField.borderStyle = .roundedRect
+		return textField
+	}()
+
+	let radiusTextField: UITextField = {
+		let textField = UITextField()
+		textField.placeholder = "Enter monitoring radius"
+		textField.borderStyle = .roundedRect
+		return textField
+	}()
 
 	init() {
 		super.init(frame: .zero)
@@ -63,9 +79,6 @@ final class DetailsView: UIView
 
 	private func configureViews() {
 		self.backgroundColor = .white
-		addressInfoLabel.numberOfLines = 0
-		nameTextField.placeholder = "Enter place name"
-		radiusTextField.placeholder = "Enter moitoring radius"
 	}
 
 	private func setTranslatesAutoresizingMaskIntoConstraints() {
