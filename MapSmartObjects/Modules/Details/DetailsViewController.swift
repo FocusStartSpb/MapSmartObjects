@@ -45,7 +45,7 @@ final class DetailsViewController: UIViewController
 		detailsView.addressInfoLabel.text = currentSmartObject.address
 		detailsView.mapView.centerCoordinate = currentSmartObject.coordinate
 		let coordinate = currentSmartObject.coordinate
-		let offset: Double = 500
+		let offset: Double = currentSmartObject.circleRadius / 3
 		let region = MKCoordinateRegion(center: coordinate,
 										latitudinalMeters: currentSmartObject.circleRadius * 2 + offset,
 										longitudinalMeters: currentSmartObject.circleRadius * 2 + offset)
