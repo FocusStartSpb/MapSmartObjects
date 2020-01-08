@@ -11,8 +11,6 @@ import MapKit
 final class DetailsView: UIView
 {
 	let mapView = MKMapView()
-	let pinImage = UIImageView(image: #imageLiteral(resourceName: "LocationPin"))
-
 	private let nameLabel: UILabel = {
 		let label = UILabel()
 		label.text = "Name:"
@@ -74,7 +72,6 @@ final class DetailsView: UIView
 		self.addSubview(addressInfoLabel)
 		self.addSubview(nameTextField)
 		self.addSubview(radiusTextField)
-		self.mapView.addSubview(pinImage)
 	}
 
 	private func configureViews() {
@@ -89,7 +86,6 @@ final class DetailsView: UIView
 		addressInfoLabel.translatesAutoresizingMaskIntoConstraints = false
 		nameTextField.translatesAutoresizingMaskIntoConstraints = false
 		radiusTextField.translatesAutoresizingMaskIntoConstraints = false
-		pinImage.translatesAutoresizingMaskIntoConstraints = false
 	}
 
 	private func setConstraints() {
@@ -100,11 +96,6 @@ final class DetailsView: UIView
 			mapView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor),
 			mapView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor),
 			mapView.heightAnchor.constraint(equalTo: self.mapView.widthAnchor),
-
-			pinImage.heightAnchor.constraint(equalToConstant: 100),
-			pinImage.widthAnchor.constraint(equalToConstant: 100),
-			pinImage.centerXAnchor.constraint(equalTo: mapView.centerXAnchor),
-			pinImage.centerYAnchor.constraint(equalTo: mapView.centerYAnchor),
 
 			nameLabel.topAnchor.constraint(equalTo: mapView.bottomAnchor, constant: 16),
 			nameLabel.widthAnchor.constraint(equalTo: mapView.widthAnchor, multiplier: 1 / 4),

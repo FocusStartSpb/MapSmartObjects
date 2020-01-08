@@ -36,6 +36,7 @@ final class DetailsViewController: UIViewController
 
 	private func setupView(_ selectedSmartObject: SmartObject) {
 		self.navigationItem.title = selectedSmartObject.name
+		detailsView.mapView.addAnnotation(selectedSmartObject)
 		detailsView.nameTextField.text = selectedSmartObject.name
 		detailsView.radiusTextField.text = String(selectedSmartObject.circleRadius)
 		detailsView.addressInfoLabel.text = selectedSmartObject.address
@@ -47,15 +48,12 @@ final class DetailsViewController: UIViewController
 
 	@objc private func saveBarButtonPressed() {
 		let oldSmartObject = presenter.getSmartObject()
-		if oldSmartObject.coordinate.latitude != detailsView.mapView.centerCoordinate.latitude
-			|| oldSmartObject.coordinate.longitude != detailsView.mapView.centerCoordinate.longitude
-			|| oldSmartObject.name != detailsView.nameTextField.text
+		if oldSmartObject.name != detailsView.nameTextField.text
 			|| oldSmartObject.circleRadius != Double(detailsView.radiusTextField.text ?? "") {
 			presenter.changeSmartObjects(from: oldSmartObject,
-										 coordinate: detailsView.mapView.centerCoordinate,
 										 name: detailsView.nameTextField.text ?? "",
 										 radius: Double(detailsView.radiusTextField.text ?? "") ?? 0)
 		}
-		self.navigationController?.popViewController(animated: true)
+		self.navigationController?.popToRootViewController(animated: true)
 	}
 }

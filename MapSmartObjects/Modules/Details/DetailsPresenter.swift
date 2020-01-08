@@ -11,7 +11,7 @@ import MapKit
 protocol IDetailsPresenter
 {
 	func getSmartObject() -> SmartObject
-	func changeSmartObjects(from old: SmartObject, coordinate: CLLocationCoordinate2D, name: String, radius: Double)
+	func changeSmartObjects(from smartObject: SmartObject, name: String, radius: Double)
 }
 
 final class DetailsPresenter
@@ -28,25 +28,14 @@ final class DetailsPresenter
 
 extension DetailsPresenter: IDetailsPresenter
 {
-	func changeSmartObjects(from old: SmartObject, coordinate: CLLocationCoordinate2D, name: String, radius: Double) {
-		repository.removeSmartObject(with: old.identifier)
-		createSmartObject(coordinate: coordinate, name: name, radius: radius)
+	func changeSmartObjects(from smartObject: SmartObject, name: String, radius: Double) {
+		repository.removeSmartObject(with: smartObject.identifier)
+		createSmartObject(old: smartObject, name: name, radius: radius, address: smartObject.address)
 	}
 
-	func createSmartObject(coordinate: CLLocationCoordinate2D, name: String, radius: Double) {
-		repository.getGeoposition(coordinates: coordinate) { geocoderResult in
-			switch geocoderResult {
-			case .success(let position):
-				DispatchQueue.main.async {
-					let smartObject = SmartObject(name: name, address: position, coordinate: coordinate, circleRadius: radius)
-					self.repository.addSmartObject(object: smartObject)
-					self.repository.updatePinList()
-					self.repository.updateMap()
-				}
-			case .failure(let error):
-				print(error.localizedDescription)
-			}
-		}
+	func createSmartObject(old smartObject: SmartObject, name: String, radius: Double, address: String) {
+		let smartObject = SmartObject(name: name, address: address, coordinate: smartObject.coordinate, circleRadius: radius)
+		repository.addSmartObject(object: smartObject)
 	}
 
 	func getSmartObject() -> SmartObject {

@@ -24,7 +24,6 @@ final class Factory
 		let mapVC = MapViewController(presenter: mapPresenter)
 		mapPresenter.mapViewController = mapVC
 		mapRouter.mapViewController = mapVC
-		repository.mapViewController = mapVC
 		return mapVC
 	}
 
@@ -35,7 +34,6 @@ final class Factory
 		let pinListVC = PinListViewController(presenter: pinListPresenter)
 		pinListPresenter.pinListViewController = pinListVC
 		pinListRouter.pinListViewController = pinListVC
-		repository.pinListViewController = pinListVC
 		return pinListVC
 	}
 
