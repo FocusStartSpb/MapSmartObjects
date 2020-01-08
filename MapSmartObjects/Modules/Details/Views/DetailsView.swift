@@ -76,6 +76,7 @@ final class DetailsView: UIView
 
 	private func configureViews() {
 		self.backgroundColor = .white
+		mapView.isUserInteractionEnabled = false
 	}
 
 	private func setTranslatesAutoresizingMaskIntoConstraints() {

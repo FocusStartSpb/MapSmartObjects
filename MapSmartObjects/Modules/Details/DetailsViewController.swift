@@ -34,15 +34,21 @@ final class DetailsViewController: UIViewController
 		setupView(presenter.getSmartObject())
 	}
 
-	private func setupView(_ selectedSmartObject: SmartObject) {
-		self.navigationItem.title = selectedSmartObject.name
-		detailsView.mapView.addAnnotation(selectedSmartObject)
-		detailsView.nameTextField.text = selectedSmartObject.name
-		detailsView.radiusTextField.text = String(selectedSmartObject.circleRadius)
-		detailsView.addressInfoLabel.text = selectedSmartObject.address
-		detailsView.mapView.centerCoordinate = selectedSmartObject.coordinate
-		let coordinate = selectedSmartObject.coordinate
-		let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+	private func setupView(_ currentSmartObject: SmartObject) {
+		self.navigationItem.title = currentSmartObject.name
+		detailsView.mapView.delegate = self
+		let circle = MKCircle(center: currentSmartObject.coordinate, radius: currentSmartObject.circleRadius)
+		detailsView.mapView.addOverlay(circle)
+		detailsView.mapView.addAnnotation(currentSmartObject)
+		detailsView.nameTextField.text = currentSmartObject.name
+		detailsView.radiusTextField.text = String(currentSmartObject.circleRadius)
+		detailsView.addressInfoLabel.text = currentSmartObject.address
+		detailsView.mapView.centerCoordinate = currentSmartObject.coordinate
+		let coordinate = currentSmartObject.coordinate
+		let offset: Double = 500
+		let region = MKCoordinateRegion(center: coordinate,
+										latitudinalMeters: currentSmartObject.circleRadius * 2 + offset,
+										longitudinalMeters: currentSmartObject.circleRadius * 2 + offset)
 		detailsView.mapView.setRegion(region, animated: true)
 	}
 
@@ -55,5 +61,20 @@ final class DetailsViewController: UIViewController
 										 radius: Double(detailsView.radiusTextField.text ?? "") ?? 0)
 		}
 		self.navigationController?.popToRootViewController(animated: true)
+	}
+}
+
+extension DetailsViewController: MKMapViewDelegate
+{
+	func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+		var circle = MKOverlayRenderer()
+		if overlay is MKCircle {
+			let circleRender = MKCircleRenderer(overlay: overlay)
+			circleRender.strokeColor = .blue
+			circleRender.fillColor = UIColor.green.withAlphaComponent(0.3)
+			circleRender.lineWidth = 1
+			circle = circleRender
+		}
+		return circle
 	}
 }
