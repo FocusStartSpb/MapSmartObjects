@@ -14,6 +14,7 @@ final class DetailsView: UIView
 	private let nameLabel: UILabel = {
 		let label = UILabel()
 		label.text = "Name:"
+		label.textAlignment = .left
 		label.font = UIFont(name: "HelveticaNeue-Bold", size: 18.0)
 		return label
 	}()
@@ -32,6 +33,11 @@ final class DetailsView: UIView
 		return label
 	}()
 
+	let scrollView: UIScrollView = {
+		let scrollView = UIScrollView()
+		return scrollView
+	}()
+
 	let addressInfoLabel: UILabel = {
 		let label = UILabel()
 		label.numberOfLines = 0
@@ -40,6 +46,7 @@ final class DetailsView: UIView
 
 	let nameTextField: UITextField = {
 		let textField = UITextField()
+		textField.tag = 1
 		textField.placeholder = "Enter place name"
 		textField.borderStyle = .roundedRect
 		return textField
@@ -47,8 +54,10 @@ final class DetailsView: UIView
 
 	let radiusTextField: UITextField = {
 		let textField = UITextField()
+		textField.tag = 2
 		textField.placeholder = "Enter monitoring radius"
 		textField.borderStyle = .roundedRect
+		textField.keyboardType = .numberPad
 		return textField
 	}()
 
@@ -65,23 +74,24 @@ final class DetailsView: UIView
 	}
 
 	private func addSubviews() {
-		self.addSubview(mapView)
-		self.addSubview(nameLabel)
-		self.addSubview(radiusLabel)
-		self.addSubview(addressLabel)
-		self.addSubview(addressInfoLabel)
-		self.addSubview(nameTextField)
-		self.addSubview(radiusTextField)
+		self.addSubview(scrollView)
+		scrollView.addSubview(mapView)
+		scrollView.addSubview(nameLabel)
+		scrollView.addSubview(radiusLabel)
+		scrollView.addSubview(addressLabel)
+		scrollView.addSubview(addressInfoLabel)
+		scrollView.addSubview(nameTextField)
+		scrollView.addSubview(radiusTextField)
 	}
 
 	private func configureViews() {
 		self.backgroundColor = .white
 		mapView.isUserInteractionEnabled = false
 		mapView.layer.cornerRadius = 16
-		radiusTextField.keyboardType = .numberPad
 	}
 
 	private func setTranslatesAutoresizingMaskIntoConstraints() {
+		scrollView.translatesAutoresizingMaskIntoConstraints = false
 		mapView.translatesAutoresizingMaskIntoConstraints = false
 		nameLabel.translatesAutoresizingMaskIntoConstraints = false
 		radiusLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -95,19 +105,24 @@ final class DetailsView: UIView
 		setTranslatesAutoresizingMaskIntoConstraints()
 
 		NSLayoutConstraint.activate([
-			mapView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 16),
-			mapView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-			mapView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+			scrollView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor),
+			scrollView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+			scrollView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+			scrollView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+
+			mapView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 16),
+			mapView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
+			mapView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
 			mapView.heightAnchor.constraint(equalTo: self.mapView.widthAnchor, multiplier: 1 / 2),
 
 			nameLabel.topAnchor.constraint(equalTo: mapView.bottomAnchor, constant: 16),
-			nameLabel.widthAnchor.constraint(equalTo: mapView.widthAnchor, multiplier: 1 / 4),
-			nameLabel.leadingAnchor.constraint(equalTo: mapView.leadingAnchor, constant: 16),
+			nameLabel.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 1 / 4),
+			nameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
 			nameLabel.heightAnchor.constraint(equalToConstant: 31),
 
 			nameTextField.topAnchor.constraint(equalTo: mapView.bottomAnchor, constant: 16),
 			nameTextField.leadingAnchor.constraint(equalTo: nameLabel.trailingAnchor, constant: 16),
-			nameTextField.trailingAnchor.constraint(equalTo: mapView.trailingAnchor, constant: -16),
+			nameTextField.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
 			nameTextField.heightAnchor.constraint(equalToConstant: 31),
 
 			radiusLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 16),

@@ -33,8 +33,38 @@ final class DetailsViewController: UIViewController
 		super.viewDidLoad()
 		let saveBarButton = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveBarButtonPressed))
 		navigationItem.rightBarButtonItem = saveBarButton
+		let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+		self.view.addGestureRecognizer(tapGesture)
 		detailsView.radiusTextField.addTarget(self, action: #selector(radiusChanged), for: .editingDidEnd)
 		setupView()
+		setNotifycations()
+	}
+
+	private func setNotifycations() {
+		let notificationCenter = NotificationCenter.default
+		notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard),
+									   name: UIResponder.keyboardWillHideNotification, object: nil)
+		notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard),
+									   name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+	}
+
+	@objc
+	private func dismissKeyboard(_ sender: UITapGestureRecognizer) {
+		detailsView.radiusTextField.resignFirstResponder()
+		detailsView.nameTextField.resignFirstResponder()
+	}
+
+	@objc
+	private func adjustForKeyboard(notification: Notification) {
+		guard let keyboardValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+		let keyboardScreenEndFrame = keyboardValue.cgRectValue
+		let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
+		if notification.name == UIResponder.keyboardWillHideNotification {
+			detailsView.scrollView.contentSize.height = .zero
+		}
+		else {
+			detailsView.scrollView.contentSize.height = detailsView.scrollView.frame.height + keyboardViewEndFrame.height
+		}
 	}
 
 	@objc
@@ -60,6 +90,7 @@ final class DetailsViewController: UIViewController
 		self.navigationItem.title = currentSmartObject.name
 		detailsView.mapView.delegate = self
 		detailsView.radiusTextField.delegate = self
+		detailsView.nameTextField.delegate = self
 		detailsView.mapView.addAnnotation(currentSmartObject)
 		detailsView.nameTextField.text = currentSmartObject.name
 		detailsView.radiusTextField.text = String(Int(currentSmartObject.circleRadius))
@@ -96,11 +127,21 @@ extension DetailsViewController: MKMapViewDelegate
 
 extension DetailsViewController: UITextFieldDelegate
 {
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+		return textField.resignFirstResponder()
+	}
+
 	func textField(_ textField: UITextField,
 				   shouldChangeCharactersIn range: NSRange,
 				   replacementString string: String) -> Bool {
 		guard let text = textField.text else { return true }
 		let newLength = text.count + string.count - range.length
-		return newLength <= 5
+		guard let textFieldType = TextFieldType(rawValue: textField.tag) else { return true }
+		switch textFieldType {
+		case .name:
+			return true
+		case .radius:
+			return newLength <= 5
+		}
 	}
 }
