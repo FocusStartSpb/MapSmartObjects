@@ -107,12 +107,6 @@ extension DetailsViewController: UITextFieldDelegate
 				   shouldChangeCharactersIn range: NSRange,
 				   replacementString string: String) -> Bool {
 		guard let text = textField.text else { return true }
-		if text.isEmpty {
-			navigationItem.leftBarButtonItem?.isEnabled = false
-		}
-		else {
-			navigationItem.leftBarButtonItem?.isEnabled = false
-		}
 		let newLength = text.count + string.count - range.length
 		return newLength <= 5
 	}
