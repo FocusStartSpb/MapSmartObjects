@@ -56,14 +56,11 @@ final class DetailsViewController: UIViewController
 
 	@objc
 	private func adjustForKeyboard(notification: Notification) {
-		guard let keyboardValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
-		let keyboardScreenEndFrame = keyboardValue.cgRectValue
-		let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
 		if notification.name == UIResponder.keyboardWillHideNotification {
-			detailsView.scrollView.contentSize.height = .zero
+			detailsView.frame.origin.y = .zero
 		}
 		else {
-			detailsView.scrollView.contentSize.height = detailsView.scrollView.frame.height + keyboardViewEndFrame.height
+			detailsView.frame.origin.y = -100
 		}
 	}
 
