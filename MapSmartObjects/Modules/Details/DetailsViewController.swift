@@ -13,9 +13,11 @@ final class DetailsViewController: UIViewController
 	private let detailsView = DetailsView()
 	private let presenter: IDetailsPresenter
 	private let currentSmartObject: SmartObject
+	private let type: DetailVCTypes
 
-	init(presenter: IDetailsPresenter) {
+	init(presenter: IDetailsPresenter, type: DetailVCTypes) {
 		self.presenter = presenter
+		self.type = type
 		currentSmartObject = presenter.getSmartObject()
 		super.init(nibName: nil, bundle: nil)
 	}
@@ -57,12 +59,17 @@ final class DetailsViewController: UIViewController
 	}
 
 	private func setupView() {
-		self.navigationItem.title = currentSmartObject.name
+		switch type {
+		case .create:
+			self.navigationItem.title = "Create"
+		case .edit:
+			self.navigationItem.title = "Edit"
+			detailsView.nameTextField.text = currentSmartObject.name
+			detailsView.radiusTextField.text = String(Int(currentSmartObject.circleRadius))
+		}
 		detailsView.mapView.delegate = self
 		detailsView.radiusTextField.delegate = self
 		detailsView.mapView.addAnnotation(currentSmartObject)
-		detailsView.nameTextField.text = currentSmartObject.name
-		detailsView.radiusTextField.text = String(Int(currentSmartObject.circleRadius))
 		detailsView.addressInfoLabel.text = currentSmartObject.address
 		showOnMap(radius: currentSmartObject.circleRadius, center: currentSmartObject.coordinate)
 	}
@@ -100,6 +107,12 @@ extension DetailsViewController: UITextFieldDelegate
 				   shouldChangeCharactersIn range: NSRange,
 				   replacementString string: String) -> Bool {
 		guard let text = textField.text else { return true }
+		if text.isEmpty {
+			navigationItem.leftBarButtonItem?.isEnabled = false
+		}
+		else {
+			navigationItem.leftBarButtonItem?.isEnabled = false
+		}
 		let newLength = text.count + string.count - range.length
 		return newLength <= 5
 	}

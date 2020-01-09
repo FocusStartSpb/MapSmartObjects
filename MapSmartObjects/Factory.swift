@@ -38,9 +38,9 @@ final class Factory
 	}
 
 	//create pinlist module
-	func createDetailsModule(with smartObject: SmartObject) -> DetailsViewController {
+	func createDetailsModule(with smartObject: SmartObject, type: DetailVCTypes) -> DetailsViewController {
 		let presenter = DetailsPresenter(repository: repository, smartObject: smartObject)
-		let detailsVC = DetailsViewController(presenter: presenter)
+		let detailsVC = DetailsViewController(presenter: presenter, type: type)
 		presenter.viewController = detailsVC
 		return detailsVC
 	}

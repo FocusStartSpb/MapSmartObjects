@@ -86,9 +86,8 @@ extension MapPresenter: IMapPresenter
 					? self.locationManager.maximumRegionMonitoringDistance
 					: radius
 				let smartObject = SmartObject(name: name, address: position, coordinate: coordinate, circleRadius: maxRadius)
-				self.repository.addSmartObject(object: smartObject)
 				DispatchQueue.main.async {
-					self.mapViewController?.updateSmartObjects()
+					self.router.showDetails(smartObject: smartObject, type: .create)
 				}
 			case .failure(let error):
 				self.mapViewController?.showAlert(withTitle: "Внимание!", message: error.localizedDescription)
@@ -151,27 +150,12 @@ extension MapPresenter: IMapPresenter
 	}
 
 	func addPinWithAlert(_ location: CLLocationCoordinate2D?) {
-		let alert = UIAlertController(title: "Add Pin", message: nil, preferredStyle: .alert)
-		alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-		alert.addTextField { nameTextField in
-			nameTextField.placeholder = "Name"
+		if let currentUserLocation = location {
+			self.addSmartObject(name: "", radius: 0, coordinate: currentUserLocation)
 		}
-		alert.addTextField { radiusTextField in
-			radiusTextField.placeholder = "Radius"
+		else {
+			guard let currentUserLocation = getCurrentLocation() else { return }
+			self.addSmartObject(name: "", radius: 0, coordinate: currentUserLocation)
 		}
-		alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak self] _ in
-			guard let self = self else { return }
-			if let name = alert.textFields?.first?.text,
-				let radius = Double(alert.textFields?[1].text ?? "0") {
-				if let longTaplocation = location {
-					self.addSmartObject(name: name, radius: radius, coordinate: longTaplocation)
-				}
-				else {
-					guard let currentUserLocation = self.locationManager.location?.coordinate else { return }
-					self.addSmartObject(name: name, radius: radius, coordinate: currentUserLocation)
-				}
-			}
-		}))
-		mapViewController?.present(alert, animated: true)
 	}
 }
