@@ -15,13 +15,14 @@ final class SmartObject: NSObject
 	private(set) var coordinate: CLLocationCoordinate2D
 	private(set) var circleRadius: Double
 	private(set) var address: String
-	private(set) var identifier = UUID().uuidString
+	private(set) var identifier: String
 
 	init(name: String, address: String, coordinate: CLLocationCoordinate2D, circleRadius: Double) {
 		self.name = name
 		self.address = address
 		self.coordinate = coordinate
 		self.circleRadius = circleRadius
+		self.identifier = UUID().uuidString
 	}
 
 	// MARK: Codable
@@ -33,6 +34,7 @@ final class SmartObject: NSObject
 		circleRadius = try values.decode(Double.self, forKey: .circleRadius)
 		name = try values.decode(String.self, forKey: .name)
 		address = try values.decode(String.self, forKey: .address)
+		identifier = try values.decode(String.self, forKey: .identifier)
 	}
 
 	func encode(to encoder: Encoder) throws {
@@ -42,6 +44,7 @@ final class SmartObject: NSObject
 		try container.encode(circleRadius, forKey: .circleRadius)
 		try container.encode(name, forKey: .name)
 		try container.encode(address, forKey: .address)
+		try container.encode(identifier, forKey: .identifier)
 	}
 }
 

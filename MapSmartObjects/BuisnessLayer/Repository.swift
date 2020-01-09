@@ -16,9 +16,11 @@ protocol IRepository
 
 	func getSmartObjects() -> [SmartObject]
 	func removeSmartObject(at index: Int)
+	func removeSmartObject(with identifier: String)
 	func addSmartObject(object: SmartObject)
 	func getSmartObject(at index: Int) -> SmartObject
 	func getSmartObject(with identifier: String) -> SmartObject?
+	func saveSmartObjects()
 	func getGeoposition(coordinates: CLLocationCoordinate2D,
 						completionHandler: @escaping (GeocoderResponseResult) -> Void)
 }
@@ -29,7 +31,7 @@ final class Repository
 	private let dataService: IDataService
 	private var smartObjects = [SmartObject]() {
 		didSet {
-			saveSmartObjects(objects: smartObjects)
+			saveSmartObjects()
 		}
 	}
 
@@ -41,8 +43,7 @@ final class Repository
 
 	func loadSmartObjects() -> [SmartObject] {
 		guard let data = dataService.loadData(),
-			let smartObjects = try? PropertyListDecoder().decode([SmartObject].self, from: data)
-			else { return [] }
+			let smartObjects = try? PropertyListDecoder().decode([SmartObject].self, from: data) else { return [] }
 		return smartObjects
 	}
 }
@@ -51,6 +52,10 @@ extension Repository: IRepository
 {
 	var smartObjectsCount: Int {
 		return smartObjects.count
+	}
+
+	func removeSmartObject(with identifier: String) {
+		smartObjects = smartObjects.filter { $0.identifier != identifier }
 	}
 
 	func getSmartObject(with identifier: String) -> SmartObject? {
@@ -62,21 +67,27 @@ extension Repository: IRepository
 
 	func addSmartObject(object: SmartObject) {
 		smartObjects.append(object)
+		saveSmartObjects()
 	}
+
 	func removeSmartObject(at index: Int) {
 		guard index < smartObjects.count else { return }
 		smartObjects.remove(at: index)
 	}
-	func saveSmartObjects(objects: [SmartObject]) {
-		guard let data = try? PropertyListEncoder().encode(objects) else { return }
+
+	func saveSmartObjects() {
+		guard let data = try? PropertyListEncoder().encode(smartObjects) else { return }
 		dataService.saveData(data)
 	}
+
 	func getSmartObjects() -> [SmartObject] {
 		return smartObjects
 	}
+
 	func getSmartObject(at index: Int) -> SmartObject {
 		return smartObjects[index]
 	}
+
 	func getGeoposition(coordinates: CLLocationCoordinate2D,
 						completionHandler: @escaping (GeocoderResponseResult) -> Void) {
 		geocoder.getGeocoderRequest(coordinates: coordinates) { result in

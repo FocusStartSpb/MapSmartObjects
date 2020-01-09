@@ -36,4 +36,12 @@ final class Factory
 		pinListRouter.pinListViewController = pinListVC
 		return pinListVC
 	}
+
+	//create pinlist module
+	func createDetailsModule(with smartObject: SmartObject) -> DetailsViewController {
+		let presenter = DetailsPresenter(repository: repository, smartObject: smartObject)
+		let detailsVC = DetailsViewController(presenter: presenter)
+		presenter.viewController = detailsVC
+		return detailsVC
+	}
 }
