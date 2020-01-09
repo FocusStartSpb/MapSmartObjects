@@ -12,9 +12,11 @@ final class DetailsViewController: UIViewController
 {
 	private let detailsView = DetailsView()
 	private let presenter: IDetailsPresenter
+	private let currentSmartObject: SmartObject
 
 	init(presenter: IDetailsPresenter) {
 		self.presenter = presenter
+		currentSmartObject = presenter.getSmartObject()
 		super.init(nibName: nil, bundle: nil)
 	}
 
@@ -31,25 +33,38 @@ final class DetailsViewController: UIViewController
 		super.viewDidLoad()
 		let saveBarButton = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveBarButtonPressed))
 		navigationItem.rightBarButtonItem = saveBarButton
-		setupView(presenter.getSmartObject())
+		detailsView.radiusTextField.addTarget(self, action: #selector(radiusChanged), for: .editingChanged)
+		setupView()
 	}
 
-	private func setupView(_ currentSmartObject: SmartObject) {
+	@objc
+	private func radiusChanged() {
+		detailsView.mapView.removeOverlays(detailsView.mapView.overlays)
+		let radius = Double(detailsView.radiusTextField.text ?? "0") ?? 0.0
+		guard radius < CLLocationManager().maximumRegionMonitoringDistance else { return }
+		showOnMap(radius: radius, center: currentSmartObject.coordinate)
+	}
+
+	private func showOnMap(radius: Double, center: CLLocationCoordinate2D) {
+		let circle = MKCircle(center: center, radius: radius)
+		detailsView.mapView.addOverlay(circle)
+		detailsView.mapView.centerCoordinate = center
+		let offset: Double = radius / 3
+		let region = MKCoordinateRegion(center: center,
+										latitudinalMeters: radius * 2 + offset,
+										longitudinalMeters: radius * 2 + offset)
+		detailsView.mapView.setRegion(region, animated: true)
+	}
+
+	private func setupView() {
 		self.navigationItem.title = currentSmartObject.name
 		detailsView.mapView.delegate = self
-		let circle = MKCircle(center: currentSmartObject.coordinate, radius: currentSmartObject.circleRadius)
-		detailsView.mapView.addOverlay(circle)
+		detailsView.radiusTextField.delegate = self
 		detailsView.mapView.addAnnotation(currentSmartObject)
 		detailsView.nameTextField.text = currentSmartObject.name
 		detailsView.radiusTextField.text = String(currentSmartObject.circleRadius)
 		detailsView.addressInfoLabel.text = currentSmartObject.address
-		detailsView.mapView.centerCoordinate = currentSmartObject.coordinate
-		let coordinate = currentSmartObject.coordinate
-		let offset: Double = currentSmartObject.circleRadius / 3
-		let region = MKCoordinateRegion(center: coordinate,
-										latitudinalMeters: currentSmartObject.circleRadius * 2 + offset,
-										longitudinalMeters: currentSmartObject.circleRadius * 2 + offset)
-		detailsView.mapView.setRegion(region, animated: true)
+		showOnMap(radius: currentSmartObject.circleRadius, center: currentSmartObject.coordinate)
 	}
 
 	@objc private func saveBarButtonPressed() {
@@ -76,5 +91,16 @@ extension DetailsViewController: MKMapViewDelegate
 			circle = circleRender
 		}
 		return circle
+	}
+}
+
+extension DetailsViewController: UITextFieldDelegate
+{
+	func textField(_ textField: UITextField,
+				   shouldChangeCharactersIn range: NSRange,
+				   replacementString string: String) -> Bool {
+		guard let text = textField.text else { return true }
+		let newLength = text.count + string.count - range.length
+		return newLength <= 5
 	}
 }

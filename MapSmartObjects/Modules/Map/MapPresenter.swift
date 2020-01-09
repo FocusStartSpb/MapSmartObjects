@@ -32,6 +32,7 @@ final class MapPresenter
 
 	init(repository: IRepository, router: IMapRouter) {
 		self.repository = repository
+		print("!!!!!!!!!!!!!!\(locationManager.maximumRegionMonitoringDistance)")
 		self.router = router
 	}
 }

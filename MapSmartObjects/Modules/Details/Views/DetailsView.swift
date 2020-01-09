@@ -20,7 +20,7 @@ final class DetailsView: UIView
 
 	private let radiusLabel: UILabel = {
 		let label = UILabel()
-		label.text = "Radius:"
+		label.text = "Radius (meters):"
 		label.font = UIFont(name: "HelveticaNeue-Bold", size: 18.0)
 		return label
 	}()
@@ -77,6 +77,7 @@ final class DetailsView: UIView
 	private func configureViews() {
 		self.backgroundColor = .white
 		mapView.isUserInteractionEnabled = false
+		mapView.layer.cornerRadius = 16
 	}
 
 	private func setTranslatesAutoresizingMaskIntoConstraints() {
@@ -93,10 +94,10 @@ final class DetailsView: UIView
 		setTranslatesAutoresizingMaskIntoConstraints()
 
 		NSLayoutConstraint.activate([
-			mapView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor),
-			mapView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor),
-			mapView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor),
-			mapView.heightAnchor.constraint(equalTo: self.mapView.widthAnchor),
+			mapView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 16),
+			mapView.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+			mapView.trailingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+			mapView.heightAnchor.constraint(equalTo: self.mapView.widthAnchor, multiplier: 1 / 2),
 
 			nameLabel.topAnchor.constraint(equalTo: mapView.bottomAnchor, constant: 16),
 			nameLabel.widthAnchor.constraint(equalTo: mapView.widthAnchor, multiplier: 1 / 4),
@@ -109,22 +110,22 @@ final class DetailsView: UIView
 			nameTextField.heightAnchor.constraint(equalToConstant: 31),
 
 			radiusLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 16),
+			radiusLabel.widthAnchor.constraint(equalTo: nameLabel.widthAnchor, constant: 60),
 			radiusLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
-			radiusLabel.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
 			radiusLabel.heightAnchor.constraint(equalTo: nameLabel.heightAnchor),
 
 			radiusTextField.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 16),
-			radiusTextField.leadingAnchor.constraint(equalTo: nameTextField.leadingAnchor),
+			radiusTextField.leadingAnchor.constraint(equalTo: radiusLabel.trailingAnchor, constant: 16),
 			radiusTextField.trailingAnchor.constraint(equalTo: nameTextField.trailingAnchor),
 			radiusTextField.heightAnchor.constraint(equalTo: nameTextField.heightAnchor),
 
 			addressLabel.topAnchor.constraint(equalTo: radiusLabel.bottomAnchor, constant: 16),
 			addressLabel.leadingAnchor.constraint(equalTo: radiusLabel.leadingAnchor),
-			addressLabel.trailingAnchor.constraint(equalTo: radiusLabel.trailingAnchor),
+			addressLabel.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
 			addressLabel.heightAnchor.constraint(equalTo: radiusLabel.heightAnchor),
 
 			addressInfoLabel.topAnchor.constraint(equalTo: radiusTextField.bottomAnchor, constant: 16),
-			addressInfoLabel.leadingAnchor.constraint(equalTo: radiusTextField.leadingAnchor),
+			addressInfoLabel.leadingAnchor.constraint(equalTo: nameTextField.leadingAnchor),
 			addressInfoLabel.trailingAnchor.constraint(equalTo: radiusTextField.trailingAnchor),
 			addressInfoLabel.heightAnchor.constraint(greaterThanOrEqualTo: radiusTextField.heightAnchor),
 			])
