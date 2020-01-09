@@ -62,7 +62,7 @@ final class DetailsViewController: UIViewController
 		detailsView.radiusTextField.delegate = self
 		detailsView.mapView.addAnnotation(currentSmartObject)
 		detailsView.nameTextField.text = currentSmartObject.name
-		detailsView.radiusTextField.text = String(currentSmartObject.circleRadius)
+		detailsView.radiusTextField.text = String(Int(currentSmartObject.circleRadius))
 		detailsView.addressInfoLabel.text = currentSmartObject.address
 		showOnMap(radius: currentSmartObject.circleRadius, center: currentSmartObject.coordinate)
 	}

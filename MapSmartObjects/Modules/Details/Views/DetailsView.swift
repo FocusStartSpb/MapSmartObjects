@@ -78,6 +78,7 @@ final class DetailsView: UIView
 		self.backgroundColor = .white
 		mapView.isUserInteractionEnabled = false
 		mapView.layer.cornerRadius = 16
+		radiusTextField.keyboardType = .numberPad
 	}
 
 	private func setTranslatesAutoresizingMaskIntoConstraints() {
