@@ -33,7 +33,7 @@ final class DetailsViewController: UIViewController
 		super.viewDidLoad()
 		let saveBarButton = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveBarButtonPressed))
 		navigationItem.rightBarButtonItem = saveBarButton
-		detailsView.radiusTextField.addTarget(self, action: #selector(radiusChanged), for: .editingChanged)
+		detailsView.radiusTextField.addTarget(self, action: #selector(radiusChanged), for: .editingDidEnd)
 		setupView()
 	}
 
