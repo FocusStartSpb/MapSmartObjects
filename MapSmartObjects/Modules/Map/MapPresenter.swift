@@ -90,7 +90,9 @@ extension MapPresenter: IMapPresenter
 					self.router.showDetails(smartObject: smartObject, type: .create)
 				}
 			case .failure(let error):
-				self.mapViewController?.showAlert(withTitle: "Внимание!", message: error.localizedDescription)
+				DispatchQueue.main.async {
+					self.mapViewController?.showAlert(withTitle: "Warning!", message: error.localizedDescription)
+				}
 			}
 		}
 	}
