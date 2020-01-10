@@ -31,13 +31,17 @@ final class DetailsViewController: UIViewController
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		setActions()
+		setupView()
+		setNotifycations()
+	}
+
+	private func setActions() {
 		let saveBarButton = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveBarButtonPressed))
 		navigationItem.rightBarButtonItem = saveBarButton
 		let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
 		self.view.addGestureRecognizer(tapGesture)
 		detailsView.radiusTextField.addTarget(self, action: #selector(radiusChanged), for: .editingDidEnd)
-		setupView()
-		setNotifycations()
 	}
 
 	private func setNotifycations() {

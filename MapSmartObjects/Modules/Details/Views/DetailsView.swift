@@ -10,7 +10,6 @@ import MapKit
 
 final class DetailsView: UIView
 {
-	let mapView = MKMapView()
 	private let nameLabel: UILabel = {
 		let label = UILabel()
 		label.text = "Name:"
@@ -31,11 +30,6 @@ final class DetailsView: UIView
 		label.text = "Address:"
 		label.font = UIFont(name: "HelveticaNeue-Bold", size: 18.0)
 		return label
-	}()
-
-	let scrollView: UIScrollView = {
-		let scrollView = UIScrollView()
-		return scrollView
 	}()
 
 	let addressInfoLabel: UILabel = {
@@ -60,6 +54,9 @@ final class DetailsView: UIView
 		textField.keyboardType = .numberPad
 		return textField
 	}()
+
+	let scrollView = UIScrollView()
+	let mapView = MKMapView()
 
 	init() {
 		super.init(frame: .zero)
