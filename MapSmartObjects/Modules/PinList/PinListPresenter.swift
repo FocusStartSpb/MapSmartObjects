@@ -32,7 +32,7 @@ final class PinListPresenter
 extension PinListPresenter: IPinListPresenter
 {
 	func showDetails(at index: Int) {
-		router.showDetails(repository.getSmartObjects()[index])
+		router.showDetails(repository.getSmartObjects()[index], type: .edit)
 	}
 
 	func getSmartObjectsCount() -> Int {

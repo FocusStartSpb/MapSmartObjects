@@ -12,6 +12,7 @@
 		4B43F6C923A664CB003BF176 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B43F6C823A664CB003BF176 /* Assets.xcassets */; };
 		4B43F6CC23A664CB003BF176 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4B43F6CA23A664CB003BF176 /* LaunchScreen.storyboard */; };
 		4B43F6D723A664CB003BF176 /* MapSmartObjectsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B43F6D623A664CB003BF176 /* MapSmartObjectsTests.swift */; };
+		4B44328F23C7C050005AC5F8 /* DetailVCTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B44328E23C7C050005AC5F8 /* DetailVCTypes.swift */; };
 		4B58C20B23A93D8500A430C0 /* PinListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B58C20A23A93D8500A430C0 /* PinListViewController.swift */; };
 		4B58C20D23A93DAC00A430C0 /* PinListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B58C20C23A93DAC00A430C0 /* PinListPresenter.swift */; };
 		4B58C20F23A93DDA00A430C0 /* PinListRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B58C20E23A93DDA00A430C0 /* PinListRouter.swift */; };
@@ -56,6 +57,7 @@
 		4B43F6D223A664CB003BF176 /* MapSmartObjectsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MapSmartObjectsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B43F6D623A664CB003BF176 /* MapSmartObjectsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapSmartObjectsTests.swift; sourceTree = "<group>"; };
 		4B43F6D823A664CB003BF176 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4B44328E23C7C050005AC5F8 /* DetailVCTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailVCTypes.swift; sourceTree = "<group>"; };
 		4B58C20A23A93D8500A430C0 /* PinListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinListViewController.swift; sourceTree = "<group>"; };
 		4B58C20C23A93DAC00A430C0 /* PinListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinListPresenter.swift; sourceTree = "<group>"; };
 		4B58C20E23A93DDA00A430C0 /* PinListRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinListRouter.swift; sourceTree = "<group>"; };
@@ -195,6 +197,7 @@
 				5C028C1923AA9235009FA3E8 /* Constants.swift */,
 				5C1F9B5523B748FE00A3D1C9 /* CodingKeys.swift */,
 				5CE3E81223C7C0BA005EC97C /* TextFieldType.swift */,
+				4B44328E23C7C050005AC5F8 /* DetailVCTypes.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -401,6 +404,7 @@
 				5C028C2623AAAC09009FA3E8 /* MainTabBarController.swift in Sources */,
 				5C97899B23ABE840004F1785 /* SmartObject.swift in Sources */,
 				4B58C21423A971C700A430C0 /* MapPresenter.swift in Sources */,
+				4B44328F23C7C050005AC5F8 /* DetailVCTypes.swift in Sources */,
 				941283B023AA95E700A0077D /* PinListCell.swift in Sources */,
 				4B43F6BD23A664C9003BF176 /* AppDelegate.swift in Sources */,
 				4B58C20F23A93DDA00A430C0 /* PinListRouter.swift in Sources */,
@@ -569,7 +573,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = BH8ZW8FZ54;
+				DEVELOPMENT_TEAM = JJLJJKU7AK;
 				INFOPLIST_FILE = MapSmartObjects/SupportingFiles/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -588,7 +592,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = BH8ZW8FZ54;
+				DEVELOPMENT_TEAM = JJLJJKU7AK;
 				INFOPLIST_FILE = MapSmartObjects/SupportingFiles/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (

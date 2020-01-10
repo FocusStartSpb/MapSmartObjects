@@ -30,7 +30,7 @@ final class MapView: UIView
 
 	private func addSubviews() {
 		self.addSubview(mapView)
-		mapView.addSubview(buttonsView)
+		self.addSubview(buttonsView)
 		buttonsView.addSubview(addButton)
 		buttonsView.addSubview(currentLocationButton)
 	}

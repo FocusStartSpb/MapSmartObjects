@@ -13,9 +13,11 @@ final class DetailsViewController: UIViewController
 	private let detailsView = DetailsView()
 	private let presenter: IDetailsPresenter
 	private let currentSmartObject: SmartObject
+	private let type: DetailVCTypes
 
-	init(presenter: IDetailsPresenter) {
+	init(presenter: IDetailsPresenter, type: DetailVCTypes) {
 		self.presenter = presenter
+		self.type = type
 		currentSmartObject = presenter.getSmartObject()
 		super.init(nibName: nil, bundle: nil)
 	}
@@ -88,13 +90,18 @@ final class DetailsViewController: UIViewController
 	}
 
 	private func setupView() {
-		self.navigationItem.title = currentSmartObject.name
+		switch type {
+		case .create:
+			self.navigationItem.title = "Create"
+		case .edit:
+			self.navigationItem.title = "Edit"
+			detailsView.nameTextField.text = currentSmartObject.name
+			detailsView.radiusTextField.text = String(Int(currentSmartObject.circleRadius))
+		}
 		detailsView.mapView.delegate = self
 		detailsView.radiusTextField.delegate = self
 		detailsView.nameTextField.delegate = self
 		detailsView.mapView.addAnnotation(currentSmartObject)
-		detailsView.nameTextField.text = currentSmartObject.name
-		detailsView.radiusTextField.text = String(Int(currentSmartObject.circleRadius))
 		detailsView.addressInfoLabel.text = currentSmartObject.address
 		showOnMap(radius: currentSmartObject.circleRadius, center: currentSmartObject.coordinate)
 	}
