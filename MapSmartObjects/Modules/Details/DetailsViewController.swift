@@ -42,6 +42,7 @@ final class DetailsViewController: UIViewController
 	private func setActions() {
 		saveBarButton = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveBarButtonPressed))
 		navigationItem.rightBarButtonItem = saveBarButton
+		saveBarButton.isEnabled = (self.type == .edit)
 		let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
 		self.view.addGestureRecognizer(tapGesture)
 		detailsView.radiusTextField.addTarget(self, action: #selector(radiusChanged), for: .editingDidEnd)
