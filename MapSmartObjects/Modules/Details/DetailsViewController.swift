@@ -14,6 +14,7 @@ final class DetailsViewController: UIViewController
 	private let presenter: IDetailsPresenter
 	private let currentSmartObject: SmartObject
 	private let type: DetailVCTypes
+	private var saveBarButton = UIBarButtonItem()
 
 	init(presenter: IDetailsPresenter, type: DetailVCTypes) {
 		self.presenter = presenter
@@ -39,11 +40,13 @@ final class DetailsViewController: UIViewController
 	}
 
 	private func setActions() {
-		let saveBarButton = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveBarButtonPressed))
+		saveBarButton = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveBarButtonPressed))
 		navigationItem.rightBarButtonItem = saveBarButton
 		let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
 		self.view.addGestureRecognizer(tapGesture)
 		detailsView.radiusTextField.addTarget(self, action: #selector(radiusChanged), for: .editingDidEnd)
+		detailsView.radiusTextField.addTarget(self, action: #selector(textFieldEditingChanged), for: .editingChanged)
+		detailsView.nameTextField.addTarget(self, action: #selector(textFieldEditingChanged), for: .editingChanged)
 	}
 
 	private func setNotifycations() {
@@ -106,7 +109,8 @@ final class DetailsViewController: UIViewController
 		showOnMap(radius: currentSmartObject.circleRadius, center: currentSmartObject.coordinate)
 	}
 
-	@objc private func saveBarButtonPressed() {
+	@objc
+	private func saveBarButtonPressed() {
 		let oldSmartObject = presenter.getSmartObject()
 		if oldSmartObject.name != detailsView.nameTextField.text
 			|| oldSmartObject.circleRadius != Double(detailsView.radiusTextField.text ?? "") {
@@ -115,6 +119,13 @@ final class DetailsViewController: UIViewController
 										 radius: Double(detailsView.radiusTextField.text ?? "") ?? 0)
 		}
 		self.navigationController?.popToRootViewController(animated: true)
+	}
+
+	@objc
+	private func textFieldEditingChanged(sender: UITextField) {
+		guard let textFromNameFiled = detailsView.nameTextField.text else { return }
+		guard let textFromRadiusFiled = detailsView.radiusTextField.text else { return }
+		saveBarButton.isEnabled = (textFromNameFiled.isEmpty == false) && (textFromRadiusFiled.isEmpty == false)
 	}
 }
 
@@ -144,6 +155,7 @@ extension DetailsViewController: UITextFieldDelegate
 				   replacementString string: String) -> Bool {
 		guard let text = textField.text else { return true }
 		let newLength = text.count + string.count - range.length
+		// проверка текущего textField (если radius - ограничение 5 символов, если name - нет ограничения)
 		guard let textFieldType = TextFieldType(rawValue: textField.tag) else { return true }
 		switch textFieldType {
 		case .name:
