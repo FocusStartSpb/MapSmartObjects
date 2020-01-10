@@ -42,7 +42,6 @@ final class MapViewController: UIViewController
 		addTargets()
 		setSmartObjectsOnMap()
 		showCurrentLocation(presenter.getCurrentLocation())
-		presenter.checkMonitoringRegions(for: getSmartObjectsFromMap(annotations: mapScreen.mapView.annotations))
 	}
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)

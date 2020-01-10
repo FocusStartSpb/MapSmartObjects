@@ -15,7 +15,6 @@ protocol IMapPresenter
 	func addSmartObject(name: String, radius: Double, coordinate: CLLocationCoordinate2D)
 	func getSmartObjects() -> [SmartObject]
 	func checkLocationEnabled()
-	func checkMonitoringRegions(for smartObjects: [SmartObject])
 	func getCurrentLocation() -> CLLocationCoordinate2D?
 	func addPinWithAlert(_ location: CLLocationCoordinate2D?)
 	func startMonitoring(_ smartObject: SmartObject)
@@ -39,21 +38,7 @@ final class MapPresenter
 
 extension MapPresenter: IMapPresenter
 {
-	func checkMonitoringRegions(for smartObjects: [SmartObject]) {
-		let currentMonitoringRegions = locationManager.monitoredRegions
-		guard smartObjects.isEmpty == false else {
-			currentMonitoringRegions.forEach { locationManager.stopMonitoring(for: $0) }
-			return
-		}
-		for region in currentMonitoringRegions {
-			for smartObject in smartObjects where smartObject.identifier != region.identifier {
-				locationManager.stopMonitoring(for: region)
-			}
-		}
-		mapViewController?.setMonitoringPlacecesCount(number: locationManager.monitoredRegions.count)
-	}
-
-	func getMonitoringRegionsCount() -> Int { //Проверить нужен ли этот метод
+	func getMonitoringRegionsCount() -> Int {
 		return locationManager.monitoredRegions.count
 	}
 
@@ -110,18 +95,8 @@ extension MapPresenter: IMapPresenter
 		}
 	}
 
-	private func getRegion(with smartObject: SmartObject) -> CLCircularRegion {
-		let region = CLCircularRegion(center: smartObject.coordinate,
-									  radius: smartObject.circleRadius,
-									  identifier: smartObject.identifier)
-		region.notifyOnEntry = true
-		region.notifyOnExit = false
-		return region
-	}
-
 	func startMonitoring(_ smartObject: SmartObject) {
-		let fenceRegion = getRegion(with: smartObject)
-		locationManager.startMonitoring(for: fenceRegion)
+		locationManager.startMonitoring(for: smartObject.toCircularRegion())
 	}
 
 	func stopMonitoring(_ smartObject: SmartObject) {

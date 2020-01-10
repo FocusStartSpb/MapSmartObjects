@@ -6,7 +6,7 @@
 //  Copyright © 2019 Максим Шалашников. All rights reserved.
 //
 
-import UIKit
+import MapKit
 
 protocol IPinListViewController
 {
@@ -114,6 +114,7 @@ extension PinListViewController: UITableViewDataSource
 		if editingStyle == .delete {
 			let smartObject = isFiltering ? filtredPins[indexPath.row] : presenter.getSmartObject(at: indexPath.row)
 			presenter.removeSmartObject(at: presenter.getSmartObjects().firstIndex(of: smartObject) ?? 0)
+			CLLocationManager().stopMonitoring(for: smartObject.toCircularRegion())
 			if isFiltering {
 				filtredPins.remove(at: indexPath.row)
 			}
