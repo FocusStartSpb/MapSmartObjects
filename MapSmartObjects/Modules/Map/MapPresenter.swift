@@ -15,6 +15,7 @@ protocol IMapPresenter
 	func addSmartObject(name: String, radius: Double, coordinate: CLLocationCoordinate2D)
 	func getSmartObjects() -> [SmartObject]
 	func checkLocationEnabled()
+	func checkMonitoringRegions(for smartObjects: [SmartObject])
 	func getCurrentLocation() -> CLLocationCoordinate2D?
 	func addPinWithAlert(_ location: CLLocationCoordinate2D?)
 	func startMonitoring(_ smartObject: SmartObject)
@@ -38,6 +39,20 @@ final class MapPresenter
 
 extension MapPresenter: IMapPresenter
 {
+	func checkMonitoringRegions(for smartObjects: [SmartObject]) {
+		let currentMonitoringRegions = locationManager.monitoredRegions
+		guard smartObjects.isEmpty == false else {
+			currentMonitoringRegions.forEach { locationManager.stopMonitoring(for: $0) }
+			return
+		}
+		for region in currentMonitoringRegions {
+			for smartObject in smartObjects where smartObject.identifier != region.identifier {
+				locationManager.stopMonitoring(for: region)
+			}
+		}
+		mapViewController?.setMonitoringPlacecesCount(number: locationManager.monitoredRegions.count)
+	}
+
 	func getMonitoringRegionsCount() -> Int { //Проверить нужен ли этот метод
 		return locationManager.monitoredRegions.count
 	}
