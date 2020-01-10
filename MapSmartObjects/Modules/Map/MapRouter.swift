@@ -10,8 +10,8 @@ import Foundation
 
 protocol IMapRouter
 {
+	func showDetails(smartObject: SmartObject, type: DetailVCTypes)
 }
-
 final class MapRouter
 {
 	weak var mapViewController: MapViewController?
@@ -24,4 +24,8 @@ final class MapRouter
 
 extension MapRouter: IMapRouter
 {
+	func showDetails(smartObject: SmartObject, type: DetailVCTypes) {
+		let detailVC = factory.createDetailsModule(with: smartObject, type: type)
+		mapViewController?.navigationController?.pushViewController(detailVC, animated: true)
+	}
 }
