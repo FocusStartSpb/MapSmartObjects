@@ -49,6 +49,7 @@ final class PinListViewController: UIViewController
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		pinTableView.reloadData()
+		checkEditMode()
 	}
 
 	private func setupSearchController() {
@@ -82,6 +83,25 @@ final class PinListViewController: UIViewController
 			? pinTableView.setEditing(false, animated: true)
 			: pinTableView.setEditing(true, animated: true)
 		editButtonItem.title = pinTableView.isEditing ? "Done" : "Edit"
+	}
+
+	func disableEdit() {
+		navigationItem.leftBarButtonItem?.title = "Edit"
+		navigationItem.leftBarButtonItem?.isEnabled = false
+		pinTableView.isEditing = false
+	}
+
+	func enableEdit() {
+		navigationItem.leftBarButtonItem?.isEnabled = true
+	}
+
+	func checkEditMode() {
+		if pinTableView.visibleCells.count == 0 {
+			disableEdit()
+		}
+		else {
+			enableEdit()
+		}
 	}
 }
 
@@ -118,6 +138,7 @@ extension PinListViewController: UITableViewDataSource
 				filtredPins.remove(at: indexPath.row)
 			}
 			tableView.deleteRows(at: [indexPath], with: .automatic)
+			checkEditMode()
 		}
 	}
 }
