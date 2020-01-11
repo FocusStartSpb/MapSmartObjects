@@ -101,6 +101,8 @@ final class DetailsViewController: UIViewController
 			self.navigationItem.title = "Edit"
 			detailsView.nameTextField.text = currentSmartObject.name
 			detailsView.radiusTextField.text = String(Int(currentSmartObject.circleRadius))
+			detailsView.visitsCountInfoLabel.text = String(currentSmartObject.visitCount)
+			detailsView.insideTimeInfoLabel.text = currentSmartObject.insideTime.toString()
 		}
 		detailsView.mapView.delegate = self
 		detailsView.radiusTextField.delegate = self

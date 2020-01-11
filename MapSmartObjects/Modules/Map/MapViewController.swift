@@ -187,6 +187,10 @@ extension MapViewController: MKMapViewDelegate
 		}) else { return nil }
 		return matchedPin.name
 	}
+
+	private func getSmartObject(from: CLRegion) -> SmartObject? {
+		return presenter.getSmartObjects().first(where: { $0.identifier == from.identifier })
+	}
 }
 
 extension MapViewController: CLLocationManagerDelegate
@@ -196,7 +200,17 @@ extension MapViewController: CLLocationManagerDelegate
 	}
 
 	func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+		guard let currentSmartObject = getSmartObject(from: region) else { return }
+		currentSmartObject.updateVisitCount()
+		currentSmartObject.startTimer()
 		presenter.handleEvent(for: region)
+		presenter.saveToDB()
+	}
+
+	func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+		guard let currentSmartObject = getSmartObject(from: region) else { return }
+		currentSmartObject.stopTimer()
+		presenter.saveToDB()
 	}
 }
 
