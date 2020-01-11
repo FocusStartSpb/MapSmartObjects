@@ -184,8 +184,8 @@ extension MapViewController: MKMapViewDelegate
 		}) else { return nil }
 		return matchedPin.name
 	}
-	
-	private func getSmartObject(from: CLRegion) -> SmartObject?  {
+
+	private func getSmartObject(from: CLRegion) -> SmartObject? {
 		return presenter.getSmartObjects().first(where: { $0.identifier == from.identifier })
 	}
 }
