@@ -46,6 +46,14 @@ final class SmartObject: NSObject
 		try container.encode(address, forKey: .address)
 		try container.encode(identifier, forKey: .identifier)
 	}
+	func toCircularRegion() -> CLCircularRegion {
+		let region = CLCircularRegion(center: self.coordinate,
+									  radius: self.circleRadius,
+									  identifier: self.identifier)
+		region.notifyOnEntry = true
+		region.notifyOnExit = false
+		return region
+	}
 }
 
 extension SmartObject: Codable
