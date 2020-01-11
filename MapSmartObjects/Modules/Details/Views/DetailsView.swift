@@ -64,7 +64,6 @@ final class DetailsView: UIView
 	let insideTimeInfoLabel: UILabel = {
 		let label = UILabel()
 		label.textAlignment = .left
-		DateFormatter().dateFormat = "mm:ss"
 		label.text = "0"
 		return label
 	}()
