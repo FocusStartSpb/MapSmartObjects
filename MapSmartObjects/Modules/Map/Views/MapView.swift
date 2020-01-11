@@ -13,8 +13,9 @@ final class MapView: UIView
 {
 	let mapView = MKMapView()
 	let buttonsView = UIView()
-	let addButton = UIButton(type: .contactAdd)
+	let addButton = UIButton()
 	let currentLocationButton = UIButton()
+	private let imageInset = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
 
 	init() {
 		super.init(frame: .zero)
@@ -35,7 +36,12 @@ final class MapView: UIView
 		buttonsView.addSubview(currentLocationButton)
 	}
 	private func configureViews() {
-		currentLocationButton.setImage(UIImage(named: "location"), for: .normal)
+		currentLocationButton.setImage(UIImage(named: "location")?.withRenderingMode(.alwaysTemplate), for: .normal)
+		currentLocationButton.imageEdgeInsets = imageInset
+
+		addButton.setImage(UIImage(named: "add")?.withRenderingMode(.alwaysTemplate), for: .normal)
+		addButton.imageEdgeInsets = imageInset
+
 		buttonsView.isOpaque = false
 		buttonsView.backgroundColor = .white
 		buttonsView.alpha = 0.95
