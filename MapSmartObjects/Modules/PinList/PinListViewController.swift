@@ -69,7 +69,13 @@ final class PinListViewController: UIViewController
 			textfield.backgroundColor = Colors.white
 			if let backgroundview = textfield.subviews.first {
 				backgroundview.backgroundColor = Colors.white
+				backgroundview.layer.cornerRadius = 10
+				backgroundview.clipsToBounds = true
 			}
+		}
+
+		if let navigationbar = self.navigationController?.navigationBar {
+			navigationbar.barTintColor = Colors.white
 		}
 
 		searchController.searchResultsUpdater = self
