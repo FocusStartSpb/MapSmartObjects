@@ -38,7 +38,7 @@ final class MapPresenter
 
 extension MapPresenter: IMapPresenter
 {
-	func getMonitoringRegionsCount() -> Int { //Проверить нужен ли этот метод
+	func getMonitoringRegionsCount() -> Int {
 		return locationManager.monitoredRegions.count
 	}
 
@@ -97,18 +97,8 @@ extension MapPresenter: IMapPresenter
 		}
 	}
 
-	private func getRegion(with smartObject: SmartObject) -> CLCircularRegion {
-		let region = CLCircularRegion(center: smartObject.coordinate,
-									  radius: smartObject.circleRadius,
-									  identifier: smartObject.identifier)
-		region.notifyOnEntry = true
-		region.notifyOnExit = false
-		return region
-	}
-
 	func startMonitoring(_ smartObject: SmartObject) {
-		let fenceRegion = getRegion(with: smartObject)
-		locationManager.startMonitoring(for: fenceRegion)
+		locationManager.startMonitoring(for: smartObject.toCircularRegion())
 	}
 
 	func stopMonitoring(_ smartObject: SmartObject) {
