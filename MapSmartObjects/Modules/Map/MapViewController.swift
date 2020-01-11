@@ -58,8 +58,8 @@ final class MapViewController: UIViewController
 
 	private func configureView() {
 		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-		navigationController?.navigationBar.barTintColor = Colors.blue
-		navigationController?.navigationBar.tintColor = Colors.white
+		navigationController?.navigationBar.barTintColor = Colors.mainStyleColor
+		navigationController?.navigationBar.tintColor = Colors.complementaryColor
 	}
 	private func setupMapScreen() {
 		mapScreen.mapView.delegate = self
@@ -136,8 +136,8 @@ extension MapViewController: MKMapViewDelegate
 		var circle = MKOverlayRenderer()
 		if overlay is MKCircle {
 			let circleRender = MKCircleRenderer(overlay: overlay)
-			circleRender.strokeColor = Colors.blue
-			circleRender.fillColor = Colors.green
+			circleRender.strokeColor = Colors.mainStyleColor
+			circleRender.fillColor = Colors.radiusFill
 			circleRender.lineWidth = 1
 			circle = circleRender
 		}

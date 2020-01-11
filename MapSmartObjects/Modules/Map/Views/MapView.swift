@@ -38,13 +38,13 @@ final class MapView: UIView
 	private func configureViews() {
 		currentLocationButton.setImage(UIImage(named: "location")?.withRenderingMode(.alwaysTemplate), for: .normal)
 		currentLocationButton.imageEdgeInsets = imageInset
-		currentLocationButton.tintColor = Colors.blue
+		currentLocationButton.tintColor = Colors.mainStyleColor
 
 		addButton.setImage(UIImage(named: "add")?.withRenderingMode(.alwaysTemplate), for: .normal)
-		addButton.tintColor = Colors.blue
+		addButton.tintColor = Colors.mainStyleColor
 		addButton.imageEdgeInsets = imageInset
 		buttonsView.isOpaque = false
-		buttonsView.backgroundColor = Colors.white
+		buttonsView.backgroundColor = Colors.complementaryColor
 		buttonsView.alpha = 0.95
 		buttonsView.layer.shadowColor = UIColor.black.cgColor
 		buttonsView.layer.shadowOpacity = 0.2
