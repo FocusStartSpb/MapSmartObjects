@@ -83,6 +83,11 @@ final class SmartObject: NSObject
 		visitCount += 1
 	}
 
+	func set(visits: Int, timeInside: TimeInterval) {
+		self.visitCount = visits
+		self.insideTime = timeInside
+	}
+
 	@objc
 	private func updateTimer() {
 		insideTime += 1
