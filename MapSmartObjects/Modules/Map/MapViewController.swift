@@ -39,6 +39,7 @@ final class MapViewController: UIViewController
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		setupMapScreen()
+		configureView()
 		addTargets()
 		setSmartObjectsOnMap()
 		showCurrentLocation(presenter.getCurrentLocation())
@@ -55,6 +56,11 @@ final class MapViewController: UIViewController
 		mapScreen.layoutSubviews()
 	}
 
+	private func configureView() {
+		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+		navigationController?.navigationBar.barTintColor = Colors.blue
+		navigationController?.navigationBar.tintColor = Colors.white
+	}
 	private func setupMapScreen() {
 		mapScreen.mapView.delegate = self
 		mapScreen.mapView.showsUserLocation = true
@@ -130,8 +136,8 @@ extension MapViewController: MKMapViewDelegate
 		var circle = MKOverlayRenderer()
 		if overlay is MKCircle {
 			let circleRender = MKCircleRenderer(overlay: overlay)
-			circleRender.strokeColor = .blue
-			circleRender.fillColor = UIColor.green.withAlphaComponent(0.3)
+			circleRender.strokeColor = Colors.blue
+			circleRender.fillColor = Colors.green
 			circleRender.lineWidth = 1
 			circle = circleRender
 		}

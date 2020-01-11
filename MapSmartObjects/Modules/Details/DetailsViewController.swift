@@ -7,7 +7,6 @@
 //
 
 import MapKit
-
 final class DetailsViewController: UIViewController
 {
 	private let detailsView = DetailsView()
@@ -94,6 +93,9 @@ final class DetailsViewController: UIViewController
 	}
 
 	private func setupView() {
+		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+		navigationController?.navigationBar.barTintColor = Colors.blue
+		navigationController?.navigationBar.tintColor = Colors.white
 		switch type {
 		case .create:
 			self.navigationItem.title = "Create"
