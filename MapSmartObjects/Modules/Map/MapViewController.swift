@@ -22,6 +22,7 @@ final class MapViewController: UIViewController
 {
 	private let presenter: IMapPresenter
 	private let mapScreen = MapView()
+	private let effectFeedbackgenerator = UIImpactFeedbackGenerator(style: .light)
 
 	init(presenter: IMapPresenter) {
 		self.presenter = presenter
@@ -75,6 +76,8 @@ final class MapViewController: UIViewController
 	}
 
 	@objc private func longTapped(gestureReconizer: UILongPressGestureRecognizer) {
+		effectFeedbackgenerator.prepare()
+		effectFeedbackgenerator.impactOccurred()
 		if gestureReconizer.state == UIGestureRecognizer.State.began {
 			let location = gestureReconizer.location(in: mapScreen.mapView)
 			let coordinate = mapScreen.mapView.convert(location, toCoordinateFrom: mapScreen.mapView)
