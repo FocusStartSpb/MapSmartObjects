@@ -21,6 +21,7 @@ protocol IMapPresenter
 	func stopMonitoring(_ smartObject: SmartObject)
 	func getMonitoringRegionsCount() -> Int
 	func handleEvent(for region: CLRegion)
+	func saveToDB()
 }
 
 final class MapPresenter
@@ -40,6 +41,10 @@ extension MapPresenter: IMapPresenter
 {
 	func getMonitoringRegionsCount() -> Int {
 		return locationManager.monitoredRegions.count
+	}
+
+	func saveToDB() {
+		repository.saveSmartObjects()
 	}
 
 	func handleEvent(for region: CLRegion) {

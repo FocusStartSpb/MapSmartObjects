@@ -10,31 +10,54 @@ import MapKit
 
 final class DetailsView: UIView
 {
+	let timerView: InfoBadge = {
+		let info = InfoBadge()
+		let imageView = info.imageView
+		imageView.image = UIImage(named: "time")
+		imageView.image = imageView.image?.withRenderingMode(.alwaysTemplate)
+		imageView.tintColor = Colors.complementary
+		info.title.textColor = Colors.complementary
+		info.backgroundColor = Colors.mainStyle
+		return info
+	}()
+
+	let counterView: InfoBadge = {
+		let info = InfoBadge()
+		let imageView = info.imageView
+		imageView.image = UIImage(named: "counter")
+		imageView.image = imageView.image?.withRenderingMode(.alwaysTemplate)
+		imageView.tintColor = Colors.complementary
+		info.title.textColor = Colors.complementary
+		info.backgroundColor = Colors.mainStyle
+		return info
+	}()
+
 	private let nameLabel: UILabel = {
 		let label = UILabel()
-		label.text = "Name:"
+		label.text = "Name"
 		label.textAlignment = .left
-		label.font = UIFont(name: "HelveticaNeue-Bold", size: 18.0)
+		label.font = UIFont(name: "HelveticaNeue", size: 16.0)
 		return label
 	}()
 
 	private let radiusLabel: UILabel = {
 		let label = UILabel()
-		label.text = "Radius (meters):"
-		label.font = UIFont(name: "HelveticaNeue-Bold", size: 18.0)
+		label.text = "Radius (meters)"
+		label.font = UIFont(name: "HelveticaNeue", size: 16.0)
 		return label
 	}()
 
 	private let addressLabel: UILabel = {
 		let label = UILabel()
-		label.text = "Address:"
-		label.font = UIFont(name: "HelveticaNeue-Bold", size: 18.0)
+		label.text = "Address"
+		label.font = UIFont(name: "HelveticaNeue", size: 16.0)
 		return label
 	}()
 
 	let addressInfoLabel: UILabel = {
 		let label = UILabel()
 		label.numberOfLines = 0
+		label.font = UIFont(name: "HelveticaNeue", size: 14.0)
 		return label
 	}()
 
@@ -73,6 +96,8 @@ final class DetailsView: UIView
 	private func addSubviews() {
 		self.addSubview(scrollView)
 		scrollView.addSubview(mapView)
+		scrollView.addSubview(timerView)
+		scrollView.addSubview(counterView)
 		scrollView.addSubview(nameLabel)
 		scrollView.addSubview(radiusLabel)
 		scrollView.addSubview(addressLabel)
@@ -89,6 +114,8 @@ final class DetailsView: UIView
 
 	private func setTranslatesAutoresizingMaskIntoConstraints() {
 		scrollView.translatesAutoresizingMaskIntoConstraints = false
+		timerView.translatesAutoresizingMaskIntoConstraints = false
+		counterView.translatesAutoresizingMaskIntoConstraints = false
 		mapView.translatesAutoresizingMaskIntoConstraints = false
 		nameLabel.translatesAutoresizingMaskIntoConstraints = false
 		radiusLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -100,7 +127,6 @@ final class DetailsView: UIView
 
 	private func setConstraints() {
 		setTranslatesAutoresizingMaskIntoConstraints()
-
 		NSLayoutConstraint.activate([
 			scrollView.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor),
 			scrollView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
@@ -112,35 +138,43 @@ final class DetailsView: UIView
 			mapView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
 			mapView.heightAnchor.constraint(equalTo: self.mapView.widthAnchor, multiplier: 1 / 2),
 
-			nameLabel.topAnchor.constraint(equalTo: mapView.bottomAnchor, constant: 16),
-			nameLabel.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 1 / 4),
+			timerView.leadingAnchor.constraint(equalTo: mapView.leadingAnchor),
+			timerView.topAnchor.constraint(equalTo: mapView.bottomAnchor, constant: 8),
+			timerView.heightAnchor.constraint(equalTo: mapView.heightAnchor, multiplier: 1 / 4),
+
+			counterView.trailingAnchor.constraint(equalTo: mapView.trailingAnchor),
+			counterView.topAnchor.constraint(equalTo: timerView.topAnchor),
+			counterView.heightAnchor.constraint(equalTo: timerView.heightAnchor),
+
+			nameLabel.topAnchor.constraint(equalTo: timerView.bottomAnchor),
+			nameLabel.trailingAnchor.constraint(equalTo: radiusLabel.trailingAnchor),
 			nameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
 			nameLabel.heightAnchor.constraint(equalToConstant: 31),
 
-			nameTextField.topAnchor.constraint(equalTo: mapView.bottomAnchor, constant: 16),
-			nameTextField.leadingAnchor.constraint(equalTo: nameLabel.trailingAnchor, constant: 16),
+			nameTextField.topAnchor.constraint(equalTo: nameLabel.bottomAnchor),
+			nameTextField.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
 			nameTextField.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
 			nameTextField.heightAnchor.constraint(equalToConstant: 31),
 
-			radiusLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 16),
-			radiusLabel.widthAnchor.constraint(equalTo: nameLabel.widthAnchor, constant: 60),
-			radiusLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
+			radiusLabel.topAnchor.constraint(equalTo: nameTextField.bottomAnchor),
+			radiusLabel.widthAnchor.constraint(greaterThanOrEqualTo: nameLabel.widthAnchor),
+			radiusLabel.leadingAnchor.constraint(equalTo: nameTextField.leadingAnchor),
 			radiusLabel.heightAnchor.constraint(equalTo: nameLabel.heightAnchor),
 
-			radiusTextField.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 16),
-			radiusTextField.leadingAnchor.constraint(equalTo: radiusLabel.trailingAnchor, constant: 16),
+			radiusTextField.topAnchor.constraint(equalTo: radiusLabel.bottomAnchor),
+			radiusTextField.leadingAnchor.constraint(equalTo: radiusLabel.leadingAnchor),
 			radiusTextField.trailingAnchor.constraint(equalTo: nameTextField.trailingAnchor),
 			radiusTextField.heightAnchor.constraint(equalTo: nameTextField.heightAnchor),
 
-			addressLabel.topAnchor.constraint(equalTo: radiusLabel.bottomAnchor, constant: 16),
-			addressLabel.leadingAnchor.constraint(equalTo: radiusLabel.leadingAnchor),
-			addressLabel.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
+			addressLabel.topAnchor.constraint(equalTo: radiusTextField.bottomAnchor),
+			addressLabel.leadingAnchor.constraint(equalTo: radiusTextField.leadingAnchor),
+			addressLabel.widthAnchor.constraint(greaterThanOrEqualTo: radiusLabel.widthAnchor),
 			addressLabel.heightAnchor.constraint(equalTo: radiusLabel.heightAnchor),
 
-			addressInfoLabel.topAnchor.constraint(equalTo: radiusTextField.bottomAnchor, constant: 16),
-			addressInfoLabel.leadingAnchor.constraint(equalTo: nameTextField.leadingAnchor),
+			addressInfoLabel.topAnchor.constraint(equalTo: addressLabel.bottomAnchor),
+			addressInfoLabel.leadingAnchor.constraint(equalTo: addressLabel.leadingAnchor),
 			addressInfoLabel.trailingAnchor.constraint(equalTo: radiusTextField.trailingAnchor),
-			addressInfoLabel.heightAnchor.constraint(greaterThanOrEqualTo: radiusTextField.heightAnchor),
+			addressInfoLabel.heightAnchor.constraint(greaterThanOrEqualTo: addressLabel.heightAnchor),
 			])
 	}
 }

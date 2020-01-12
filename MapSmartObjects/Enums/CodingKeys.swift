@@ -10,5 +10,5 @@ import Foundation
 
 enum CodingKeys: String, CodingKey
 {
-	case latitude, longitude, circleRadius, name, address, identifier
+	case latitude, longitude, circleRadius, name, address, identifier, visitCount, insideTime
 }
