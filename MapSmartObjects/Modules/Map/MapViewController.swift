@@ -40,13 +40,13 @@ final class MapViewController: UIViewController
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		setupMapScreen()
-		configureView()
 		addTargets()
 		setSmartObjectsOnMap()
 		showCurrentLocation(presenter.getCurrentLocation())
 	}
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
+		self.navigationController?.setNavigationBarHidden(true, animated: true)
 		updateSmartObjects()
 	}
 
@@ -55,12 +55,6 @@ final class MapViewController: UIViewController
 		presenter.checkLocationEnabled()
 		mapScreen.buttonsView.layer.cornerRadius = mapScreen.buttonsView.frame.size.height / 10
 		mapScreen.layoutSubviews()
-	}
-
-	private func configureView() {
-		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-		navigationController?.navigationBar.barTintColor = Colors.mainStyle
-		navigationController?.navigationBar.tintColor = Colors.complementary
 	}
 	private func setupMapScreen() {
 		mapScreen.mapView.delegate = self

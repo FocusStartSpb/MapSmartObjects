@@ -20,7 +20,6 @@ final class MapView: UIView
 		imageView.image = imageView.image?.withRenderingMode(.alwaysTemplate)
 		imageView.tintColor = Colors.complementary
 		info.title.textColor = Colors.complementary
-		info.title.font = UIFont(name: "HelveticaNeue-Bold", size: 18)
 		info.backgroundColor = Colors.mainStyle
 		info.layer.shadowColor = Colors.shadows.cgColor
 		info.layer.shadowOpacity = 0.2
@@ -107,7 +106,7 @@ final class MapView: UIView
 
 			pinCounterView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -8),
 			pinCounterView.topAnchor.constraint(equalTo: self.layoutMarginsGuide.topAnchor, constant: 8),
-			pinCounterView.heightAnchor.constraint(equalToConstant: 30),
+			pinCounterView.heightAnchor.constraint(equalToConstant: 38),
 
 			addButton.leadingAnchor.constraint(equalTo: buttonsView.leadingAnchor),
 			addButton.topAnchor.constraint(equalTo: buttonsView.topAnchor),

@@ -33,6 +33,7 @@ final class DetailsViewController: UIViewController
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		self.navigationController?.setNavigationBarHidden(false, animated: true)
 		setActions()
 		setupView()
 		setNotifycations()
@@ -103,9 +104,9 @@ final class DetailsViewController: UIViewController
 			self.navigationItem.title = "Edit"
 			detailsView.nameTextField.text = currentSmartObject.name
 			detailsView.radiusTextField.text = String(Int(currentSmartObject.circleRadius))
-			detailsView.counterView.title.text = String(currentSmartObject.visitCount)
-			detailsView.timerView.title.text = currentSmartObject.insideTime.toString()
 		}
+		detailsView.counterView.title.text = String(currentSmartObject.visitCount)
+		detailsView.timerView.title.text = currentSmartObject.insideTime.toString()
 		detailsView.mapView.delegate = self
 		detailsView.radiusTextField.delegate = self
 		detailsView.nameTextField.delegate = self

@@ -16,7 +16,7 @@ final class MainTabBarController: UITabBarController
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		UITabBar.appearance().tintColor = Colors.mainStyle
-		let mapController = factory.createMapModule()
+		let mapController = UINavigationController(rootViewController: factory.createMapModule())
 		let pinListController = UINavigationController(rootViewController: factory.createPinListModule())
 
 		self.addChild(mapController)

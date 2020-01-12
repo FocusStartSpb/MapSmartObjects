@@ -14,4 +14,5 @@ enum Colors
 	static let complementary = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 	static let radiusFill = UIColor.green.withAlphaComponent(0.3)
 	static let shadows = UIColor.black
+	static let carriage = UIColor.gray
 }

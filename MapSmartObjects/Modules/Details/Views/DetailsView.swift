@@ -10,28 +10,14 @@ import MapKit
 
 final class DetailsView: UIView
 {
-	private let visitsCountLabel: UILabel = {
-		let label = UILabel()
-		label.text = "Visits:"
-		label.textAlignment = .left
-		label.font = UIFont(name: "HelveticaNeue-Bold", size: 18.0)
-		return label
-	}()
-
-	let backgroundView: UIView = {
-		let view = UIView()
-		view.backgroundColor = Colors.complementary
-		return view
-	}()
-
 	let timerView: InfoBadge = {
 		let info = InfoBadge()
 		let imageView = info.imageView
 		imageView.image = UIImage(named: "time")
 		imageView.image = imageView.image?.withRenderingMode(.alwaysTemplate)
-		imageView.tintColor = Colors.mainStyle
-		info.title.textColor = Colors.mainStyle
-		info.backgroundColor = Colors.complementary
+		imageView.tintColor = Colors.complementary
+		info.title.textColor = Colors.complementary
+		info.backgroundColor = Colors.mainStyle
 		return info
 	}()
 
@@ -40,13 +26,11 @@ final class DetailsView: UIView
 		let imageView = info.imageView
 		imageView.image = UIImage(named: "counter")
 		imageView.image = imageView.image?.withRenderingMode(.alwaysTemplate)
-		imageView.tintColor = Colors.mainStyle
-		info.title.textColor = Colors.mainStyle
-		info.backgroundColor = Colors.complementary
+		imageView.tintColor = Colors.complementary
+		info.title.textColor = Colors.complementary
+		info.backgroundColor = Colors.mainStyle
 		return info
 	}()
-
-	//private let counter = InfoBadge()
 
 	private let nameLabel: UILabel = {
 		let label = UILabel()
@@ -65,7 +49,7 @@ final class DetailsView: UIView
 
 	private let addressLabel: UILabel = {
 		let label = UILabel()
-		label.text = "Address:"
+		label.text = "Address"
 		label.font = UIFont(name: "HelveticaNeue", size: 16.0)
 		return label
 	}()
@@ -74,13 +58,6 @@ final class DetailsView: UIView
 		let label = UILabel()
 		label.numberOfLines = 0
 		label.font = UIFont(name: "HelveticaNeue", size: 14.0)
-		return label
-	}()
-
-	let visitsCountInfoLabel: UILabel = {
-		let label = UILabel()
-		label.textAlignment = .left
-		label.text = "0"
 		return label
 	}()
 
@@ -118,9 +95,6 @@ final class DetailsView: UIView
 
 	private func addSubviews() {
 		self.addSubview(scrollView)
-		self.addSubview(visitsCountLabel)
-		self.addSubview(visitsCountInfoLabel)
-		self.addSubview(backgroundView)
 		scrollView.addSubview(mapView)
 		scrollView.addSubview(timerView)
 		scrollView.addSubview(counterView)
@@ -149,12 +123,8 @@ final class DetailsView: UIView
 		addressInfoLabel.translatesAutoresizingMaskIntoConstraints = false
 		nameTextField.translatesAutoresizingMaskIntoConstraints = false
 		radiusTextField.translatesAutoresizingMaskIntoConstraints = false
-		visitsCountLabel.translatesAutoresizingMaskIntoConstraints = false
-		visitsCountInfoLabel.translatesAutoresizingMaskIntoConstraints = false
-		backgroundView.translatesAutoresizingMaskIntoConstraints = false
 	}
 
-	// swiftlint:disable:next function_body_length
 	private func setConstraints() {
 		setTranslatesAutoresizingMaskIntoConstraints()
 		NSLayoutConstraint.activate([
@@ -175,11 +145,6 @@ final class DetailsView: UIView
 			counterView.trailingAnchor.constraint(equalTo: mapView.trailingAnchor),
 			counterView.topAnchor.constraint(equalTo: timerView.topAnchor),
 			counterView.heightAnchor.constraint(equalTo: timerView.heightAnchor),
-
-			backgroundView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-			backgroundView.topAnchor.constraint(equalTo: self.topAnchor),
-			backgroundView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-			backgroundView.bottomAnchor.constraint(equalTo: counterView.bottomAnchor, constant: 8),
 
 			nameLabel.topAnchor.constraint(equalTo: timerView.bottomAnchor, constant: 8),
 			nameLabel.trailingAnchor.constraint(equalTo: radiusLabel.trailingAnchor),
@@ -210,29 +175,6 @@ final class DetailsView: UIView
 			addressInfoLabel.leadingAnchor.constraint(equalTo: addressLabel.leadingAnchor),
 			addressInfoLabel.trailingAnchor.constraint(equalTo: radiusTextField.trailingAnchor),
 			addressInfoLabel.heightAnchor.constraint(greaterThanOrEqualTo: addressLabel.heightAnchor),
-
-//			visitsCountLabel.topAnchor.constraint(equalTo: radiusLabel.bottomAnchor, constant: 16),
-//			visitsCountLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -38),
-//			visitsCountLabel.widthAnchor.constraint(greaterThanOrEqualTo: nameLabel.widthAnchor),
-//			visitsCountLabel.leadingAnchor.constraint(equalTo: addressLabel.leadingAnchor),
-//			visitsCountLabel.heightAnchor.constraint(equalToConstant: 31),
-//
-////			insideTimeLabel.topAnchor.constraint(equalTo: visitsCountLabel.bottomAnchor, constant: 16),
-//			insideTimeLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -38),
-////			insideTimeLabel.leadingAnchor.constraint(equalTo: visitsCountLabel.leadingAnchor),
-//			insideTimeLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 8),
-//			insideTimeLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 100),
-//			insideTimeLabel.heightAnchor.constraint(equalToConstant: 31),
-//
-//			visitsCountInfoLabel.topAnchor.constraint(equalTo: visitsCountLabel.topAnchor),
-//			visitsCountInfoLabel.leadingAnchor.constraint(lessThanOrEqualTo: nameTextField.leadingAnchor, constant: 5),
-//			visitsCountInfoLabel.trailingAnchor.constraint(equalTo: radiusTextField.trailingAnchor),
-//			visitsCountInfoLabel.heightAnchor.constraint(equalToConstant: 31),
-
-//			insideTimeInfoLabel.topAnchor.constraint(equalTo: insideTimeLabel.topAnchor),
-//			insideTimeInfoLabel.leadingAnchor.constraint(equalTo: radiusTextField.leadingAnchor, constant: 5),
-//			insideTimeInfoLabel.trailingAnchor.constraint(equalTo: visitsCountInfoLabel.trailingAnchor),
-//			insideTimeInfoLabel.heightAnchor.constraint(equalToConstant: 31),
 			])
 	}
 }
