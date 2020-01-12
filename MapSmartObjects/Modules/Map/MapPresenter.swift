@@ -21,6 +21,7 @@ protocol IMapPresenter
 	func stopMonitoring(_ smartObject: SmartObject)
 	func getMonitoringRegionsCount() -> Int
 	func handleEvent(for region: CLRegion)
+	func showPinDetails(_ smartObject: SmartObject)
 	func saveToDB()
 }
 
@@ -45,6 +46,10 @@ extension MapPresenter: IMapPresenter
 
 	func saveToDB() {
 		repository.saveSmartObjects()
+	}
+
+	func showPinDetails(_ smartObject: SmartObject) {
+		router.showDetails(smartObject: smartObject, type: .edit)
 	}
 
 	func handleEvent(for region: CLRegion) {

@@ -152,8 +152,26 @@ extension MapViewController: MKMapViewDelegate
 		pin.canShowCallout = true
 		pin.animatesWhenAdded = true
 		pin.isDraggable = false // заглушка, круг не перетаскивается и остается постоянно на карте
+
+		//настройка detailCalloutAccessoryView
+		let detailLabel = UILabel()
+		detailLabel.text = annotation.subtitle ?? ""
+		detailLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 14.0)
+		detailLabel.numberOfLines = 0
+		pin.detailCalloutAccessoryView = detailLabel
+
+		//кнопка на пине
+		pin.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
 		return pin
 	}
+
+	func mapView(_ mapView: MKMapView,
+				 annotationView view: MKAnnotationView,
+				 calloutAccessoryControlTapped control: UIControl) {
+		guard let smartObject = view.annotation as? SmartObject else { return }
+		presenter.showPinDetails(smartObject)
+	}
+
 	//метод для уведомлений входа в зоны
 	func notifyEvent(for region: CLRegion) {
 		let startMessage = "Вы вошли в зону: "
