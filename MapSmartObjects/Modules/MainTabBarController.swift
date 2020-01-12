@@ -15,7 +15,7 @@ final class MainTabBarController: UITabBarController
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		UITabBar.appearance().tintColor = Colors.mainStyleColor
+		UITabBar.appearance().tintColor = Colors.mainStyle
 		let mapController = UINavigationController(rootViewController: factory.createMapModule())
 		let pinListController = UINavigationController(rootViewController: factory.createPinListModule())
 
@@ -23,11 +23,11 @@ final class MainTabBarController: UITabBarController
 		self.addChild(pinListController)
 
 		mapController.tabBarItem = UITabBarItem(title: "Map", image: UIImage(named: "map"), tag: 1)
-		mapController.tabBarItem.badgeColor = Colors.mainStyleColor
+		mapController.tabBarItem.badgeColor = Colors.mainStyle
 		mapController.tabBarItem.imageInsets = imageInset
 
 		pinListController.tabBarItem = UITabBarItem(title: "My Pins", image: UIImage(named: "menu"), tag: 2)
-		pinListController.tabBarItem.badgeColor = Colors.mainStyleColor
+		pinListController.tabBarItem.badgeColor = Colors.mainStyle
 		pinListController.tabBarItem.imageInsets = imageInset
 	}
 

@@ -61,21 +61,21 @@ final class PinListViewController: UIViewController
 
 	private func setupSearchController() {
 		let searchBar = searchController.searchBar
-		searchBar.tintColor = Colors.complementaryColor
-		searchBar.barTintColor = Colors.complementaryColor
+		searchBar.tintColor = Colors.complementary
+		searchBar.barTintColor = Colors.complementary
 
 		if let textfield = searchBar.value(forKey: "searchField") as? UITextField {
-			textfield.textColor = Colors.complementaryColor
-			textfield.backgroundColor = Colors.complementaryColor
+			textfield.textColor = Colors.complementary
+			textfield.backgroundColor = Colors.complementary
 			if let backgroundview = textfield.subviews.first {
-				backgroundview.backgroundColor = Colors.complementaryColor
+				backgroundview.backgroundColor = Colors.complementary
 				backgroundview.layer.cornerRadius = 10
 				backgroundview.clipsToBounds = true
 			}
 		}
 
 		if let navigationbar = self.navigationController?.navigationBar {
-			navigationbar.barTintColor = Colors.complementaryColor
+			navigationbar.barTintColor = Colors.complementary
 		}
 
 		searchController.searchResultsUpdater = self
@@ -88,12 +88,12 @@ final class PinListViewController: UIViewController
 	private func configureViews() {
 		title = "My Pins"
 		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-		navigationController?.navigationBar.barTintColor = Colors.mainStyleColor
-		navigationController?.navigationBar.tintColor = Colors.complementaryColor
+		navigationController?.navigationBar.barTintColor = Colors.mainStyle
+		navigationController?.navigationBar.tintColor = Colors.complementary
 		backgroundImage.image = UIImage(named: "emptyIcon")
 		backgroundImageLabel.numberOfLines = 0
 		backgroundImageLabel.textAlignment = .center
-		backgroundImageLabel.textColor = Colors.mainStyleColor
+		backgroundImageLabel.textColor = Colors.mainStyle
 		pinTableView.register(PinListCell.self, forCellReuseIdentifier: PinListCell.cellID)
 		navigationItem.leftBarButtonItem = editButtonItem
 		pinTableView.tableFooterView = UIView()

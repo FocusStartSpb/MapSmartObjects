@@ -94,8 +94,8 @@ final class DetailsViewController: UIViewController
 
 	private func setupView() {
 		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-		navigationController?.navigationBar.barTintColor = Colors.mainStyleColor
-		navigationController?.navigationBar.tintColor = Colors.complementaryColor
+		navigationController?.navigationBar.barTintColor = Colors.mainStyle
+		navigationController?.navigationBar.tintColor = Colors.complementary
 		switch type {
 		case .create:
 			self.navigationItem.title = "Create"
