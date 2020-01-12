@@ -15,6 +15,7 @@ protocol IMapViewController
 	func showAlertRequestLocation(title: String, message: String?, url: URL?)
 	func addCircle(_ smartObject: SmartObject)
 	func setMonitoringPlacecesCount(number: Int)
+	func showCurrentLocation(_ location: CLLocationCoordinate2D?)
 	func updateSmartObjects()
 }
 
@@ -95,11 +96,6 @@ final class MapViewController: UIViewController
 		return result
 	}
 
-	private func showCurrentLocation(_ location: CLLocationCoordinate2D?) {
-		guard let location = location else { return }
-		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-		mapScreen.mapView.setRegion(region, animated: true)
-	}
 	// Находит один радиус с одинаковыми координатами и радиусом
 	private func removeRadiusOverlay(forPin pin: SmartObject) {
 		let overlays = mapScreen.mapView.overlays
@@ -218,6 +214,12 @@ extension MapViewController: IMapViewController
 {
 	func setMonitoringPlacecesCount(number: Int) {
 		navigationItem.title = "Monitoring places: \(number)"
+	}
+
+	func showCurrentLocation(_ location: CLLocationCoordinate2D?) {
+		guard let location = location else { return }
+		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+		mapScreen.mapView.setRegion(region, animated: true)
 	}
 
 	func showAlert(withTitle title: String?, message: String?) {

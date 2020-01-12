@@ -131,6 +131,7 @@ extension MapPresenter: IMapPresenter
 		switch CLLocationManager.authorizationStatus() {
 		case .authorizedWhenInUse, .authorizedAlways, .notDetermined:
 			locationManager.requestAlwaysAuthorization()
+			mapViewController?.showCurrentLocation(getCurrentLocation())
 		case .denied, .restricted:
 			mapViewController?.showAlertRequestLocation(title: "You have banned the use of location",
 												 message: "Want to allow?",
