@@ -13,6 +13,8 @@
 		4B43F6CC23A664CB003BF176 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4B43F6CA23A664CB003BF176 /* LaunchScreen.storyboard */; };
 		4B43F6D723A664CB003BF176 /* MapSmartObjectsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B43F6D623A664CB003BF176 /* MapSmartObjectsTests.swift */; };
 		4B44328F23C7C050005AC5F8 /* DetailVCTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B44328E23C7C050005AC5F8 /* DetailVCTypes.swift */; };
+		4B44329123CA64A5005AC5F8 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B44329023CA64A5005AC5F8 /* Colors.swift */; };
+		4B44329323CB3527005AC5F8 /* infoBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B44329223CB3527005AC5F8 /* infoBadge.swift */; };
 		4B58C20B23A93D8500A430C0 /* PinListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B58C20A23A93D8500A430C0 /* PinListViewController.swift */; };
 		4B58C20D23A93DAC00A430C0 /* PinListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B58C20C23A93DAC00A430C0 /* PinListPresenter.swift */; };
 		4B58C20F23A93DDA00A430C0 /* PinListRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B58C20E23A93DDA00A430C0 /* PinListRouter.swift */; };
@@ -59,6 +61,8 @@
 		4B43F6D623A664CB003BF176 /* MapSmartObjectsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapSmartObjectsTests.swift; sourceTree = "<group>"; };
 		4B43F6D823A664CB003BF176 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4B44328E23C7C050005AC5F8 /* DetailVCTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailVCTypes.swift; sourceTree = "<group>"; };
+		4B44329023CA64A5005AC5F8 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		4B44329223CB3527005AC5F8 /* infoBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = infoBadge.swift; sourceTree = "<group>"; };
 		4B58C20A23A93D8500A430C0 /* PinListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinListViewController.swift; sourceTree = "<group>"; };
 		4B58C20C23A93DAC00A430C0 /* PinListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinListPresenter.swift; sourceTree = "<group>"; };
 		4B58C20E23A93DDA00A430C0 /* PinListRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinListRouter.swift; sourceTree = "<group>"; };
@@ -200,6 +204,7 @@
 				5C1F9B5523B748FE00A3D1C9 /* CodingKeys.swift */,
 				5CE3E81223C7C0BA005EC97C /* TextFieldType.swift */,
 				4B44328E23C7C050005AC5F8 /* DetailVCTypes.swift */,
+				4B44329023CA64A5005AC5F8 /* Colors.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -230,6 +235,7 @@
 				4B58C21023A9719D00A430C0 /* Map */,
 				4B58C20923A93D5F00A430C0 /* PinList */,
 				5CF4239223C4A65C00A1ED5A /* Details */,
+				4B44329223CB3527005AC5F8 /* infoBadge.swift */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -400,6 +406,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4B58C20D23A93DAC00A430C0 /* PinListPresenter.swift in Sources */,
+				4B44329323CB3527005AC5F8 /* infoBadge.swift in Sources */,
 				5CE3E81323C7C0BA005EC97C /* TextFieldType.swift in Sources */,
 				5C1F9B5323B748B100A3D1C9 /* Array+Extension.swift in Sources */,
 				5CF4239723C4C54C00A1ED5A /* DetailsPresenter.swift in Sources */,
@@ -421,6 +428,7 @@
 				5C028C1823AA920F009FA3E8 /* YandexGeocoder.swift in Sources */,
 				4B58C21623A971EE00A430C0 /* MapRouter.swift in Sources */,
 				5CF4239423C4A6D500A1ED5A /* DetailsView.swift in Sources */,
+				4B44329123CA64A5005AC5F8 /* Colors.swift in Sources */,
 				4B43F6C723A664C9003BF176 /* MapSmartObjects.xcdatamodeld in Sources */,
 				5C1F9B5823B8E09C00A3D1C9 /* MapView.swift in Sources */,
 				4B58C21223A971AB00A430C0 /* MapViewController.swift in Sources */,

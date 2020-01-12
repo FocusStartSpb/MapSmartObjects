@@ -7,7 +7,6 @@
 //
 
 import MapKit
-
 final class DetailsViewController: UIViewController
 {
 	private let detailsView = DetailsView()
@@ -34,6 +33,7 @@ final class DetailsViewController: UIViewController
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		self.navigationController?.setNavigationBarHidden(false, animated: true)
 		setActions()
 		setupView()
 		setNotifycations()
@@ -94,6 +94,9 @@ final class DetailsViewController: UIViewController
 	}
 
 	private func setupView() {
+		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+		navigationController?.navigationBar.barTintColor = Colors.mainStyle
+		navigationController?.navigationBar.tintColor = Colors.complementary
 		switch type {
 		case .create:
 			self.navigationItem.title = "Create"
@@ -101,9 +104,9 @@ final class DetailsViewController: UIViewController
 			self.navigationItem.title = "Edit"
 			detailsView.nameTextField.text = currentSmartObject.name
 			detailsView.radiusTextField.text = String(Int(currentSmartObject.circleRadius))
-			detailsView.visitsCountInfoLabel.text = String(currentSmartObject.visitCount)
-			detailsView.insideTimeInfoLabel.text = currentSmartObject.insideTime.toString()
 		}
+		detailsView.counterView.title.text = String(currentSmartObject.visitCount)
+		detailsView.timerView.title.text = currentSmartObject.insideTime.toString()
 		detailsView.mapView.delegate = self
 		detailsView.radiusTextField.delegate = self
 		detailsView.nameTextField.delegate = self
