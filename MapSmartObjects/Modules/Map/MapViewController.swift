@@ -49,6 +49,7 @@ final class MapViewController: UIViewController
 
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
+		self.navigationController?.setNavigationBarHidden(true, animated: true)
 		updateSmartObjects()
 	}
 
@@ -57,7 +58,6 @@ final class MapViewController: UIViewController
 		mapScreen.buttonsView.layer.cornerRadius = mapScreen.buttonsView.frame.size.height / 10
 		mapScreen.layoutSubviews()
 	}
-
 	private func setupMapScreen() {
 		mapScreen.mapView.delegate = self
 		mapScreen.mapView.showsUserLocation = true
@@ -130,8 +130,8 @@ extension MapViewController: MKMapViewDelegate
 		var circle = MKOverlayRenderer()
 		if overlay is MKCircle {
 			let circleRender = MKCircleRenderer(overlay: overlay)
-			circleRender.strokeColor = .blue
-			circleRender.fillColor = UIColor.green.withAlphaComponent(0.3)
+			circleRender.strokeColor = Colors.mainStyle
+			circleRender.fillColor = Colors.radiusFill
 			circleRender.lineWidth = 1
 			circle = circleRender
 		}
@@ -214,7 +214,7 @@ extension MapViewController: CLLocationManagerDelegate
 extension MapViewController: IMapViewController
 {
 	func setMonitoringPlacecesCount(number: Int) {
-		navigationItem.title = "Monitoring places: \(number)"
+		mapScreen.pinCounterView.title.text = "\(number)"
 	}
 
 	func showCurrentLocation(_ location: CLLocationCoordinate2D?) {
