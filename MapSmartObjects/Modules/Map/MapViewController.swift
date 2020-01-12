@@ -38,13 +38,15 @@ final class MapViewController: UIViewController
 	override func loadView() {
 		self.view = mapScreen
 	}
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		presenter.checkLocationEnabled()
 		setupMapScreen()
 		addTargets()
 		setSmartObjectsOnMap()
-		showCurrentLocation(presenter.getCurrentLocation())
 	}
+
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		updateSmartObjects()
@@ -52,7 +54,6 @@ final class MapViewController: UIViewController
 
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		presenter.checkLocationEnabled()
 		mapScreen.buttonsView.layer.cornerRadius = mapScreen.buttonsView.frame.size.height / 10
 		mapScreen.layoutSubviews()
 	}
