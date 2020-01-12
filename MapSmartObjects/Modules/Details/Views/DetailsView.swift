@@ -140,13 +140,13 @@ final class DetailsView: UIView
 
 			timerView.leadingAnchor.constraint(equalTo: mapView.leadingAnchor),
 			timerView.topAnchor.constraint(equalTo: mapView.bottomAnchor, constant: 8),
-			timerView.heightAnchor.constraint(equalTo: mapView.heightAnchor, multiplier: 1 / 5),
+			timerView.heightAnchor.constraint(equalTo: mapView.heightAnchor, multiplier: 1 / 4),
 
 			counterView.trailingAnchor.constraint(equalTo: mapView.trailingAnchor),
 			counterView.topAnchor.constraint(equalTo: timerView.topAnchor),
 			counterView.heightAnchor.constraint(equalTo: timerView.heightAnchor),
 
-			nameLabel.topAnchor.constraint(equalTo: timerView.bottomAnchor, constant: 8),
+			nameLabel.topAnchor.constraint(equalTo: timerView.bottomAnchor),
 			nameLabel.trailingAnchor.constraint(equalTo: radiusLabel.trailingAnchor),
 			nameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
 			nameLabel.heightAnchor.constraint(equalToConstant: 31),
