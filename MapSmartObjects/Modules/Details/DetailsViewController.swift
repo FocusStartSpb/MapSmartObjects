@@ -86,7 +86,7 @@ final class DetailsViewController: UIViewController
 		let circle = MKCircle(center: center, radius: radius)
 		detailsView.mapView.addOverlay(circle)
 		detailsView.mapView.centerCoordinate = center
-		let offset: Double = radius / 3
+		let offset: Double = max(radius / 3, 500)
 		let region = MKCoordinateRegion(center: center,
 										latitudinalMeters: radius * 2 + offset,
 										longitudinalMeters: radius * 2 + offset)
