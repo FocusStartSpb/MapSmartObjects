@@ -223,7 +223,7 @@ extension MapViewController: CLLocationManagerDelegate
 extension MapViewController: IMapViewController
 {
 	func setMonitoringPlacecesCount(number: Int) {
-		navigationItem.title = "Monitoring places: \(number)"
+		mapScreen.pinCounterView.title.text = "\(number)"
 	}
 
 	func showAlert(withTitle title: String?, message: String?) {
