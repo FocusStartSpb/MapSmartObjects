@@ -15,6 +15,7 @@ protocol IMapViewController
 	func showAlertRequestLocation(title: String, message: String?, url: URL?)
 	func addCircle(_ smartObject: SmartObject)
 	func setMonitoringPlacecesCount(number: Int)
+	func showCurrentLocation(_ location: CLLocationCoordinate2D?)
 	func updateSmartObjects()
 }
 
@@ -37,13 +38,15 @@ final class MapViewController: UIViewController
 	override func loadView() {
 		self.view = mapScreen
 	}
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		presenter.checkLocationEnabled()
 		setupMapScreen()
 		addTargets()
 		setSmartObjectsOnMap()
-		showCurrentLocation(presenter.getCurrentLocation())
 	}
+
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		self.navigationController?.setNavigationBarHidden(true, animated: true)
@@ -52,7 +55,6 @@ final class MapViewController: UIViewController
 
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		presenter.checkLocationEnabled()
 		mapScreen.buttonsView.layer.cornerRadius = mapScreen.buttonsView.frame.size.height / 10
 		mapScreen.layoutSubviews()
 	}
@@ -95,11 +97,6 @@ final class MapViewController: UIViewController
 		return result
 	}
 
-	private func showCurrentLocation(_ location: CLLocationCoordinate2D?) {
-		guard let location = location else { return }
-		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-		mapScreen.mapView.setRegion(region, animated: true)
-	}
 	// Находит один радиус с одинаковыми координатами и радиусом
 	private func removeRadiusOverlay(forPin pin: SmartObject) {
 		let overlays = mapScreen.mapView.overlays
@@ -236,6 +233,12 @@ extension MapViewController: IMapViewController
 {
 	func setMonitoringPlacecesCount(number: Int) {
 		mapScreen.pinCounterView.title.text = "\(number)"
+	}
+
+	func showCurrentLocation(_ location: CLLocationCoordinate2D?) {
+		guard let location = location else { return }
+		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+		mapScreen.mapView.setRegion(region, animated: true)
 	}
 
 	func showAlert(withTitle title: String?, message: String?) {
