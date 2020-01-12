@@ -18,6 +18,11 @@ final class PinListViewController: UIViewController
 	private let pinTableView = UITableView()
 	private let presenter: IPinListPresenter
 	private let searchController = UISearchController(searchResultsController: nil)
+	private let backgroundImage = UIImageView()
+	private let backgroundImageLabel = UILabel()
+	private let emptyImage = UIImage(named: "emptyIcon")
+	private let searchImage = UIImage(named: "searchIcon")
+
 	private var filtredPins = [SmartObject]()
 	private var searchBarIsEmpty: Bool {
 		guard let text = searchController.searchBar.text else { return false }
@@ -40,6 +45,8 @@ final class PinListViewController: UIViewController
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		view.addSubview(pinTableView)
+		view.addSubview(backgroundImage)
+		view.addSubview(backgroundImageLabel)
 		pinTableView.dataSource = self
 		pinTableView.delegate = self
 		setupSearchController()
@@ -49,18 +56,45 @@ final class PinListViewController: UIViewController
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		pinTableView.reloadData()
+		checkEditMode()
 	}
 
 	private func setupSearchController() {
+		let searchBar = searchController.searchBar
+		searchBar.tintColor = Colors.complementary
+		searchBar.barTintColor = Colors.complementary
+
+		if let textfield = searchBar.value(forKey: "searchField") as? UITextField {
+			textfield.textColor = Colors.complementary
+			textfield.backgroundColor = Colors.complementary
+			if let backgroundview = textfield.subviews.first {
+				backgroundview.backgroundColor = Colors.complementary
+				backgroundview.layer.cornerRadius = 10
+				backgroundview.clipsToBounds = true
+			}
+		}
+
+		if let navigationbar = self.navigationController?.navigationBar {
+			navigationbar.barTintColor = Colors.complementary
+		}
+
+		UITextField.appearance().tintColor = Colors.carriage
 		searchController.searchResultsUpdater = self
 		searchController.obscuresBackgroundDuringPresentation = false
 		searchController.searchBar.placeholder = "Enter pin name"
 		navigationItem.hidesSearchBarWhenScrolling = false
-		navigationItem.searchController = self.searchController
+		navigationItem.searchController = searchController
 		definesPresentationContext = true
 	}
 	private func configureViews() {
 		title = "My Pins"
+		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+		navigationController?.navigationBar.barTintColor = Colors.mainStyle
+		navigationController?.navigationBar.tintColor = Colors.complementary
+		backgroundImage.image = UIImage(named: "emptyIcon")
+		backgroundImageLabel.numberOfLines = 0
+		backgroundImageLabel.textAlignment = .center
+		backgroundImageLabel.textColor = Colors.mainStyle
 		pinTableView.register(PinListCell.self, forCellReuseIdentifier: PinListCell.cellID)
 		navigationItem.leftBarButtonItem = editButtonItem
 		pinTableView.tableFooterView = UIView()
@@ -68,11 +102,23 @@ final class PinListViewController: UIViewController
 
 	private func setConstraints() {
 		pinTableView.translatesAutoresizingMaskIntoConstraints = false
+		backgroundImage.translatesAutoresizingMaskIntoConstraints = false
+		backgroundImageLabel.translatesAutoresizingMaskIntoConstraints = false
+
 		NSLayoutConstraint.activate([
 			pinTableView.topAnchor.constraint(equalTo: view.topAnchor),
 			pinTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
 			pinTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 			pinTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+			backgroundImage.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+			backgroundImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+			backgroundImage.widthAnchor.constraint(equalToConstant: backgroundImage.image?.size.width ?? 0),
+			backgroundImage.heightAnchor.constraint(equalToConstant: backgroundImage.image?.size.height ?? 0),
+
+			backgroundImageLabel.leadingAnchor.constraint(equalTo: backgroundImage.leadingAnchor, constant: 16),
+			backgroundImageLabel.trailingAnchor.constraint(equalTo: backgroundImage.trailingAnchor, constant: -16),
+			backgroundImageLabel.topAnchor.constraint(equalTo: backgroundImage.bottomAnchor),
 			])
 	}
 
@@ -82,6 +128,28 @@ final class PinListViewController: UIViewController
 			? pinTableView.setEditing(false, animated: true)
 			: pinTableView.setEditing(true, animated: true)
 		editButtonItem.title = pinTableView.isEditing ? "Done" : "Edit"
+	}
+
+	func disableEdit() {
+		navigationItem.leftBarButtonItem?.title = "Edit"
+		navigationItem.leftBarButtonItem?.isEnabled = false
+		pinTableView.isEditing = false
+		backgroundImage.isHidden = false
+		backgroundImageLabel.isHidden = false
+	}
+
+	func enableEdit() {
+		navigationItem.leftBarButtonItem?.isEnabled = true
+		backgroundImage.isHidden = true
+		backgroundImageLabel.isHidden = true
+	}
+
+	func checkEditMode() {
+		backgroundImage.image = isFiltering ? searchImage : emptyImage
+		if isFiltering == false {
+			backgroundImageLabel.text = "The list is empty now. Add new pin on the map!"
+		}
+		pinTableView.visibleCells.isEmpty ? disableEdit() : enableEdit()
 	}
 }
 
@@ -119,6 +187,7 @@ extension PinListViewController: UITableViewDataSource
 				filtredPins.remove(at: indexPath.row)
 			}
 			tableView.deleteRows(at: [indexPath], with: .automatic)
+			checkEditMode()
 		}
 	}
 }
@@ -141,7 +210,9 @@ extension PinListViewController: IPinListViewController
 extension PinListViewController: UISearchResultsUpdating
 {
 	func updateSearchResults(for searchController: UISearchController) {
-		filterContentForSearchText(searchController.searchBar.text ?? "")
+		guard let text = searchController.searchBar.text else { return }
+		backgroundImageLabel.text = "Nothing found on query: \(text)"
+		filterContentForSearchText(text)
 	}
 
 	private func filterContentForSearchText(_ searchText: String) {
@@ -149,5 +220,6 @@ extension PinListViewController: UISearchResultsUpdating
 			return smartObject.name.lowercased().contains(searchText.lowercased())
 		}
 		pinTableView.reloadData()
+		checkEditMode()
 	}
 }
