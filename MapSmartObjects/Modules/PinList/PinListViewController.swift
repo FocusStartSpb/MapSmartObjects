@@ -60,11 +60,17 @@ final class PinListViewController: UIViewController
 	}
 
 	private func setupSearchController() {
-		searchController.searchBar.searchTextField.backgroundColor = Colors.complementary
-		searchController.searchBar.searchTextField.borderStyle = .none
-		searchController.searchBar.searchTextField.layer.cornerRadius = 10
-		searchController.searchBar.searchTextField.clipsToBounds = true
-
+		let searchTextField = searchController.searchBar.searchTextField
+		searchTextField.backgroundColor = Colors.complementary
+		searchTextField.borderStyle = .none
+		searchTextField.layer.cornerRadius = 10
+		searchTextField.clipsToBounds = true
+		UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self])
+			.defaultTextAttributes = [NSAttributedString.Key.foregroundColor: Colors.carriage]
+		if let glassIconView = searchTextField.leftView as? UIImageView {
+			glassIconView.image = glassIconView.image?.withRenderingMode(.alwaysTemplate)
+			glassIconView.tintColor = Colors.carriage
+		}
 		UITextField.appearance().tintColor = Colors.carriage
 		searchController.searchResultsUpdater = self
 		searchController.obscuresBackgroundDuringPresentation = false
