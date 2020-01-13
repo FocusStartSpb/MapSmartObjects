@@ -17,8 +17,8 @@ final class SmartObject: NSObject
 	private(set) var circleRadius: Double
 	private(set) var address: String
 	private(set) var identifier: String
-	private(set) var visitCount: Int
-	private(set) var insideTime: TimeInterval
+	var visitCount: Int
+	var insideTime: TimeInterval
 
 	init(name: String, address: String, coordinate: CLLocationCoordinate2D, circleRadius: Double) {
 		self.name = name
@@ -61,36 +61,6 @@ final class SmartObject: NSObject
 		region.notifyOnEntry = true
 		region.notifyOnExit = true
 		return region
-	}
-
-	func startTimer() {
-		if timer == nil {
-			timer = Timer.scheduledTimer(timeInterval: 1.0,
-										 target: self,
-										 selector: #selector(updateTimer),
-										 userInfo: nil,
-										 repeats: true)
-		}
-	}
-
-	func stopTimer() {
-		guard let timer = self.timer else { return }
-		timer.invalidate()
-		self.timer = nil
-	}
-
-	func updateVisitCount() {
-		visitCount += 1
-	}
-
-	func set(visits: Int, timeInside: TimeInterval) {
-		self.visitCount = visits
-		self.insideTime = timeInside
-	}
-
-	@objc
-	private func updateTimer() {
-		insideTime += 1
 	}
 }
 

@@ -24,6 +24,7 @@ final class MapViewController: UIViewController
 	private let presenter: IMapPresenter
 	private let mapScreen = MapView()
 	private let effectFeedbackgenerator = UIImpactFeedbackGenerator(style: .light)
+	private var entryDate: Date?
 
 	init(presenter: IMapPresenter) {
 		self.presenter = presenter
@@ -214,16 +215,17 @@ extension MapViewController: CLLocationManagerDelegate
 	}
 
 	func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-		guard let currentSmartObject = getSmartObject(from: region) else { return }
-		currentSmartObject.updateVisitCount()
-		currentSmartObject.startTimer()
+		entryDate = Date()
 		presenter.handleEvent(for: region)
 		presenter.saveToDB()
 	}
 
 	func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
 		guard let currentSmartObject = getSmartObject(from: region) else { return }
-		currentSmartObject.stopTimer()
+		guard let entryDate = entryDate else { return }
+		let insideTime = Date().timeIntervalSince(entryDate)
+		currentSmartObject.insideTime += insideTime
+		currentSmartObject.visitCount += 1
 		presenter.saveToDB()
 	}
 }
