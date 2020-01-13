@@ -153,7 +153,7 @@ extension MapViewController: MKMapViewDelegate
 		//настройка detailCalloutAccessoryView
 		let detailLabel = UILabel()
 		detailLabel.text = annotation.subtitle ?? ""
-		detailLabel.font = UIFont(name: Constants.gothic, size: 14.0)
+		detailLabel.font = UIFont(name: Constants.gothicFont, size: 14.0)
 		detailLabel.numberOfLines = 0
 		pin.detailCalloutAccessoryView = detailLabel
 

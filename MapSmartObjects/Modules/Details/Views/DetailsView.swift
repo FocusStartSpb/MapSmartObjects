@@ -36,28 +36,28 @@ final class DetailsView: UIView
 		let label = UILabel()
 		label.text = Constants.name
 		label.textAlignment = .left
-		label.font = UIFont(name: Constants.helvetica, size: 16.0)
+		label.font = UIFont(name: Constants.helveticaFont, size: 16.0)
 		return label
 	}()
 
 	private let radiusLabel: UILabel = {
 		let label = UILabel()
 		label.text = Constants.radius
-		label.font = UIFont(name: Constants.helvetica, size: 16.0)
+		label.font = UIFont(name: Constants.helveticaFont, size: 16.0)
 		return label
 	}()
 
 	private let addressLabel: UILabel = {
 		let label = UILabel()
 		label.text = Constants.adress
-		label.font = UIFont(name: Constants.helvetica, size: 16.0)
+		label.font = UIFont(name: Constants.helveticaFont, size: 16.0)
 		return label
 	}()
 
 	let addressInfoLabel: UILabel = {
 		let label = UILabel()
 		label.numberOfLines = 0
-		label.font = UIFont(name: Constants.helvetica, size: 14.0)
+		label.font = UIFont(name: Constants.helveticaFont, size: 14.0)
 		return label
 	}()
 
