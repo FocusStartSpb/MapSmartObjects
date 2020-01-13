@@ -35,7 +35,8 @@ extension DetailsPresenter: IDetailsPresenter
 
 	func createSmartObject(old smartObject: SmartObject, name: String, radius: Double, address: String) {
 		let newObject = SmartObject(name: name, address: address, coordinate: smartObject.coordinate, circleRadius: radius)
-		newObject.set(visits: smartObject.visitCount, timeInside: smartObject.insideTime)
+		newObject.insideTime = smartObject.insideTime
+		newObject.visitCount = smartObject.visitCount
 		repository.addSmartObject(object: newObject)
 	}
 
