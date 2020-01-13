@@ -17,8 +17,8 @@ final class SmartObject: NSObject
 	private(set) var circleRadius: Double
 	private(set) var address: String
 	private(set) var identifier: String
-	private(set) var visitCount: Int
-	private(set) var insideTime: TimeInterval
+	var visitCount: Int
+	var insideTime: TimeInterval
 
 	init(name: String, address: String, coordinate: CLLocationCoordinate2D, circleRadius: Double) {
 		self.name = name
@@ -32,7 +32,7 @@ final class SmartObject: NSObject
 
 	// MARK: Codable
 	required init(from decoder: Decoder) throws {
-		let values = try decoder.container(keyedBy: CodingKeys.self)
+		let values = try decoder.container(keyedBy: SmartObjectCodingKeys.self)
 		let latitude = try values.decode(Double.self, forKey: .latitude)
 		let longitude = try values.decode(Double.self, forKey: .longitude)
 		coordinate = CLLocationCoordinate2DMake(latitude, longitude)
@@ -45,7 +45,7 @@ final class SmartObject: NSObject
 	}
 
 	func encode(to encoder: Encoder) throws {
-		var container = encoder.container(keyedBy: CodingKeys.self)
+		var container = encoder.container(keyedBy: SmartObjectCodingKeys.self)
 		try container.encode(coordinate.latitude, forKey: .latitude)
 		try container.encode(coordinate.longitude, forKey: .longitude)
 		try container.encode(circleRadius, forKey: .circleRadius)
@@ -61,36 +61,6 @@ final class SmartObject: NSObject
 		region.notifyOnEntry = true
 		region.notifyOnExit = true
 		return region
-	}
-
-	func startTimer() {
-		if timer == nil {
-			timer = Timer.scheduledTimer(timeInterval: 1.0,
-										 target: self,
-										 selector: #selector(updateTimer),
-										 userInfo: nil,
-										 repeats: true)
-		}
-	}
-
-	func stopTimer() {
-		guard let timer = self.timer else { return }
-		timer.invalidate()
-		self.timer = nil
-	}
-
-	func updateVisitCount() {
-		visitCount += 1
-	}
-
-	func set(visits: Int, timeInside: TimeInterval) {
-		self.visitCount = visits
-		self.insideTime = timeInside
-	}
-
-	@objc
-	private func updateTimer() {
-		insideTime += 1
 	}
 }
 

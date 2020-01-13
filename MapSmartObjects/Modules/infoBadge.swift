@@ -22,7 +22,7 @@ final class InfoBadge: UIView
 
 	@available(*, unavailable)
 	required init?(coder aDecoder: NSCoder) {
-		fatalError("init(coder:) has not been implemented")
+		fatalError(Constants.fatalError)
 	}
 
 	override func layoutSubviews() {
@@ -31,9 +31,9 @@ final class InfoBadge: UIView
 
 	private func configureView() {
 		backgroundColor = Colors.complementary
-		imageView.image = UIImage(named: "timer")
+		imageView.image = UIImage(named: Constants.timerImageName)
 		imageView.contentMode = .scaleAspectFit
-		title.font = UIFont(name: "HelveticaNeue-Bold", size: 21.0)
+		title.font = UIFont(name: Constants.helveticaFont, size: 21.0)
 		title.text = "0"
 	}
 	private func addSubviews() {

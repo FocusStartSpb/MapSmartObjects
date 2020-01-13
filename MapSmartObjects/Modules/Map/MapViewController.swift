@@ -14,7 +14,7 @@ protocol IMapViewController
 	func showAlert(withTitle title: String?, message: String?)
 	func showAlertRequestLocation(title: String, message: String?, url: URL?)
 	func addCircle(_ smartObject: SmartObject)
-	func setMonitoringPlacecesCount(number: Int)
+	func setMonitoringPlacesCount(number: Int)
 	func showCurrentLocation(_ location: CLLocationCoordinate2D?)
 	func updateSmartObjects()
 }
@@ -24,6 +24,7 @@ final class MapViewController: UIViewController
 	private let presenter: IMapPresenter
 	private let mapScreen = MapView()
 	private let effectFeedbackgenerator = UIImpactFeedbackGenerator(style: .light)
+	private var entryDate: Date?
 
 	init(presenter: IMapPresenter) {
 		self.presenter = presenter
@@ -32,7 +33,7 @@ final class MapViewController: UIViewController
 
 	@available (*, unavailable)
 	required init?(coder aDecoder: NSCoder) {
-		fatalError("init(coder:) has not been implemented")
+		fatalError(Constants.fatalError)
 	}
 
 	override func loadView() {
@@ -140,7 +141,7 @@ extension MapViewController: MKMapViewDelegate
 
 	func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
 		guard annotation is SmartObject else { return nil }
-		let reuseIdentifier = "Annotation"
+		let reuseIdentifier = Constants.annotationID
 		let pin = mapView.dequeueReusableAnnotationView(withIdentifier: reuseIdentifier) as? MKMarkerAnnotationView
 			?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: reuseIdentifier)
 
@@ -153,7 +154,7 @@ extension MapViewController: MKMapViewDelegate
 		//настройка detailCalloutAccessoryView
 		let detailLabel = UILabel()
 		detailLabel.text = annotation.subtitle ?? ""
-		detailLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 14.0)
+		detailLabel.font = UIFont(name: Constants.gothicFont, size: 14.0)
 		detailLabel.numberOfLines = 0
 		pin.detailCalloutAccessoryView = detailLabel
 
@@ -171,26 +172,25 @@ extension MapViewController: MKMapViewDelegate
 
 	//метод для уведомлений входа в зоны
 	func notifyEvent(for region: CLRegion) {
-		let startMessage = "Вы вошли в зону: "
 		// Уведомление если приложение запущено
 		if UIApplication.shared.applicationState == .active {
 			guard let message = getName(from: region.identifier) else { return }
-			self.showAlert(withTitle: "Внимание!", message: startMessage + "\n" + message)
+			self.showAlert(withTitle: Constants.attention, message: Constants.enterMessage + "\n" + message)
 		}
 		else {
 			// Пуш если фоновый режим или на телефоне включен блок
 			guard let body = getName(from: region.identifier) else { return }
 			let notificationContent = UNMutableNotificationContent()
-			notificationContent.body = startMessage + body
+			notificationContent.body = Constants.enterMessage + body
 			notificationContent.sound = UNNotificationSound.default
 			notificationContent.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
 			let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-			let request = UNNotificationRequest(identifier: "location_change",
+			let request = UNNotificationRequest(identifier: Constants.changeLocationID,
 												content: notificationContent,
 												trigger: trigger)
 			UNUserNotificationCenter.current().add(request) { error in
 				if let error = error {
-					print("Ошибка: \(error)")
+					print(Constants.errorText + "\(error)")
 				}
 			}
 		}
@@ -215,23 +215,24 @@ extension MapViewController: CLLocationManagerDelegate
 	}
 
 	func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-		guard let currentSmartObject = getSmartObject(from: region) else { return }
-		currentSmartObject.updateVisitCount()
-		currentSmartObject.startTimer()
+		entryDate = Date()
 		presenter.handleEvent(for: region)
 		presenter.saveToDB()
 	}
 
 	func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
 		guard let currentSmartObject = getSmartObject(from: region) else { return }
-		currentSmartObject.stopTimer()
+		guard let entryDate = entryDate else { return }
+		let insideTime = Date().timeIntervalSince(entryDate)
+		currentSmartObject.insideTime += insideTime
+		currentSmartObject.visitCount += 1
 		presenter.saveToDB()
 	}
 }
 
 extension MapViewController: IMapViewController
 {
-	func setMonitoringPlacecesCount(number: Int) {
+	func setMonitoringPlacesCount(number: Int) {
 		mapScreen.pinCounterView.title.text = "\(number)"
 	}
 
@@ -243,7 +244,7 @@ extension MapViewController: IMapViewController
 
 	func showAlert(withTitle title: String?, message: String?) {
 		let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-		let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+		let action = UIAlertAction(title: Constants.okTitle, style: .cancel, handler: nil)
 		alert.addAction(action)
 		present(alert, animated: true, completion: nil)
 	}
@@ -257,27 +258,27 @@ extension MapViewController: IMapViewController
 			mapScreen.mapView.removeAnnotation(smartObject)
 			presenter.stopMonitoring(smartObject)
 			removeRadiusOverlay(forPin: smartObject)
-			setMonitoringPlacecesCount(number: presenter.getMonitoringRegionsCount())
+			setMonitoringPlacesCount(number: presenter.getMonitoringRegionsCount())
 		}
 		objectsToAdd.forEach { smartObject in
 			mapScreen.mapView.addAnnotation(smartObject)
 			presenter.startMonitoring(smartObject)
 			addCircle(smartObject)
-			setMonitoringPlacecesCount(number: presenter.getMonitoringRegionsCount())
+			setMonitoringPlacesCount(number: presenter.getMonitoringRegionsCount())
 		}
-		setMonitoringPlacecesCount(number: presenter.getMonitoringRegionsCount())
+		setMonitoringPlacesCount(number: presenter.getMonitoringRegionsCount())
 	}
 
 	func showAlertRequestLocation(title: String, message: String?, url: URL?) {
 		let alert = UIAlertController(title: title,
 									  message: message,
 									  preferredStyle: .alert)
-		let settingsAction = UIAlertAction(title: "Settings", style: .default) { _ in
+		let settingsAction = UIAlertAction(title: Constants.settingsTitle, style: .default) { _ in
 			if let url = url {
 				UIApplication.shared.open(url, options: [:], completionHandler: nil)
 			}
 		}
-		let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+		let cancelAction = UIAlertAction(title: Constants.cancelTitle, style: .cancel, handler: nil)
 		alert.addAction(settingsAction)
 		alert.addAction(cancelAction)
 		present(alert, animated: true, completion: nil)
