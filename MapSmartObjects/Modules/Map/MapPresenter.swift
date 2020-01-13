@@ -54,10 +54,10 @@ extension MapPresenter: IMapPresenter
 
 	func handleEvent(for region: CLRegion) {
 		guard let currentObject = repository.getSmartObject(with: region.identifier) else { return }
-		let message = "Вы вошли в зону \(currentObject.name)"
+		let message = Constants.enterMessage + "\(currentObject.name)"
 		// показать алерт, если приложение активно
 		if UIApplication.shared.applicationState == .active {
-			mapViewController?.showAlert(withTitle: "Внимание!", message: message)
+			mapViewController?.showAlert(withTitle: Constants.attention, message: message)
 		}
 		else {
 			// отправить нотификацию, если приложение не активно
@@ -66,12 +66,12 @@ extension MapPresenter: IMapPresenter
 			notificationContent.sound = UNNotificationSound.default
 			notificationContent.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
 			let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-			let request = UNNotificationRequest(identifier: "location_change",
+			let request = UNNotificationRequest(identifier: Constants.changeLocationID,
 												content: notificationContent,
 												trigger: trigger)
 			UNUserNotificationCenter.current().add(request) { error in
 				if let error = error {
-					print("Error: \(error)")
+					print(Constants.errorText + "\(error)")
 				}
 			}
 		}
@@ -101,7 +101,7 @@ extension MapPresenter: IMapPresenter
 				}
 			case .failure(let error):
 				DispatchQueue.main.async {
-					self.mapViewController?.showAlert(withTitle: "Warning!", message: error.localizedDescription)
+					self.mapViewController?.showAlert(withTitle: Constants.warningTitle, message: error.localizedDescription)
 				}
 			}
 		}
@@ -126,8 +126,8 @@ extension MapPresenter: IMapPresenter
 			setupLocationManager()
 		}
 		else {
-			mapViewController?.showAlertRequestLocation(title: "Your geolocation service is turned off",
-												 message: "Want to turn it on?",
+			mapViewController?.showAlertRequestLocation(title: Constants.turnOffServiceTitle,
+														message: Constants.turnOnMessage,
 												 url: URL(string: Constants.locationServicesString))
 		}
 	}
@@ -138,8 +138,8 @@ extension MapPresenter: IMapPresenter
 			locationManager.requestAlwaysAuthorization()
 			mapViewController?.showCurrentLocation(getCurrentLocation())
 		case .denied, .restricted:
-			mapViewController?.showAlertRequestLocation(title: "You have banned the use of location",
-												 message: "Want to allow?",
+			mapViewController?.showAlertRequestLocation(title: Constants.bunnedTitle,
+														message: Constants.allowMessage,
 												 url: URL(string: UIApplication.openSettingsURLString))
 		default:
 			break
