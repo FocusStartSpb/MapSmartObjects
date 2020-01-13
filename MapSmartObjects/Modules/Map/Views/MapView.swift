@@ -16,7 +16,7 @@ final class MapView: UIView
 	let pinCounterView: InfoBadge = {
 		let info = InfoBadge()
 		let imageView = info.imageView
-		imageView.image = UIImage(named: Constants.regionPin)
+		imageView.image = UIImage(named: Constants.imageViewPin)
 		imageView.image = imageView.image?.withRenderingMode(.alwaysTemplate)
 		imageView.tintColor = Colors.complementary
 		info.title.textColor = Colors.complementary
@@ -51,11 +51,11 @@ final class MapView: UIView
 		buttonsView.addSubview(currentLocationButton)
 	}
 	private func configureViews() {
-		currentLocationButton.setImage(UIImage(named: Constants.location)?.withRenderingMode(.alwaysTemplate), for: .normal)
+		currentLocationButton.setImage(UIImage(named: Constants.currentLocationImageName)?.withRenderingMode(.alwaysTemplate), for: .normal)
 		currentLocationButton.imageEdgeInsets = imageInset
 		currentLocationButton.tintColor = Colors.mainStyle
 
-		addButton.setImage(UIImage(named: Constants.add)?.withRenderingMode(.alwaysTemplate), for: .normal)
+		addButton.setImage(UIImage(named: Constants.addButtonImagename)?.withRenderingMode(.alwaysTemplate), for: .normal)
 		addButton.tintColor = Colors.mainStyle
 		addButton.imageEdgeInsets = imageInset
 		buttonsView.isOpaque = false

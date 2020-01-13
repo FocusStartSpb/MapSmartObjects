@@ -140,7 +140,7 @@ extension MapViewController: MKMapViewDelegate
 
 	func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
 		guard annotation is SmartObject else { return nil }
-		let reuseIdentifier = Constants.anno
+		let reuseIdentifier = Constants.annotationID
 		let pin = mapView.dequeueReusableAnnotationView(withIdentifier: reuseIdentifier) as? MKMarkerAnnotationView
 			?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: reuseIdentifier)
 
@@ -184,12 +184,12 @@ extension MapViewController: MKMapViewDelegate
 			notificationContent.sound = UNNotificationSound.default
 			notificationContent.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
 			let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-			let request = UNNotificationRequest(identifier: Constants.changeLocation,
+			let request = UNNotificationRequest(identifier: Constants.changeLocationID,
 												content: notificationContent,
 												trigger: trigger)
 			UNUserNotificationCenter.current().add(request) { error in
 				if let error = error {
-					print(Constants.error + "\(error)")
+					print(Constants.errorText + "\(error)")
 				}
 			}
 		}
@@ -271,12 +271,12 @@ extension MapViewController: IMapViewController
 		let alert = UIAlertController(title: title,
 									  message: message,
 									  preferredStyle: .alert)
-		let settingsAction = UIAlertAction(title: Constants.settings, style: .default) { _ in
+		let settingsAction = UIAlertAction(title: Constants.settingsTitle, style: .default) { _ in
 			if let url = url {
 				UIApplication.shared.open(url, options: [:], completionHandler: nil)
 			}
 		}
-		let cancelAction = UIAlertAction(title: Constants.cancel, style: .cancel, handler: nil)
+		let cancelAction = UIAlertAction(title: Constants.cancelTitle, style: .cancel, handler: nil)
 		alert.addAction(settingsAction)
 		alert.addAction(cancelAction)
 		present(alert, animated: true, completion: nil)

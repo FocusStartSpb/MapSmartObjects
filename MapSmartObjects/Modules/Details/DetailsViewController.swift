@@ -99,9 +99,9 @@ final class DetailsViewController: UIViewController
 		navigationController?.navigationBar.tintColor = Colors.complementary
 		switch type {
 		case .create:
-			self.navigationItem.title = Constants.create
+			self.navigationItem.title = Constants.createTitle
 		case .edit:
-			self.navigationItem.title = Constants.edit
+			self.navigationItem.title = Constants.editTitle
 			detailsView.nameTextField.text = currentSmartObject.name
 			detailsView.radiusTextField.text = String(Int(currentSmartObject.circleRadius))
 		}

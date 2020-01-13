@@ -66,12 +66,12 @@ extension MapPresenter: IMapPresenter
 			notificationContent.sound = UNNotificationSound.default
 			notificationContent.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
 			let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-			let request = UNNotificationRequest(identifier: Constants.changeLocation,
+			let request = UNNotificationRequest(identifier: Constants.changeLocationID,
 												content: notificationContent,
 												trigger: trigger)
 			UNUserNotificationCenter.current().add(request) { error in
 				if let error = error {
-					print(Constants.error + "\(error)")
+					print(Constants.errorText + "\(error)")
 				}
 			}
 		}
@@ -101,7 +101,7 @@ extension MapPresenter: IMapPresenter
 				}
 			case .failure(let error):
 				DispatchQueue.main.async {
-					self.mapViewController?.showAlert(withTitle: Constants.warning, message: error.localizedDescription)
+					self.mapViewController?.showAlert(withTitle: Constants.warningTitle, message: error.localizedDescription)
 				}
 			}
 		}
@@ -126,8 +126,8 @@ extension MapPresenter: IMapPresenter
 			setupLocationManager()
 		}
 		else {
-			mapViewController?.showAlertRequestLocation(title: Constants.turnOffService,
-														message: Constants.turnOndesire,
+			mapViewController?.showAlertRequestLocation(title: Constants.turnOffServiceTitle,
+														message: Constants.turnOnMessage,
 												 url: URL(string: Constants.locationServicesString))
 		}
 	}
@@ -138,8 +138,8 @@ extension MapPresenter: IMapPresenter
 			locationManager.requestAlwaysAuthorization()
 			mapViewController?.showCurrentLocation(getCurrentLocation())
 		case .denied, .restricted:
-			mapViewController?.showAlertRequestLocation(title: Constants.bunned,
-														message: Constants.allow,
+			mapViewController?.showAlertRequestLocation(title: Constants.bunnedTitle,
+														message: Constants.allowMessage,
 												 url: URL(string: UIApplication.openSettingsURLString))
 		default:
 			break

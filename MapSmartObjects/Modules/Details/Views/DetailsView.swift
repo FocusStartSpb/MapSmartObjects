@@ -13,7 +13,7 @@ final class DetailsView: UIView
 	let timerView: InfoBadge = {
 		let info = InfoBadge()
 		let imageView = info.imageView
-		imageView.image = UIImage(named: Constants.time)
+		imageView.image = UIImage(named: Constants.timeImageName)
 		imageView.image = imageView.image?.withRenderingMode(.alwaysTemplate)
 		imageView.tintColor = Colors.complementary
 		info.title.textColor = Colors.complementary
@@ -24,7 +24,7 @@ final class DetailsView: UIView
 	let counterView: InfoBadge = {
 		let info = InfoBadge()
 		let imageView = info.imageView
-		imageView.image = UIImage(named: Constants.counter)
+		imageView.image = UIImage(named: Constants.counterImageName)
 		imageView.image = imageView.image?.withRenderingMode(.alwaysTemplate)
 		imageView.tintColor = Colors.complementary
 		info.title.textColor = Colors.complementary
@@ -34,7 +34,7 @@ final class DetailsView: UIView
 
 	private let nameLabel: UILabel = {
 		let label = UILabel()
-		label.text = Constants.name
+		label.text = Constants.nameLabelText
 		label.textAlignment = .left
 		label.font = UIFont(name: Constants.helveticaFont, size: 16.0)
 		return label
@@ -42,14 +42,14 @@ final class DetailsView: UIView
 
 	private let radiusLabel: UILabel = {
 		let label = UILabel()
-		label.text = Constants.radius
+		label.text = Constants.radiusLabelText
 		label.font = UIFont(name: Constants.helveticaFont, size: 16.0)
 		return label
 	}()
 
 	private let addressLabel: UILabel = {
 		let label = UILabel()
-		label.text = Constants.adress
+		label.text = Constants.adressLabelText
 		label.font = UIFont(name: Constants.helveticaFont, size: 16.0)
 		return label
 	}()
@@ -64,7 +64,7 @@ final class DetailsView: UIView
 	let nameTextField: UITextField = {
 		let textField = UITextField()
 		textField.tag = 1
-		textField.placeholder = Constants.enterPlaceName
+		textField.placeholder = Constants.objectPlaceholderName
 		textField.borderStyle = .roundedRect
 		return textField
 	}()
@@ -72,7 +72,7 @@ final class DetailsView: UIView
 	let radiusTextField: UITextField = {
 		let textField = UITextField()
 		textField.tag = 2
-		textField.placeholder = Constants.enterRadius
+		textField.placeholder = Constants.radiusPlaceholderName
 		textField.borderStyle = .roundedRect
 		textField.keyboardType = .numberPad
 		return textField
