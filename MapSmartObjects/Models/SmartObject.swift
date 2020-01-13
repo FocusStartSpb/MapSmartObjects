@@ -32,7 +32,7 @@ final class SmartObject: NSObject
 
 	// MARK: Codable
 	required init(from decoder: Decoder) throws {
-		let values = try decoder.container(keyedBy: SmartObjectParameters.self)
+		let values = try decoder.container(keyedBy: SmartObjectCodingKeys.self)
 		let latitude = try values.decode(Double.self, forKey: .latitude)
 		let longitude = try values.decode(Double.self, forKey: .longitude)
 		coordinate = CLLocationCoordinate2DMake(latitude, longitude)
@@ -45,7 +45,7 @@ final class SmartObject: NSObject
 	}
 
 	func encode(to encoder: Encoder) throws {
-		var container = encoder.container(keyedBy: SmartObjectParameters.self)
+		var container = encoder.container(keyedBy: SmartObjectCodingKeys.self)
 		try container.encode(coordinate.latitude, forKey: .latitude)
 		try container.encode(coordinate.longitude, forKey: .longitude)
 		try container.encode(circleRadius, forKey: .circleRadius)

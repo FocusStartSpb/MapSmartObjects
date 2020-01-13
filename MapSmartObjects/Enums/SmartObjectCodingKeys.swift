@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum SmartObjectParameters: String, CodingKey
+enum SmartObjectCodingKeys: String, CodingKey
 {
 	case latitude, longitude, circleRadius, name, address, identifier, visitCount, insideTime
 }
