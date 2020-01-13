@@ -23,7 +23,7 @@ final class PinListCell: UITableViewCell
 		label.textAlignment = .left
 		return label
 	}()
-	static let cellID = "pin"
+	static let cellID = Constants.pin
 
 	// MARK: Initialization
 	override init(style: CellStyle, reuseIdentifier: String?) {
@@ -34,7 +34,7 @@ final class PinListCell: UITableViewCell
 
 	@available(*, unavailable)
 	required init?(coder aDecoder: NSCoder) {
-		fatalError("init(coder:) has not been implemented")
+		fatalError(Constants.fatalError)
 	}
 
 	// MARK: Private methods

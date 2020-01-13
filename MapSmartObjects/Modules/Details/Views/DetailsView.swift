@@ -13,7 +13,7 @@ final class DetailsView: UIView
 	let timerView: InfoBadge = {
 		let info = InfoBadge()
 		let imageView = info.imageView
-		imageView.image = UIImage(named: "time")
+		imageView.image = UIImage(named: Constants.time)
 		imageView.image = imageView.image?.withRenderingMode(.alwaysTemplate)
 		imageView.tintColor = Colors.complementary
 		info.title.textColor = Colors.complementary
@@ -24,7 +24,7 @@ final class DetailsView: UIView
 	let counterView: InfoBadge = {
 		let info = InfoBadge()
 		let imageView = info.imageView
-		imageView.image = UIImage(named: "counter")
+		imageView.image = UIImage(named: Constants.counter)
 		imageView.image = imageView.image?.withRenderingMode(.alwaysTemplate)
 		imageView.tintColor = Colors.complementary
 		info.title.textColor = Colors.complementary
@@ -34,37 +34,37 @@ final class DetailsView: UIView
 
 	private let nameLabel: UILabel = {
 		let label = UILabel()
-		label.text = "Name"
+		label.text = Constants.name
 		label.textAlignment = .left
-		label.font = UIFont(name: "HelveticaNeue", size: 16.0)
+		label.font = UIFont(name: Constants.helvetica, size: 16.0)
 		return label
 	}()
 
 	private let radiusLabel: UILabel = {
 		let label = UILabel()
-		label.text = "Radius (meters)"
-		label.font = UIFont(name: "HelveticaNeue", size: 16.0)
+		label.text = Constants.radius
+		label.font = UIFont(name: Constants.helvetica, size: 16.0)
 		return label
 	}()
 
 	private let addressLabel: UILabel = {
 		let label = UILabel()
-		label.text = "Address"
-		label.font = UIFont(name: "HelveticaNeue", size: 16.0)
+		label.text = Constants.adress
+		label.font = UIFont(name: Constants.helvetica, size: 16.0)
 		return label
 	}()
 
 	let addressInfoLabel: UILabel = {
 		let label = UILabel()
 		label.numberOfLines = 0
-		label.font = UIFont(name: "HelveticaNeue", size: 14.0)
+		label.font = UIFont(name: Constants.helvetica, size: 14.0)
 		return label
 	}()
 
 	let nameTextField: UITextField = {
 		let textField = UITextField()
 		textField.tag = 1
-		textField.placeholder = "Enter place name"
+		textField.placeholder = Constants.enterPlaceName
 		textField.borderStyle = .roundedRect
 		return textField
 	}()
@@ -72,7 +72,7 @@ final class DetailsView: UIView
 	let radiusTextField: UITextField = {
 		let textField = UITextField()
 		textField.tag = 2
-		textField.placeholder = "Enter monitoring radius"
+		textField.placeholder = Constants.enterRadius
 		textField.borderStyle = .roundedRect
 		textField.keyboardType = .numberPad
 		return textField
@@ -90,7 +90,7 @@ final class DetailsView: UIView
 
 	@available(*, unavailable)
 	required init?(coder aDecoder: NSCoder) {
-		fatalError("init(coder:) has not been implemented")
+		fatalError(Constants.fatalError)
 	}
 
 	private func addSubviews() {
