@@ -39,6 +39,11 @@ final class DetailsViewController: UIViewController
 		setNotifycations()
 	}
 
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		navigationController?.navigationBar.barStyle = .black
+	}
+
 	private func setActions() {
 		saveBarButton = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveBarButtonPressed))
 		navigationItem.rightBarButtonItem = saveBarButton

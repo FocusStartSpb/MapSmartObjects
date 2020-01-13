@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		4B43F6BD23A664C9003BF176 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B43F6BC23A664C9003BF176 /* AppDelegate.swift */; };
-		4B43F6C723A664C9003BF176 /* MapSmartObjects.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4B43F6C523A664C9003BF176 /* MapSmartObjects.xcdatamodeld */; };
 		4B43F6C923A664CB003BF176 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B43F6C823A664CB003BF176 /* Assets.xcassets */; };
 		4B43F6CC23A664CB003BF176 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4B43F6CA23A664CB003BF176 /* LaunchScreen.storyboard */; };
 		4B43F6D723A664CB003BF176 /* MapSmartObjectsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B43F6D623A664CB003BF176 /* MapSmartObjectsTests.swift */; };
@@ -53,7 +52,6 @@
 /* Begin PBXFileReference section */
 		4B43F6B923A664C9003BF176 /* MapSmartObjects.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MapSmartObjects.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B43F6BC23A664C9003BF176 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		4B43F6C623A664C9003BF176 /* MapSmartObjects.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MapSmartObjects.xcdatamodel; sourceTree = "<group>"; };
 		4B43F6C823A664CB003BF176 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4B43F6CB23A664CB003BF176 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4B43F6CD23A664CB003BF176 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -133,7 +131,6 @@
 				5C028C0C23A97C16009FA3E8 /* Models */,
 				5C028C1B23AA9263009FA3E8 /* Enums */,
 				4B43F6E223A664F9003BF176 /* SupportingFiles */,
-				4B43F6C523A664C9003BF176 /* MapSmartObjects.xcdatamodeld */,
 				5C1F9B5423B748B500A3D1C9 /* Extensions */,
 			);
 			path = MapSmartObjects;
@@ -429,7 +426,6 @@
 				4B58C21623A971EE00A430C0 /* MapRouter.swift in Sources */,
 				5CF4239423C4A6D500A1ED5A /* DetailsView.swift in Sources */,
 				4B44329123CA64A5005AC5F8 /* Colors.swift in Sources */,
-				4B43F6C723A664C9003BF176 /* MapSmartObjects.xcdatamodeld in Sources */,
 				5C1F9B5823B8E09C00A3D1C9 /* MapView.swift in Sources */,
 				4B58C21223A971AB00A430C0 /* MapViewController.swift in Sources */,
 				4B58C21723AA98FC00A430C0 /* YandexGeocoderResponse.swift in Sources */,
@@ -595,7 +591,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = MyCompany.MapSmartObjects;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -614,7 +610,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = MyCompany.MapSmartObjects;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -693,19 +689,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		4B43F6C523A664C9003BF176 /* MapSmartObjects.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				4B43F6C623A664C9003BF176 /* MapSmartObjects.xcdatamodel */,
-			);
-			currentVersion = 4B43F6C623A664C9003BF176 /* MapSmartObjects.xcdatamodel */;
-			path = MapSmartObjects.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 4B43F6B123A664C9003BF176 /* Project object */;
 }
