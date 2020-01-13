@@ -51,7 +51,8 @@ final class MapView: UIView
 		buttonsView.addSubview(currentLocationButton)
 	}
 	private func configureViews() {
-		currentLocationButton.setImage(UIImage(named: Constants.currentLocationImageName)?.withRenderingMode(.alwaysTemplate), for: .normal)
+		currentLocationButton.setImage(UIImage(named: Constants.locationImageName)?
+			.withRenderingMode(.alwaysTemplate), for: .normal)
 		currentLocationButton.imageEdgeInsets = imageInset
 		currentLocationButton.tintColor = Colors.mainStyle
 

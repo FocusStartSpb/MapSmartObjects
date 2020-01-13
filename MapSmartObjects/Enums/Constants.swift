@@ -14,7 +14,7 @@ enum Constants
 	static let baseUrl = "https://geocode-maps.yandex.ru/1.x"
 	static let locationServicesString = "App-Prefs:root=LOCATION_SERVICES"
 	static let fatalError = "init(coder:) has not been implemented"
-	static let currentLocationImageName = "location"
+	static let locationImageName = "location"
 	static let addButtonImagename = "add"
 	static let imageViewPin = "regionPin"
 	static let annotationID = "Annotation"
