@@ -24,7 +24,7 @@ final class DetailsViewController: UIViewController
 
 	@available (*, unavailable)
 	required init?(coder aDecoder: NSCoder) {
-		fatalError("init(coder:) has not been implemented")
+		fatalError(Constants.fatalError)
 	}
 
 	override func loadView() {
@@ -104,9 +104,9 @@ final class DetailsViewController: UIViewController
 		navigationController?.navigationBar.tintColor = Colors.complementary
 		switch type {
 		case .create:
-			self.navigationItem.title = "Create"
+			self.navigationItem.title = Constants.createTitle
 		case .edit:
-			self.navigationItem.title = "Edit"
+			self.navigationItem.title = Constants.editTitle
 			detailsView.nameTextField.text = currentSmartObject.name
 			detailsView.radiusTextField.text = String(Int(currentSmartObject.circleRadius))
 		}

@@ -20,8 +20,8 @@ final class PinListViewController: UIViewController
 	private let searchController = UISearchController(searchResultsController: nil)
 	private let backgroundImage = UIImageView()
 	private let backgroundImageLabel = UILabel()
-	private let emptyImage = UIImage(named: "emptyIcon")
-	private let searchImage = UIImage(named: "searchIcon")
+	private let emptyImage = UIImage(named: Constants.emptyImageName)
+	private let searchImage = UIImage(named: Constants.searchImageName)
 
 	private var filtredPins = [SmartObject]()
 	private var searchBarIsEmpty: Bool {
@@ -39,7 +39,7 @@ final class PinListViewController: UIViewController
 
 	@available(*, unavailable)
 	required init?(coder: NSCoder) {
-		fatalError("init(coder:) has not been implemented")
+		fatalError(Constants.fatalError)
 	}
 
 	override func viewDidLoad() {
@@ -65,7 +65,7 @@ final class PinListViewController: UIViewController
 		searchBar.tintColor = Colors.complementary
 		searchBar.barTintColor = Colors.complementary
 
-		if let textfield = searchBar.value(forKey: "searchField") as? UITextField {
+		if let textfield = searchBar.value(forKey: Constants.searchFieldKey) as? UITextField {
 			textfield.textColor = Colors.complementary
 			textfield.backgroundColor = Colors.complementary
 			if let backgroundview = textfield.subviews.first {
@@ -82,17 +82,17 @@ final class PinListViewController: UIViewController
 		UITextField.appearance().tintColor = Colors.carriage
 		searchController.searchResultsUpdater = self
 		searchController.obscuresBackgroundDuringPresentation = false
-		searchController.searchBar.placeholder = "Enter pin name"
+		searchController.searchBar.placeholder = Constants.searchPlaceholderName
 		navigationItem.hidesSearchBarWhenScrolling = false
 		navigationItem.searchController = searchController
 		definesPresentationContext = true
 	}
 	private func configureViews() {
-		title = "My Pins"
+		title = Constants.pinsTitle
 		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
 		navigationController?.navigationBar.barTintColor = Colors.mainStyle
 		navigationController?.navigationBar.tintColor = Colors.complementary
-		backgroundImage.image = UIImage(named: "emptyIcon")
+		backgroundImage.image = UIImage(named: Constants.emptyImageName)
 		backgroundImageLabel.numberOfLines = 0
 		backgroundImageLabel.textAlignment = .center
 		backgroundImageLabel.textColor = Colors.mainStyle
@@ -128,11 +128,11 @@ final class PinListViewController: UIViewController
 		pinTableView.isEditing
 			? pinTableView.setEditing(false, animated: true)
 			: pinTableView.setEditing(true, animated: true)
-		editButtonItem.title = pinTableView.isEditing ? "Done" : "Edit"
+		editButtonItem.title = pinTableView.isEditing ? Constants.doneTitle : Constants.editTitle
 	}
 
 	func disableEdit() {
-		navigationItem.leftBarButtonItem?.title = "Edit"
+		navigationItem.leftBarButtonItem?.title = Constants.editTitle
 		navigationItem.leftBarButtonItem?.isEnabled = false
 		pinTableView.isEditing = false
 		backgroundImage.isHidden = false
@@ -148,7 +148,7 @@ final class PinListViewController: UIViewController
 	func checkEditMode() {
 		backgroundImage.image = isFiltering ? searchImage : emptyImage
 		if isFiltering == false {
-			backgroundImageLabel.text = "The list is empty now. Add new pin on the map!"
+			backgroundImageLabel.text = Constants.emptyListText
 		}
 		pinTableView.visibleCells.isEmpty ? disableEdit() : enableEdit()
 	}
@@ -212,7 +212,7 @@ extension PinListViewController: UISearchResultsUpdating
 {
 	func updateSearchResults(for searchController: UISearchController) {
 		guard let text = searchController.searchBar.text else { return }
-		backgroundImageLabel.text = "Nothing found on query: \(text)"
+		backgroundImageLabel.text = Constants.nothingOnQueryText + "\(text)"
 		filterContentForSearchText(text)
 	}
 
