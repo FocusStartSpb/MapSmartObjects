@@ -60,23 +60,10 @@ final class PinListViewController: UIViewController
 	}
 
 	private func setupSearchController() {
-		let searchBar = searchController.searchBar
-		searchBar.tintColor = Colors.complementary
-		searchBar.barTintColor = Colors.complementary
-
-		if let textfield = searchBar.value(forKey: "searchField") as? UITextField {
-			textfield.textColor = Colors.complementary
-			textfield.backgroundColor = Colors.complementary
-			if let backgroundview = textfield.subviews.first {
-				backgroundview.backgroundColor = Colors.complementary
-				backgroundview.layer.cornerRadius = 10
-				backgroundview.clipsToBounds = true
-			}
-		}
-
-		if let navigationbar = self.navigationController?.navigationBar {
-			navigationbar.barTintColor = Colors.complementary
-		}
+		searchController.searchBar.searchTextField.backgroundColor = Colors.complementary
+		searchController.searchBar.searchTextField.borderStyle = .none
+		searchController.searchBar.searchTextField.layer.cornerRadius = 10
+		searchController.searchBar.searchTextField.clipsToBounds = true
 
 		UITextField.appearance().tintColor = Colors.carriage
 		searchController.searchResultsUpdater = self
