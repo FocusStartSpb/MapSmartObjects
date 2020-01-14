@@ -11,9 +11,7 @@ import UserNotifications
 
 protocol IMapViewController
 {
-	func showAlert(withTitle title: String?, message: String?)
 	func showAlertRequestLocation(title: String, message: String?, url: URL?)
-	func addCircle(_ smartObject: SmartObject)
 	func setMonitoringPlacesCount(number: Int)
 	func showCurrentLocation(_ location: CLLocationCoordinate2D?)
 	func updateSmartObjects()
@@ -75,7 +73,7 @@ final class MapViewController: UIViewController
 	}
 
 	@objc private func addTargetButtonPressed() {
-		presenter.addPinWithAlert(nil)
+		presenter.addPinWithAlert(nil, controller: self)
 	}
 
 	@objc private func longTapped(gestureReconizer: UILongPressGestureRecognizer) {
@@ -84,7 +82,7 @@ final class MapViewController: UIViewController
 		if gestureReconizer.state == UIGestureRecognizer.State.began {
 			let location = gestureReconizer.location(in: mapScreen.mapView)
 			let coordinate = mapScreen.mapView.convert(location, toCoordinateFrom: mapScreen.mapView)
-			presenter.addPinWithAlert(coordinate)
+			presenter.addPinWithAlert(coordinate, controller: self)
 		}
 	}
 	//берем объекты с карты, исключаем userLocation, кастим в SmartObject
@@ -129,14 +127,14 @@ final class MapViewController: UIViewController
 			entryDate = Date()
 		}
 	}
+	private func addCircle(_ smartObject: SmartObject) {
+		self.mapScreen.mapView.addOverlay(MKCircle(center: smartObject.coordinate, radius: smartObject.circleRadius))
+		checkUserInCircle(userCoordinate: presenter.getCurrentLocation(), smartObject)
+	}
 }
 
 extension MapViewController: MKMapViewDelegate
 {
-	func addCircle(_ smartObject: SmartObject) {
-		self.mapScreen.mapView.addOverlay(MKCircle(center: smartObject.coordinate, radius: smartObject.circleRadius))
-		checkUserInCircle(userCoordinate: presenter.getCurrentLocation(), smartObject)
-	}
 	//метод для отрисовки круга - цвет, прозрачность, ширина и цвет канта
 	func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
 		var circle = MKOverlayRenderer()
@@ -181,39 +179,6 @@ extension MapViewController: MKMapViewDelegate
 		presenter.showPinDetails(smartObject)
 	}
 
-	//метод для уведомлений входа в зоны
-	func notifyEvent(for region: CLRegion) {
-		// Уведомление если приложение запущено
-		if UIApplication.shared.applicationState == .active {
-			guard let message = getName(from: region.identifier) else { return }
-			self.showAlert(withTitle: Constants.attention, message: Constants.enterMessage + "\n" + message)
-		}
-		else {
-			// Пуш если фоновый режим или на телефоне включен блок
-			guard let body = getName(from: region.identifier) else { return }
-			let notificationContent = UNMutableNotificationContent()
-			notificationContent.body = Constants.enterMessage + body
-			notificationContent.sound = UNNotificationSound.default
-			notificationContent.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
-			let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-			let request = UNNotificationRequest(identifier: Constants.changeLocationID,
-												content: notificationContent,
-												trigger: trigger)
-			UNUserNotificationCenter.current().add(request) { error in
-				if let error = error {
-					print(Constants.errorText + "\(error)")
-				}
-			}
-		}
-	}
-	func getName(from identifier: String) -> String? {
-		let smartObjects = presenter.getSmartObjects()
-		guard let matchedPin = smartObjects.first(where: { object in
-			object.name == identifier
-		}) else { return nil }
-		return matchedPin.name
-	}
-
 	private func getSmartObject(from: CLRegion) -> SmartObject? {
 		return presenter.getSmartObjects().first(where: { $0.identifier == from.identifier })
 	}
@@ -227,7 +192,7 @@ extension MapViewController: CLLocationManagerDelegate
 
 	func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
 		entryDate = Date()
-		presenter.handleEvent(for: region)
+		presenter.handleEvent(for: region, controller: self)
 		presenter.saveToDB()
 	}
 
@@ -251,13 +216,6 @@ extension MapViewController: IMapViewController
 		guard let location = location else { return }
 		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
 		mapScreen.mapView.setRegion(region, animated: true)
-	}
-
-	func showAlert(withTitle title: String?, message: String?) {
-		let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-		let action = UIAlertAction(title: Constants.okTitle, style: .cancel, handler: nil)
-		alert.addAction(action)
-		present(alert, animated: true, completion: nil)
 	}
 	// Обновление объектов и кругов на карте при удалении или добавлении
 	func updateSmartObjects() {

@@ -12,17 +12,18 @@ import UserNotifications
 
 protocol IMapPresenter
 {
-	func addSmartObject(name: String, radius: Double, coordinate: CLLocationCoordinate2D)
+	func addSmartObject(name: String, radius: Double, coordinate: CLLocationCoordinate2D, controller: UIViewController)
 	func getSmartObjects() -> [SmartObject]
 	func checkLocationEnabled()
 	func getCurrentLocation() -> CLLocationCoordinate2D?
-	func addPinWithAlert(_ location: CLLocationCoordinate2D?)
+	func addPinWithAlert(_ location: CLLocationCoordinate2D?, controller: UIViewController)
 	func startMonitoring(_ smartObject: SmartObject)
 	func stopMonitoring(_ smartObject: SmartObject)
 	func getMonitoringRegionsCount() -> Int
-	func handleEvent(for region: CLRegion)
+	func handleEvent(for region: CLRegion, controller: UIViewController)
 	func showPinDetails(_ smartObject: SmartObject)
 	func saveToDB()
+	func showAlert(withTitle title: String?, message: String?, controller: UIViewController)
 }
 
 final class MapPresenter
@@ -40,6 +41,13 @@ final class MapPresenter
 
 extension MapPresenter: IMapPresenter
 {
+	func showAlert(withTitle title: String?, message: String?, controller: UIViewController) {
+		let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+		let action = UIAlertAction(title: Constants.okTitle, style: .cancel, handler: nil)
+		alert.addAction(action)
+		controller.present(alert, animated: true, completion: nil)
+	}
+
 	func getMonitoringRegionsCount() -> Int {
 		return locationManager.monitoredRegions.count
 	}
@@ -52,12 +60,12 @@ extension MapPresenter: IMapPresenter
 		router.showDetails(smartObject: smartObject, type: .edit)
 	}
 
-	func handleEvent(for region: CLRegion) {
+	func handleEvent(for region: CLRegion, controller: UIViewController) {
 		guard let currentObject = repository.getSmartObject(with: region.identifier) else { return }
 		let message = Constants.enterMessage + "\(currentObject.name)"
 		// показать алерт, если приложение активно
 		if UIApplication.shared.applicationState == .active {
-			mapViewController?.showAlert(withTitle: Constants.attention, message: message)
+			self.showAlert(withTitle: Constants.attention, message: message, controller: controller)
 		}
 		else {
 			// отправить нотификацию, если приложение не активно
@@ -87,7 +95,8 @@ extension MapPresenter: IMapPresenter
 	}
 	func addSmartObject(name: String,
 						radius: Double,
-						coordinate: CLLocationCoordinate2D) {
+						coordinate: CLLocationCoordinate2D,
+						controller: UIViewController) {
 		repository.getGeoposition(coordinates: coordinate) { [weak self] geocoderResult in
 			guard let self = self else { return }
 			switch geocoderResult {
@@ -101,7 +110,7 @@ extension MapPresenter: IMapPresenter
 				}
 			case .failure(let error):
 				DispatchQueue.main.async {
-					self.mapViewController?.showAlert(withTitle: Constants.warningTitle, message: error.localizedDescription)
+					self.showAlert(withTitle: Constants.warningTitle, message: error.localizedDescription, controller: controller)
 				}
 			}
 		}
@@ -152,13 +161,13 @@ extension MapPresenter: IMapPresenter
 		locationManager.startUpdatingLocation()
 	}
 
-	func addPinWithAlert(_ location: CLLocationCoordinate2D?) {
+	func addPinWithAlert(_ location: CLLocationCoordinate2D?, controller: UIViewController) {
 		if let currentUserLocation = location {
-			self.addSmartObject(name: "", radius: 0, coordinate: currentUserLocation)
+			self.addSmartObject(name: "", radius: 0, coordinate: currentUserLocation, controller: controller)
 		}
 		else {
 			guard let currentUserLocation = getCurrentLocation() else { return }
-			self.addSmartObject(name: "", radius: 0, coordinate: currentUserLocation)
+			self.addSmartObject(name: "", radius: 0, coordinate: currentUserLocation, controller: controller)
 		}
 	}
 }
