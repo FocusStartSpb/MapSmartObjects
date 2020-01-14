@@ -119,12 +119,23 @@ final class MapViewController: UIViewController
 			addCircle(smartObject)
 		}
 	}
+	//Проверка внутри ли пользователь при создании объекта, если внутри дата входа == дата создания объекта
+	private func checkUserInCircle(userCoordinate: CLLocationCoordinate2D?, _ smartObject: SmartObject) {
+		guard let userCoordinate = userCoordinate else { return }
+		let userLocation = CLLocation(latitude: userCoordinate.latitude, longitude: userCoordinate.longitude)
+		let circleCenter = CLLocation(latitude: smartObject.coordinate.latitude,
+									  longitude: smartObject.coordinate.longitude)
+		if userLocation.distance(from: circleCenter) < smartObject.circleRadius {
+			entryDate = Date()
+		}
+	}
 }
 
 extension MapViewController: MKMapViewDelegate
 {
 	func addCircle(_ smartObject: SmartObject) {
 		self.mapScreen.mapView.addOverlay(MKCircle(center: smartObject.coordinate, radius: smartObject.circleRadius))
+		checkUserInCircle(userCoordinate: presenter.getCurrentLocation(), smartObject)
 	}
 	//метод для отрисовки круга - цвет, прозрачность, ширина и цвет канта
 	func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
