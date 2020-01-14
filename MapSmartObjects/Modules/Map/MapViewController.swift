@@ -9,14 +9,6 @@
 import MapKit
 import UserNotifications
 
-protocol IMapViewController
-{
-	func showAlertRequestLocation(title: String, message: String?, url: URL?)
-	func setMonitoringPlacesCount(number: Int)
-	func showCurrentLocation(_ location: CLLocationCoordinate2D?)
-	func updateSmartObjects()
-}
-
 final class MapViewController: UIViewController
 {
 	private let presenter: IMapPresenter
@@ -40,7 +32,7 @@ final class MapViewController: UIViewController
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		presenter.checkLocationEnabled()
+		presenter.checkLocationEnabled(self, mapScreen: mapScreen)
 		setupMapScreen()
 		addTargets()
 		setSmartObjectsOnMap()
@@ -69,7 +61,7 @@ final class MapViewController: UIViewController
 	}
 
 	@objc private func currentLocationButtonPressed() {
-		showCurrentLocation(presenter.getCurrentLocation())
+		presenter.showCurrentLocation(presenter.getCurrentLocation(), mapScreen: mapScreen)
 	}
 
 	@objc private func addTargetButtonPressed() {
@@ -131,6 +123,29 @@ final class MapViewController: UIViewController
 		self.mapScreen.mapView.addOverlay(MKCircle(center: smartObject.coordinate, radius: smartObject.circleRadius))
 		checkUserInCircle(userCoordinate: presenter.getCurrentLocation(), smartObject)
 	}
+	private func getSmartObject(from: CLRegion) -> SmartObject? {
+		return presenter.getSmartObjects().first(where: { $0.identifier == from.identifier })
+	}
+	// Обновление объектов и кругов на карте при удалении или добавлении
+	private func updateSmartObjects() {
+		let smartObjectsFromDB = presenter.getSmartObjects() // получаем данные из базы данных
+		let smartObjectsFromMap = getSmartObjectsFromMap(annotations: mapScreen.mapView.annotations)
+		let objectsToAdd = smartObjectsFromDB.filter { smartObjectsFromMap.contains($0) == false }
+		let objectsToRemove = smartObjectsFromMap.filter { smartObjectsFromDB.contains($0) == false }
+		objectsToRemove.forEach { smartObject in
+			mapScreen.mapView.removeAnnotation(smartObject)
+			presenter.stopMonitoring(smartObject)
+			removeRadiusOverlay(forPin: smartObject)
+			presenter.setMonitoringPlacesCount(for: mapScreen, number: presenter.getMonitoringRegionsCount())
+		}
+		objectsToAdd.forEach { smartObject in
+			mapScreen.mapView.addAnnotation(smartObject)
+			presenter.startMonitoring(smartObject)
+			addCircle(smartObject)
+			presenter.setMonitoringPlacesCount(for: mapScreen, number: presenter.getMonitoringRegionsCount())
+		}
+		presenter.setMonitoringPlacesCount(for: mapScreen, number: presenter.getMonitoringRegionsCount())
+	}
 }
 
 extension MapViewController: MKMapViewDelegate
@@ -178,16 +193,12 @@ extension MapViewController: MKMapViewDelegate
 		guard let smartObject = view.annotation as? SmartObject else { return }
 		presenter.showPinDetails(smartObject)
 	}
-
-	private func getSmartObject(from: CLRegion) -> SmartObject? {
-		return presenter.getSmartObjects().first(where: { $0.identifier == from.identifier })
-	}
 }
 
 extension MapViewController: CLLocationManagerDelegate
 {
 	func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-		presenter.checkLocationEnabled()
+		presenter.checkLocationEnabled(self, mapScreen: mapScreen)
 	}
 
 	func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
@@ -203,53 +214,5 @@ extension MapViewController: CLLocationManagerDelegate
 		currentSmartObject.insideTime += insideTime
 		currentSmartObject.visitCount += 1
 		presenter.saveToDB()
-	}
-}
-
-extension MapViewController: IMapViewController
-{
-	func setMonitoringPlacesCount(number: Int) {
-		mapScreen.pinCounterView.title.text = "\(number)"
-	}
-
-	func showCurrentLocation(_ location: CLLocationCoordinate2D?) {
-		guard let location = location else { return }
-		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-		mapScreen.mapView.setRegion(region, animated: true)
-	}
-	// Обновление объектов и кругов на карте при удалении или добавлении
-	func updateSmartObjects() {
-		let smartObjectsFromDB = presenter.getSmartObjects() // получаем данные из базы данных
-		let smartObjectsFromMap = getSmartObjectsFromMap(annotations: mapScreen.mapView.annotations)
-		let objectsToAdd = smartObjectsFromDB.filter { smartObjectsFromMap.contains($0) == false }
-		let objectsToRemove = smartObjectsFromMap.filter { smartObjectsFromDB.contains($0) == false }
-		objectsToRemove.forEach { smartObject in
-			mapScreen.mapView.removeAnnotation(smartObject)
-			presenter.stopMonitoring(smartObject)
-			removeRadiusOverlay(forPin: smartObject)
-			setMonitoringPlacesCount(number: presenter.getMonitoringRegionsCount())
-		}
-		objectsToAdd.forEach { smartObject in
-			mapScreen.mapView.addAnnotation(smartObject)
-			presenter.startMonitoring(smartObject)
-			addCircle(smartObject)
-			setMonitoringPlacesCount(number: presenter.getMonitoringRegionsCount())
-		}
-		setMonitoringPlacesCount(number: presenter.getMonitoringRegionsCount())
-	}
-
-	func showAlertRequestLocation(title: String, message: String?, url: URL?) {
-		let alert = UIAlertController(title: title,
-									  message: message,
-									  preferredStyle: .alert)
-		let settingsAction = UIAlertAction(title: Constants.settingsTitle, style: .default) { _ in
-			if let url = url {
-				UIApplication.shared.open(url, options: [:], completionHandler: nil)
-			}
-		}
-		let cancelAction = UIAlertAction(title: Constants.cancelTitle, style: .cancel, handler: nil)
-		alert.addAction(settingsAction)
-		alert.addAction(cancelAction)
-		present(alert, animated: true, completion: nil)
 	}
 }

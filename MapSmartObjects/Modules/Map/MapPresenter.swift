@@ -12,9 +12,8 @@ import UserNotifications
 
 protocol IMapPresenter
 {
-	func addSmartObject(name: String, radius: Double, coordinate: CLLocationCoordinate2D, controller: UIViewController)
 	func getSmartObjects() -> [SmartObject]
-	func checkLocationEnabled()
+	func checkLocationEnabled(_ controller: UIViewController, mapScreen: MapView)
 	func getCurrentLocation() -> CLLocationCoordinate2D?
 	func addPinWithAlert(_ location: CLLocationCoordinate2D?, controller: UIViewController)
 	func startMonitoring(_ smartObject: SmartObject)
@@ -23,7 +22,8 @@ protocol IMapPresenter
 	func handleEvent(for region: CLRegion, controller: UIViewController)
 	func showPinDetails(_ smartObject: SmartObject)
 	func saveToDB()
-	func showAlert(withTitle title: String?, message: String?, controller: UIViewController)
+	func setMonitoringPlacesCount(for mapScreen: MapView, number: Int)
+	func showCurrentLocation(_ location: CLLocationCoordinate2D?, mapScreen: MapView)
 }
 
 final class MapPresenter
@@ -37,15 +37,80 @@ final class MapPresenter
 		self.repository = repository
 		self.router = router
 	}
-}
 
-extension MapPresenter: IMapPresenter
-{
-	func showAlert(withTitle title: String?, message: String?, controller: UIViewController) {
+	private func showAlertRequestLocation(title: String, message: String?, url: URL?, controller: UIViewController) {
+		let alert = UIAlertController(title: title,
+									  message: message,
+									  preferredStyle: .alert)
+		let settingsAction = UIAlertAction(title: Constants.settingsTitle, style: .default) { _ in
+			if let url = url {
+				UIApplication.shared.open(url, options: [:], completionHandler: nil)
+			}
+		}
+		let cancelAction = UIAlertAction(title: Constants.cancelTitle, style: .cancel, handler: nil)
+		alert.addAction(settingsAction)
+		alert.addAction(cancelAction)
+		controller.present(alert, animated: true, completion: nil)
+	}
+	private func showAlert(withTitle title: String?, message: String?, controller: UIViewController) {
 		let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 		let action = UIAlertAction(title: Constants.okTitle, style: .cancel, handler: nil)
 		alert.addAction(action)
 		controller.present(alert, animated: true, completion: nil)
+	}
+	private func addSmartObject(name: String,
+						radius: Double,
+						coordinate: CLLocationCoordinate2D,
+						controller: UIViewController) {
+		repository.getGeoposition(coordinates: coordinate) { [weak self] geocoderResult in
+			guard let self = self else { return }
+			switch geocoderResult {
+			case .success(let position):
+				let maxRadius = radius > self.locationManager.maximumRegionMonitoringDistance
+					? self.locationManager.maximumRegionMonitoringDistance
+					: radius
+				let smartObject = SmartObject(name: name, address: position, coordinate: coordinate, circleRadius: maxRadius)
+				DispatchQueue.main.async {
+					self.router.showDetails(smartObject: smartObject, type: .create)
+				}
+			case .failure(let error):
+				DispatchQueue.main.async {
+					self.showAlert(withTitle: Constants.warningTitle, message: error.localizedDescription, controller: controller)
+				}
+			}
+		}
+	}
+	private func ckeckAutorization(_ controller: UIViewController, mapScreen: MapView) {
+		switch CLLocationManager.authorizationStatus() {
+		case .authorizedWhenInUse, .authorizedAlways, .notDetermined:
+			locationManager.requestAlwaysAuthorization()
+			showCurrentLocation(getCurrentLocation(), mapScreen: mapScreen)
+		case .denied, .restricted:
+			showAlertRequestLocation(title: Constants.bunnedTitle,
+														message: Constants.allowMessage,
+														url: URL(string: UIApplication.openSettingsURLString),
+														controller: controller)
+		default:
+			break
+		}
+	}
+	private func setupLocationManager() {
+		locationManager.delegate = mapViewController
+		locationManager.desiredAccuracy = kCLLocationAccuracyBest
+		locationManager.startUpdatingLocation()
+	}
+}
+
+extension MapPresenter: IMapPresenter
+{
+	func showCurrentLocation(_ location: CLLocationCoordinate2D?, mapScreen: MapView) {
+		guard let location = location else { return }
+		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+		mapScreen.mapView.setRegion(region, animated: true)
+	}
+
+	func setMonitoringPlacesCount(for mapScreen: MapView, number: Int) {
+		mapScreen.pinCounterView.title.text = "\(number)"
 	}
 
 	func getMonitoringRegionsCount() -> Int {
@@ -65,7 +130,7 @@ extension MapPresenter: IMapPresenter
 		let message = Constants.enterMessage + "\(currentObject.name)"
 		// показать алерт, если приложение активно
 		if UIApplication.shared.applicationState == .active {
-			self.showAlert(withTitle: Constants.attention, message: message, controller: controller)
+			showAlert(withTitle: Constants.attention, message: message, controller: controller)
 		}
 		else {
 			// отправить нотификацию, если приложение не активно
@@ -93,28 +158,6 @@ extension MapPresenter: IMapPresenter
 	func getSmartObjects() -> [SmartObject] {
 		return repository.getSmartObjects()
 	}
-	func addSmartObject(name: String,
-						radius: Double,
-						coordinate: CLLocationCoordinate2D,
-						controller: UIViewController) {
-		repository.getGeoposition(coordinates: coordinate) { [weak self] geocoderResult in
-			guard let self = self else { return }
-			switch geocoderResult {
-			case .success(let position):
-				let maxRadius = radius > self.locationManager.maximumRegionMonitoringDistance
-					? self.locationManager.maximumRegionMonitoringDistance
-					: radius
-				let smartObject = SmartObject(name: name, address: position, coordinate: coordinate, circleRadius: maxRadius)
-				DispatchQueue.main.async {
-					self.router.showDetails(smartObject: smartObject, type: .create)
-				}
-			case .failure(let error):
-				DispatchQueue.main.async {
-					self.showAlert(withTitle: Constants.warningTitle, message: error.localizedDescription, controller: controller)
-				}
-			}
-		}
-	}
 
 	func startMonitoring(_ smartObject: SmartObject) {
 		locationManager.startMonitoring(for: smartObject.toCircularRegion())
@@ -128,46 +171,27 @@ extension MapPresenter: IMapPresenter
 		}
 	}
 
-	//проверяем включина ли служба геолокации
-	func checkLocationEnabled() {
+	//проверяем включена ли служба геолокации
+	func checkLocationEnabled(_ controller: UIViewController, mapScreen: MapView) {
 		if CLLocationManager.locationServicesEnabled() {
-			ckeckAutorization()
+			ckeckAutorization(controller, mapScreen: mapScreen)
 			setupLocationManager()
 		}
 		else {
-			mapViewController?.showAlertRequestLocation(title: Constants.turnOffServiceTitle,
+			showAlertRequestLocation(title: Constants.turnOffServiceTitle,
 														message: Constants.turnOnMessage,
-												 url: URL(string: Constants.locationServicesString))
+														url: URL(string: Constants.locationServicesString),
+														controller: controller)
 		}
-	}
-
-	private func ckeckAutorization() {
-		switch CLLocationManager.authorizationStatus() {
-		case .authorizedWhenInUse, .authorizedAlways, .notDetermined:
-			locationManager.requestAlwaysAuthorization()
-			mapViewController?.showCurrentLocation(getCurrentLocation())
-		case .denied, .restricted:
-			mapViewController?.showAlertRequestLocation(title: Constants.bunnedTitle,
-														message: Constants.allowMessage,
-												 url: URL(string: UIApplication.openSettingsURLString))
-		default:
-			break
-		}
-	}
-
-	private func setupLocationManager() {
-		locationManager.delegate = mapViewController
-		locationManager.desiredAccuracy = kCLLocationAccuracyBest
-		locationManager.startUpdatingLocation()
 	}
 
 	func addPinWithAlert(_ location: CLLocationCoordinate2D?, controller: UIViewController) {
 		if let currentUserLocation = location {
-			self.addSmartObject(name: "", radius: 0, coordinate: currentUserLocation, controller: controller)
+			addSmartObject(name: "", radius: 0, coordinate: currentUserLocation, controller: controller)
 		}
 		else {
 			guard let currentUserLocation = getCurrentLocation() else { return }
-			self.addSmartObject(name: "", radius: 0, coordinate: currentUserLocation, controller: controller)
+			addSmartObject(name: "", radius: 0, coordinate: currentUserLocation, controller: controller)
 		}
 	}
 }
