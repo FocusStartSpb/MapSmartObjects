@@ -77,31 +77,6 @@ final class MapViewController: UIViewController
 			presenter.addPinWithAlert(coordinate, controller: self)
 		}
 	}
-	//берем объекты с карты, исключаем userLocation, кастим в SmartObject
-	private func getSmartObjectsFromMap(annotations: [MKAnnotation]) -> [SmartObject] {
-		var result = [SmartObject]()
-		annotations.forEach { annotaion in
-			if let smartObject = annotaion as? SmartObject  {
-				result.append(smartObject)
-			}
-		}
-		return result
-	}
-
-	// Находит один радиус с одинаковыми координатами и радиусом
-	private func removeRadiusOverlay(forPin pin: SmartObject) {
-		let overlays = mapScreen.mapView.overlays
-		for overlay in overlays {
-			guard let circleOverlay = overlay as? MKCircle else { continue }
-			let coord = circleOverlay.coordinate
-			if coord.latitude == pin.coordinate.latitude &&
-				coord.longitude == pin.coordinate.longitude &&
-				circleOverlay.radius == pin.circleRadius {
-				mapScreen.mapView.removeOverlay(circleOverlay)
-				break
-			}
-		}
-	}
 	// Установка объектов и кругов на карте из базы при первом запуске
 	private func setSmartObjectsOnMap() {
 		presenter.getSmartObjects().forEach { smartObject in
@@ -129,13 +104,13 @@ final class MapViewController: UIViewController
 	// Обновление объектов и кругов на карте при удалении или добавлении
 	private func updateSmartObjects() {
 		let smartObjectsFromDB = presenter.getSmartObjects() // получаем данные из базы данных
-		let smartObjectsFromMap = getSmartObjectsFromMap(annotations: mapScreen.mapView.annotations)
+		let smartObjectsFromMap = presenter.getSmartObjectsFromMap(annotations: mapScreen.mapView.annotations)
 		let objectsToAdd = smartObjectsFromDB.filter { smartObjectsFromMap.contains($0) == false }
 		let objectsToRemove = smartObjectsFromMap.filter { smartObjectsFromDB.contains($0) == false }
 		objectsToRemove.forEach { smartObject in
 			mapScreen.mapView.removeAnnotation(smartObject)
 			presenter.stopMonitoring(smartObject)
-			removeRadiusOverlay(forPin: smartObject)
+			presenter.removeRadiusOverlay(forPin: smartObject, mapScreen: mapScreen)
 			presenter.setMonitoringPlacesCount(for: mapScreen, number: presenter.getMonitoringRegionsCount())
 		}
 		objectsToAdd.forEach { smartObject in

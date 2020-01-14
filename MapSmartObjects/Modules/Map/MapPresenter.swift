@@ -24,6 +24,8 @@ protocol IMapPresenter
 	func saveToDB()
 	func setMonitoringPlacesCount(for mapScreen: MapView, number: Int)
 	func showCurrentLocation(_ location: CLLocationCoordinate2D?, mapScreen: MapView)
+	func getSmartObjectsFromMap(annotations: [MKAnnotation]) -> [SmartObject]
+	func removeRadiusOverlay(forPin pin: SmartObject, mapScreen: MapView)
 }
 
 final class MapPresenter
@@ -103,6 +105,32 @@ final class MapPresenter
 
 extension MapPresenter: IMapPresenter
 {
+	// Находит один радиус с одинаковыми координатами и радиусом
+	func removeRadiusOverlay(forPin pin: SmartObject, mapScreen: MapView) {
+		let overlays = mapScreen.mapView.overlays
+		for overlay in overlays {
+			guard let circleOverlay = overlay as? MKCircle else { continue }
+			let coord = circleOverlay.coordinate
+			if coord.latitude == pin.coordinate.latitude &&
+				coord.longitude == pin.coordinate.longitude &&
+				circleOverlay.radius == pin.circleRadius {
+				mapScreen.mapView.removeOverlay(circleOverlay)
+				break
+			}
+		}
+	}
+
+	//берем объекты с карты, исключаем userLocation, кастим в SmartObject
+	func getSmartObjectsFromMap(annotations: [MKAnnotation]) -> [SmartObject] {
+		var result = [SmartObject]()
+		annotations.forEach { annotaion in
+			if let smartObject = annotaion as? SmartObject  {
+				result.append(smartObject)
+			}
+		}
+		return result
+	}
+
 	func showCurrentLocation(_ location: CLLocationCoordinate2D?, mapScreen: MapView) {
 		guard let location = location else { return }
 		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
