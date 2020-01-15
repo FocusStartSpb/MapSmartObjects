@@ -60,24 +60,18 @@ final class PinListViewController: UIViewController
 	}
 
 	private func setupSearchController() {
-		let searchBar = searchController.searchBar
-		searchBar.tintColor = Colors.complementary
-		searchBar.barTintColor = Colors.complementary
-
-		if let textfield = searchBar.value(forKey: Constants.searchFieldKey) as? UITextField {
-			textfield.textColor = Colors.complementary
-			textfield.backgroundColor = Colors.complementary
-			if let backgroundview = textfield.subviews.first {
-				backgroundview.backgroundColor = Colors.complementary
-				backgroundview.layer.cornerRadius = 10
-				backgroundview.clipsToBounds = true
-			}
+		let searchTextField = searchController.searchBar.searchTextField
+		searchTextField.backgroundColor = Colors.complementary
+		searchTextField.borderStyle = .none
+		searchTextField.layer.cornerRadius = 10
+		searchTextField.clipsToBounds = true
+		UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self])
+			.defaultTextAttributes = [NSAttributedString.Key.foregroundColor: Colors.carriage]
+		if let glassIconView = searchTextField.leftView as? UIImageView {
+			glassIconView.image = glassIconView.image?.withRenderingMode(.alwaysTemplate)
+			glassIconView.tintColor = Colors.carriage
 		}
-
-		if let navigationbar = self.navigationController?.navigationBar {
-			navigationbar.barTintColor = Colors.complementary
-		}
-
+		UITextField.appearance().tintColor = Colors.carriage
 		searchController.searchResultsUpdater = self
 		searchController.obscuresBackgroundDuringPresentation = false
 		searchController.searchBar.placeholder = "Enter pin name"
