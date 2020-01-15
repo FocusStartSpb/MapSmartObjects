@@ -24,6 +24,13 @@ final class DetailsPresenter
 		self.smartObject = smartObject
 		self.repository = repository
 	}
+
+	private func createSmartObject(old smartObject: SmartObject, name: String, radius: Double, address: String) {
+		let newObject = SmartObject(name: name, address: address, coordinate: smartObject.coordinate, circleRadius: radius)
+		newObject.insideTime = smartObject.insideTime
+		newObject.visitCount = smartObject.visitCount
+		repository.addSmartObject(object: newObject)
+	}
 }
 
 extension DetailsPresenter: IDetailsPresenter
@@ -31,13 +38,6 @@ extension DetailsPresenter: IDetailsPresenter
 	func changeSmartObjects(from smartObject: SmartObject, name: String, radius: Double) {
 		repository.removeSmartObject(with: smartObject.identifier)
 		createSmartObject(old: smartObject, name: name, radius: radius, address: smartObject.address)
-	}
-
-	func createSmartObject(old smartObject: SmartObject, name: String, radius: Double, address: String) {
-		let newObject = SmartObject(name: name, address: address, coordinate: smartObject.coordinate, circleRadius: radius)
-		newObject.insideTime = smartObject.insideTime
-		newObject.visitCount = smartObject.visitCount
-		repository.addSmartObject(object: newObject)
 	}
 
 	func getSmartObject() -> SmartObject {

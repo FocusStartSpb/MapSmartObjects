@@ -14,16 +14,15 @@ protocol IMapPresenter
 {
 	func checkLocationEnabled(_ mapScreen: MapView)
 	func getCurrentLocation() -> CLLocationCoordinate2D?
-	func addPinWithAlert(_ location: CLLocationCoordinate2D?)
+	func addNewPin(_ location: CLLocationCoordinate2D?)
 	func handleEvent(for region: CLRegion)
 	func showPinDetails(_ smartObject: SmartObject)
 	func saveToDB()
-	func showCurrentLocation(_ location: CLLocationCoordinate2D?, mapScreen: MapView)
-	func setSmartObjectsOnMap(_ mapScreen: MapView)
 	func getSmartObject(from: CLRegion) -> SmartObject?
-	func updateSmartObjects(_ mapScreen: MapView)
-	func getDate()
-	func getEntryDate() -> Date?
+	func getSmartObjects() -> [SmartObject]
+	func updateSmartObjects(on mapView: MKMapView)
+	func getMonitoringRegionsCount() -> Int
+	func checkUserInCircle(_ smartObject: SmartObject) -> Date?
 }
 
 final class MapPresenter
@@ -32,7 +31,6 @@ final class MapPresenter
 	private let repository: IRepository
 	private let router: IMapRouter
 	private let locationManager = CLLocationManager()
-	private var entryDate: Date?
 
 	init(repository: IRepository, router: IMapRouter) {
 		self.repository = repository
@@ -84,7 +82,7 @@ final class MapPresenter
 		switch CLLocationManager.authorizationStatus() {
 		case .authorizedWhenInUse, .authorizedAlways, .notDetermined:
 			locationManager.requestAlwaysAuthorization()
-			showCurrentLocation(getCurrentLocation(), mapScreen: mapScreen)
+			mapViewController?.showCurrentLocation(getCurrentLocation())
 		case .denied, .restricted:
 			showAlertRequestLocation(title: Constants.bunnedTitle,
 									 message: Constants.allowMessage,
@@ -99,7 +97,7 @@ final class MapPresenter
 		locationManager.startUpdatingLocation()
 	}
 
-	internal func getSmartObject(from: CLRegion) -> SmartObject? {
+	func getSmartObject(from: CLRegion) -> SmartObject? {
 		return getSmartObjects().first(where: { $0.identifier == from.identifier })
 	}
 	private func startMonitoring(_ smartObject: SmartObject) {
@@ -112,12 +110,6 @@ final class MapPresenter
 			locationManager.stopMonitoring(for: circularRegion)
 		}
 	}
-	private func getMonitoringRegionsCount() -> Int {
-		return locationManager.monitoredRegions.count
-	}
-	private func setMonitoringPlacesCount(for mapScreen: MapView, number: Int) {
-		mapScreen.pinCounterView.title.text = "\(number)"
-	}
 	//берем объекты с карты, исключаем userLocation, кастим в SmartObject
 	private func getSmartObjectsFromMap(annotations: [MKAnnotation]) -> [SmartObject] {
 		var result = [SmartObject]()
@@ -129,74 +121,58 @@ final class MapPresenter
 		return result
 	}
 	// Находит один радиус с одинаковыми координатами и радиусом
-	private func removeRadiusOverlay(forPin pin: SmartObject, mapScreen: MapView) {
-		let overlays = mapScreen.mapView.overlays
+	private func removeRadiusOverlay(forPin pin: SmartObject, mapView: MKMapView) {
+		let overlays = mapView.overlays
 		for overlay in overlays {
 			guard let circleOverlay = overlay as? MKCircle else { continue }
 			let coord = circleOverlay.coordinate
 			if coord.latitude == pin.coordinate.latitude &&
 				coord.longitude == pin.coordinate.longitude &&
 				circleOverlay.radius == pin.circleRadius {
-				mapScreen.mapView.removeOverlay(circleOverlay)
+				mapView.removeOverlay(circleOverlay)
 				break
 			}
-		}
-	}
-	private func addCircle(_ smartObject: SmartObject, mapScreen: MapView) {
-		mapScreen.mapView.addOverlay(MKCircle(center: smartObject.coordinate, radius: smartObject.circleRadius))
-		checkUserInCircle(userCoordinate: getCurrentLocation(), smartObject)
-	}
-	//Проверка внутри ли пользователь при создании объекта, если внутри дата входа == дата создания объекта
-	private func checkUserInCircle(userCoordinate: CLLocationCoordinate2D?, _ smartObject: SmartObject) {
-		guard let userCoordinate = userCoordinate else { return }
-		let userLocation = CLLocation(latitude: userCoordinate.latitude, longitude: userCoordinate.longitude)
-		let circleCenter = CLLocation(latitude: smartObject.coordinate.latitude,
-									  longitude: smartObject.coordinate.longitude)
-		if userLocation.distance(from: circleCenter) < smartObject.circleRadius {
-			entryDate = Date()
 		}
 	}
 }
 
 extension MapPresenter: IMapPresenter
 {
-	func getEntryDate() -> Date? {
-		return entryDate
+	func getMonitoringRegionsCount() -> Int {
+		return locationManager.monitoredRegions.count
 	}
-	func getDate() {
-		entryDate = Date()
+
+	//Проверка внутри ли пользователь при создании объекта, если внутри дата входа == дата создания объекта
+	func checkUserInCircle(_ smartObject: SmartObject) -> Date? {
+		guard let userCoordinate = getCurrentLocation() else { return nil }
+		let userLocation = CLLocation(latitude: userCoordinate.latitude, longitude: userCoordinate.longitude)
+		let circleCenter = CLLocation(latitude: smartObject.coordinate.latitude,
+									  longitude: smartObject.coordinate.longitude)
+		if userLocation.distance(from: circleCenter) < smartObject.circleRadius {
+			return Date()
+		}
+		return nil
 	}
+
 	// Обновление объектов и кругов на карте при удалении или добавлении
-	func updateSmartObjects(_ mapScreen: MapView) {
+	func updateSmartObjects(on mapView: MKMapView) {
 		let smartObjectsFromDB = getSmartObjects() // получаем данные из базы данных
-		let smartObjectsFromMap = getSmartObjectsFromMap(annotations: mapScreen.mapView.annotations)
+		let smartObjectsFromMap = getSmartObjectsFromMap(annotations: mapView.annotations)
 		let objectsToAdd = smartObjectsFromDB.filter { smartObjectsFromMap.contains($0) == false }
 		let objectsToRemove = smartObjectsFromMap.filter { smartObjectsFromDB.contains($0) == false }
 		objectsToRemove.forEach { smartObject in
-			mapScreen.mapView.removeAnnotation(smartObject)
+			mapView.removeAnnotation(smartObject)
 			stopMonitoring(smartObject)
-			removeRadiusOverlay(forPin: smartObject, mapScreen: mapScreen)
-			setMonitoringPlacesCount(for: mapScreen, number: getMonitoringRegionsCount())
+			removeRadiusOverlay(forPin: smartObject, mapView: mapView)
+			mapViewController?.setMonitoringPlacesCount()
 		}
 		objectsToAdd.forEach { smartObject in
-			mapScreen.mapView.addAnnotation(smartObject)
+			mapView.addAnnotation(smartObject)
 			startMonitoring(smartObject)
-			addCircle(smartObject, mapScreen: mapScreen)
-			setMonitoringPlacesCount(for: mapScreen, number: getMonitoringRegionsCount())
+			mapViewController?.addCircle(smartObject)
+			mapViewController?.setMonitoringPlacesCount()
 		}
-		setMonitoringPlacesCount(for: mapScreen, number: getMonitoringRegionsCount())
-	}
-	// Установка объектов и кругов на карте из базы при первом запуске
-	func setSmartObjectsOnMap(_ mapScreen: MapView) {
-		getSmartObjects().forEach { smartObject in
-			mapScreen.mapView.addAnnotation(smartObject)
-			addCircle(smartObject, mapScreen: mapScreen)
-		}
-	}
-	func showCurrentLocation(_ location: CLLocationCoordinate2D?, mapScreen: MapView) {
-		guard let location = location else { return }
-		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-		mapScreen.mapView.setRegion(region, animated: true)
+		mapViewController?.setMonitoringPlacesCount()
 	}
 	func saveToDB() {
 		repository.saveSmartObjects()
@@ -247,7 +223,7 @@ extension MapPresenter: IMapPresenter
 									 url: URL(string: Constants.locationServicesString))
 		}
 	}
-	func addPinWithAlert(_ location: CLLocationCoordinate2D?) {
+	func addNewPin(_ location: CLLocationCoordinate2D?) {
 		if let currentUserLocation = location {
 			addSmartObject(name: "", radius: 0, coordinate: currentUserLocation)
 		}

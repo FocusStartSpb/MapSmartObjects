@@ -14,6 +14,7 @@ final class MapViewController: UIViewController
 	private let presenter: IMapPresenter
 	private let mapScreen = MapView()
 	private let effectFeedbackgenerator = UIImpactFeedbackGenerator(style: .light)
+	private var entryDate: Date?
 
 	init(presenter: IMapPresenter) {
 		self.presenter = presenter
@@ -32,12 +33,12 @@ final class MapViewController: UIViewController
 		presenter.checkLocationEnabled(mapScreen)
 		setupMapScreen()
 		addTargets()
-		presenter.setSmartObjectsOnMap(mapScreen)
+		setSmartObjectsOnMap()
 	}
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		self.navigationController?.setNavigationBarHidden(true, animated: true)
-		presenter.updateSmartObjects(mapScreen)
+		presenter.updateSmartObjects(on: mapScreen.mapView)
 	}
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
@@ -54,10 +55,10 @@ final class MapViewController: UIViewController
 		mapScreen.mapView.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(longTapped)))
 	}
 	@objc private func currentLocationButtonPressed() {
-		presenter.showCurrentLocation(presenter.getCurrentLocation(), mapScreen: mapScreen)
+		showCurrentLocation(presenter.getCurrentLocation())
 	}
 	@objc private func addTargetButtonPressed() {
-		presenter.addPinWithAlert(nil)
+		presenter.addNewPin(nil)
 	}
 	@objc private func longTapped(gestureReconizer: UILongPressGestureRecognizer) {
 		effectFeedbackgenerator.prepare()
@@ -65,7 +66,7 @@ final class MapViewController: UIViewController
 		if gestureReconizer.state == UIGestureRecognizer.State.began {
 			let location = gestureReconizer.location(in: mapScreen.mapView)
 			let coordinate = mapScreen.mapView.convert(location, toCoordinateFrom: mapScreen.mapView)
-			presenter.addPinWithAlert(coordinate)
+			presenter.addNewPin(coordinate)
 		}
 	}
 }
@@ -93,7 +94,6 @@ extension MapViewController: MKMapViewDelegate
 		pin.displayPriority = .required
 		pin.canShowCallout = true
 		pin.animatesWhenAdded = true
-		pin.isDraggable = false // заглушка, круг не перетаскивается и остается постоянно на карте
 		//настройка detailCalloutAccessoryView
 		let detailLabel = UILabel()
 		detailLabel.text = annotation.subtitle ?? ""
@@ -112,19 +112,45 @@ extension MapViewController: MKMapViewDelegate
 	}
 }
 
+extension MapViewController
+{
+	func setMonitoringPlacesCount() {
+		mapScreen.pinCounterView.title.text = "\(presenter.getMonitoringRegionsCount())"
+	}
+
+	func addCircle(_ smartObject: SmartObject) {
+		mapScreen.mapView.addOverlay(MKCircle(center: smartObject.coordinate, radius: smartObject.circleRadius))
+		entryDate = presenter.checkUserInCircle(smartObject)
+	}
+
+	func showCurrentLocation(_ location: CLLocationCoordinate2D?) {
+		guard let location = location else { return }
+		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+		mapScreen.mapView.setRegion(region, animated: true)
+	}
+
+	// Установка объектов и кругов на карте из базы при первом запуске
+	func setSmartObjectsOnMap() {
+		presenter.getSmartObjects().forEach { smartObject in
+			mapScreen.mapView.addAnnotation(smartObject)
+			addCircle(smartObject)
+		}
+	}
+}
+
 extension MapViewController: CLLocationManagerDelegate
 {
 	func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
 		presenter.checkLocationEnabled(mapScreen)
 	}
 	func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-		presenter.getDate()
+		entryDate = Date()
 		presenter.handleEvent(for: region)
 		presenter.saveToDB()
 	}
 	func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
 		guard let currentSmartObject = presenter.getSmartObject(from: region) else { return }
-		guard let entryDate = presenter.getEntryDate() else { return }
+		guard let entryDate = entryDate else { return }
 		let insideTime = Date().timeIntervalSince(entryDate)
 		currentSmartObject.insideTime += insideTime
 		currentSmartObject.visitCount += 1
