@@ -60,16 +60,17 @@ final class PinListViewController: UIViewController
 	}
 
 	private func setupSearchController() {
-		let searchTextField = searchController.searchBar.searchTextField
-		searchTextField.backgroundColor = Colors.complementary
-		searchTextField.borderStyle = .none
-		searchTextField.layer.cornerRadius = 10
-		searchTextField.clipsToBounds = true
-		UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self])
-			.defaultTextAttributes = [NSAttributedString.Key.foregroundColor: Colors.carriage]
-		if let glassIconView = searchTextField.leftView as? UIImageView {
-			glassIconView.image = glassIconView.image?.withRenderingMode(.alwaysTemplate)
-			glassIconView.tintColor = Colors.carriage
+		if let searchTextField = searchController.searchBar.value(forKey: "searchField") as? UITextField {
+			searchTextField.backgroundColor = Colors.complementary
+			searchTextField.borderStyle = .none
+			searchTextField.layer.cornerRadius = 10
+			searchTextField.clipsToBounds = true
+			UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self])
+				.defaultTextAttributes = [NSAttributedString.Key.foregroundColor: Colors.carriage]
+			if let glassIconView = searchTextField.leftView as? UIImageView {
+				glassIconView.image = glassIconView.image?.withRenderingMode(.alwaysTemplate)
+				glassIconView.tintColor = Colors.carriage
+			}
 		}
 		UITextField.appearance().tintColor = Colors.carriage
 		searchController.searchResultsUpdater = self
@@ -81,6 +82,7 @@ final class PinListViewController: UIViewController
 	}
 	private func configureViews() {
 		title = Constants.pinsTitle
+		navigationController?.navigationBar.barStyle = .black
 		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
 		navigationController?.navigationBar.barTintColor = Colors.mainStyle
 		navigationController?.navigationBar.tintColor = Colors.complementary
