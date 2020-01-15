@@ -7,7 +7,6 @@
 //
 
 import MapKit
-import UserNotifications
 
 final class MapViewController: UIViewController
 {
@@ -25,48 +24,65 @@ final class MapViewController: UIViewController
 	required init?(coder aDecoder: NSCoder) {
 		fatalError(Constants.fatalError)
 	}
+
 	override func loadView() {
 		self.view = mapScreen
 	}
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		presenter.checkLocationEnabled(mapScreen)
+		presenter.checkLocationEnabled()
 		setupMapScreen()
 		addTargets()
 		setSmartObjectsOnMap()
 	}
+
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		self.navigationController?.setNavigationBarHidden(true, animated: true)
 		presenter.updateSmartObjects(on: mapScreen.mapView)
 	}
+
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		mapScreen.buttonsView.layer.cornerRadius = mapScreen.buttonsView.frame.size.height / 10
 		mapScreen.layoutSubviews()
 	}
+
 	private func setupMapScreen() {
 		mapScreen.mapView.delegate = self
 		mapScreen.mapView.showsUserLocation = true
 	}
+
 	private func addTargets() {
 		mapScreen.currentLocationButton.addTarget(self, action: #selector(currentLocationButtonPressed), for: .touchUpInside)
 		mapScreen.addButton.addTarget(self, action: #selector(addTargetButtonPressed), for: .touchUpInside)
 		mapScreen.mapView.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(longTapped)))
 	}
+
+	// Установка объектов и кругов на карте из базы при первом запуске
+	private func setSmartObjectsOnMap() {
+		presenter.getSmartObjects().forEach { smartObject in
+			mapScreen.mapView.addAnnotation(smartObject)
+			addCircle(smartObject)
+		}
+	}
+
 	@objc private func currentLocationButtonPressed() {
 		showCurrentLocation(presenter.getCurrentLocation())
 	}
+
 	@objc private func addTargetButtonPressed() {
-		presenter.addNewPin(nil)
+		presenter.addNewPin(on: nil)
 	}
+
 	@objc private func longTapped(gestureReconizer: UILongPressGestureRecognizer) {
 		effectFeedbackgenerator.prepare()
 		effectFeedbackgenerator.impactOccurred()
 		if gestureReconizer.state == UIGestureRecognizer.State.began {
 			let location = gestureReconizer.location(in: mapScreen.mapView)
 			let coordinate = mapScreen.mapView.convert(location, toCoordinateFrom: mapScreen.mapView)
-			presenter.addNewPin(coordinate)
+			presenter.addNewPin(on: coordinate)
 		}
 	}
 }
@@ -85,6 +101,7 @@ extension MapViewController: MKMapViewDelegate
 		}
 		return circle
 	}
+
 	func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
 		guard annotation is SmartObject else { return nil }
 		let reuseIdentifier = Constants.annotationID
@@ -104,11 +121,12 @@ extension MapViewController: MKMapViewDelegate
 		pin.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
 		return pin
 	}
+
 	func mapView(_ mapView: MKMapView,
 				 annotationView view: MKAnnotationView,
 				 calloutAccessoryControlTapped control: UIControl) {
 		guard let smartObject = view.annotation as? SmartObject else { return }
-		presenter.showPinDetails(smartObject)
+		presenter.showPinDetails(with: smartObject)
 	}
 }
 
@@ -128,26 +146,20 @@ extension MapViewController
 		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
 		mapScreen.mapView.setRegion(region, animated: true)
 	}
-
-	// Установка объектов и кругов на карте из базы при первом запуске
-	func setSmartObjectsOnMap() {
-		presenter.getSmartObjects().forEach { smartObject in
-			mapScreen.mapView.addAnnotation(smartObject)
-			addCircle(smartObject)
-		}
-	}
 }
 
 extension MapViewController: CLLocationManagerDelegate
 {
 	func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-		presenter.checkLocationEnabled(mapScreen)
+		presenter.checkLocationEnabled()
 	}
+
 	func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
 		entryDate = Date()
 		presenter.handleEvent(for: region)
 		presenter.saveToDB()
 	}
+
 	func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
 		guard let currentSmartObject = presenter.getSmartObject(from: region) else { return }
 		guard let entryDate = entryDate else { return }

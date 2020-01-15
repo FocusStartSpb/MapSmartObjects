@@ -6,17 +6,16 @@
 //  Copyright © 2019 Максим Шалашников. All rights reserved.
 //
 
-import Foundation
 import MapKit
 import UserNotifications
 
 protocol IMapPresenter
 {
-	func checkLocationEnabled(_ mapScreen: MapView)
+	func checkLocationEnabled()
 	func getCurrentLocation() -> CLLocationCoordinate2D?
-	func addNewPin(_ location: CLLocationCoordinate2D?)
+	func addNewPin(on location: CLLocationCoordinate2D?)
 	func handleEvent(for region: CLRegion)
-	func showPinDetails(_ smartObject: SmartObject)
+	func showPinDetails(with smartObject: SmartObject)
 	func saveToDB()
 	func getSmartObject(from: CLRegion) -> SmartObject?
 	func getSmartObjects() -> [SmartObject]
@@ -51,12 +50,14 @@ final class MapPresenter
 		alert.addAction(cancelAction)
 		mapViewController?.present(alert, animated: true, completion: nil)
 	}
+
 	private func showAlert(withTitle title: String?, message: String?) {
 		let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 		let action = UIAlertAction(title: Constants.okTitle, style: .cancel, handler: nil)
 		alert.addAction(action)
 		mapViewController?.present(alert, animated: true, completion: nil)
 	}
+
 	private func addSmartObject(name: String,
 								radius: Double,
 								coordinate: CLLocationCoordinate2D) {
@@ -78,7 +79,8 @@ final class MapPresenter
 			}
 		}
 	}
-	private func ckeckAutorization(_ mapScreen: MapView) {
+
+	private func ckeckAutorization() {
 		switch CLLocationManager.authorizationStatus() {
 		case .authorizedWhenInUse, .authorizedAlways, .notDetermined:
 			locationManager.requestAlwaysAuthorization()
@@ -91,18 +93,17 @@ final class MapPresenter
 			break
 		}
 	}
+
 	private func setupLocationManager() {
 		locationManager.delegate = mapViewController
 		locationManager.desiredAccuracy = kCLLocationAccuracyBest
 		locationManager.startUpdatingLocation()
 	}
 
-	func getSmartObject(from: CLRegion) -> SmartObject? {
-		return getSmartObjects().first(where: { $0.identifier == from.identifier })
-	}
 	private func startMonitoring(_ smartObject: SmartObject) {
 		locationManager.startMonitoring(for: smartObject.toCircularRegion())
 	}
+
 	private func stopMonitoring(_ smartObject: SmartObject) {
 		for region in locationManager.monitoredRegions {
 			guard let circularRegion = region as? CLCircularRegion,
@@ -110,6 +111,7 @@ final class MapPresenter
 			locationManager.stopMonitoring(for: circularRegion)
 		}
 	}
+
 	//берем объекты с карты, исключаем userLocation, кастим в SmartObject
 	private func getSmartObjectsFromMap(annotations: [MKAnnotation]) -> [SmartObject] {
 		var result = [SmartObject]()
@@ -120,6 +122,7 @@ final class MapPresenter
 		}
 		return result
 	}
+
 	// Находит один радиус с одинаковыми координатами и радиусом
 	private func removeRadiusOverlay(forPin pin: SmartObject, mapView: MKMapView) {
 		let overlays = mapView.overlays
@@ -138,6 +141,10 @@ final class MapPresenter
 
 extension MapPresenter: IMapPresenter
 {
+	func getSmartObject(from: CLRegion) -> SmartObject? {
+		return getSmartObjects().first(where: { $0.identifier == from.identifier })
+	}
+
 	func getMonitoringRegionsCount() -> Int {
 		return locationManager.monitoredRegions.count
 	}
@@ -174,12 +181,15 @@ extension MapPresenter: IMapPresenter
 		}
 		mapViewController?.setMonitoringPlacesCount()
 	}
+
 	func saveToDB() {
 		repository.saveSmartObjects()
 	}
-	func showPinDetails(_ smartObject: SmartObject) {
+
+	func showPinDetails(with smartObject: SmartObject) {
 		router.showDetails(smartObject: smartObject, type: .edit)
 	}
+
 	func handleEvent(for region: CLRegion) {
 		guard let currentObject = repository.getSmartObject(with: region.identifier) else { return }
 		let message = Constants.enterMessage + "\(currentObject.name)"
@@ -204,17 +214,20 @@ extension MapPresenter: IMapPresenter
 			}
 		}
 	}
+
 	func getCurrentLocation() -> CLLocationCoordinate2D? {
 		guard let location = locationManager.location?.coordinate else { return nil }
 		return location
 	}
+
 	func getSmartObjects() -> [SmartObject] {
 		return repository.getSmartObjects()
 	}
+
 	//проверяем включена ли служба геолокации
-	func checkLocationEnabled(_ mapScreen: MapView) {
+	func checkLocationEnabled() {
 		if CLLocationManager.locationServicesEnabled() {
-			ckeckAutorization(mapScreen)
+			ckeckAutorization()
 			setupLocationManager()
 		}
 		else {
@@ -223,7 +236,8 @@ extension MapPresenter: IMapPresenter
 									 url: URL(string: Constants.locationServicesString))
 		}
 	}
-	func addNewPin(_ location: CLLocationCoordinate2D?) {
+
+	func addNewPin(on location: CLLocationCoordinate2D?) {
 		if let currentUserLocation = location {
 			addSmartObject(name: "", radius: 0, coordinate: currentUserLocation)
 		}

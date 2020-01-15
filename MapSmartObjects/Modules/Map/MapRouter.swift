@@ -12,6 +12,7 @@ protocol IMapRouter
 {
 	func showDetails(smartObject: SmartObject, type: DetailVCTypes)
 }
+
 final class MapRouter
 {
 	weak var mapViewController: MapViewController?
