@@ -29,7 +29,7 @@ final class MapViewController: UIViewController
 	}
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		presenter.checkLocationEnabled(self, mapScreen: mapScreen)
+		presenter.checkLocationEnabled(mapScreen)
 		setupMapScreen()
 		addTargets()
 		presenter.setSmartObjectsOnMap(mapScreen)
@@ -57,7 +57,7 @@ final class MapViewController: UIViewController
 		presenter.showCurrentLocation(presenter.getCurrentLocation(), mapScreen: mapScreen)
 	}
 	@objc private func addTargetButtonPressed() {
-		presenter.addPinWithAlert(nil, controller: self)
+		presenter.addPinWithAlert(nil)
 	}
 	@objc private func longTapped(gestureReconizer: UILongPressGestureRecognizer) {
 		effectFeedbackgenerator.prepare()
@@ -65,7 +65,7 @@ final class MapViewController: UIViewController
 		if gestureReconizer.state == UIGestureRecognizer.State.began {
 			let location = gestureReconizer.location(in: mapScreen.mapView)
 			let coordinate = mapScreen.mapView.convert(location, toCoordinateFrom: mapScreen.mapView)
-			presenter.addPinWithAlert(coordinate, controller: self)
+			presenter.addPinWithAlert(coordinate)
 		}
 	}
 }
@@ -115,11 +115,11 @@ extension MapViewController: MKMapViewDelegate
 extension MapViewController: CLLocationManagerDelegate
 {
 	func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-		presenter.checkLocationEnabled(self, mapScreen: mapScreen)
+		presenter.checkLocationEnabled(mapScreen)
 	}
 	func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
 		presenter.getDate()
-		presenter.handleEvent(for: region, controller: self)
+		presenter.handleEvent(for: region)
 		presenter.saveToDB()
 	}
 	func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
