@@ -62,6 +62,15 @@ final class SmartObject: NSObject
 		region.notifyOnExit = true
 		return region
 	}
+
+	override func isEqual(_ object: Any?) -> Bool {
+		if let object = object as? SmartObject {
+			return identifier == object.identifier
+		}
+		else {
+			return false
+		}
+	}
 }
 
 extension SmartObject: Codable

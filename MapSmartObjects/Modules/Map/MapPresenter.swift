@@ -30,6 +30,14 @@ final class MapPresenter
 	private let repository: IRepository
 	private let router: IMapRouter
 	private let locationManager = CLLocationManager()
+	private var smartObjects: [SmartObject] {
+		get {
+			repository.loadSmartObjects()
+		}
+		set {
+			repository.saveSmartObjects(newValue)
+		}
+	}
 
 	init(repository: IRepository, router: IMapRouter) {
 		self.repository = repository
@@ -183,7 +191,7 @@ extension MapPresenter: IMapPresenter
 	}
 
 	func saveToDB() {
-		repository.saveSmartObjects()
+		repository.saveSmartObjects(smartObjects)
 	}
 
 	func showPinDetails(with smartObject: SmartObject) {
@@ -191,7 +199,8 @@ extension MapPresenter: IMapPresenter
 	}
 
 	func handleEvent(for region: CLRegion) {
-		guard let currentObject = repository.getSmartObject(with: region.identifier) else { return }
+		let smartObject = repository.loadSmartObjects().first { $0.identifier == region.identifier }
+		guard let currentObject = smartObject else { return }
 		let message = Constants.enterMessage + "\(currentObject.name)"
 		// показать алерт, если приложение активно
 		if UIApplication.shared.applicationState == .active {
@@ -221,7 +230,7 @@ extension MapPresenter: IMapPresenter
 	}
 
 	func getSmartObjects() -> [SmartObject] {
-		return repository.getSmartObjects()
+		return repository.loadSmartObjects()
 	}
 
 	//проверяем включена ли служба геолокации
