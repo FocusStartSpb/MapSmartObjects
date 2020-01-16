@@ -12,18 +12,9 @@ import MapKit
 typealias GeocoderResult = Result<Data, Error>
 typealias GeocoderResponseResult = Result<String, Error>
 
-protocol IYandexGeocoder
+enum YandexGeocoder
 {
-	func getGeoposition(coordinates: CLLocationCoordinate2D, completionHandler: @escaping (GeocoderResponseResult) -> Void)
-}
-
-final class YandexGeocoder
-{
-}
-
-extension YandexGeocoder: IYandexGeocoder
-{
-	func getGeocoderAddressRequest(coordinates: CLLocationCoordinate2D) -> URL? {
+	static private func getGeocoderAddressRequest(coordinates: CLLocationCoordinate2D) -> URL? {
 		var components = URLComponents(string: Constants.baseUrl)
 		components?.queryItems = [
 			URLQueryItem(name: "apikey", value: Constants.apiKey),
@@ -33,7 +24,8 @@ extension YandexGeocoder: IYandexGeocoder
 		return components?.url
 	}
 
-	func getGeocoderRequest(coordinates: CLLocationCoordinate2D, completionHandler: @escaping ((GeocoderResult) -> Void)) {
+	static private func getGeocoderRequest(coordinates: CLLocationCoordinate2D,
+										   completionHandler: @escaping ((GeocoderResult) -> Void)) {
 		guard let url = getGeocoderAddressRequest(coordinates: coordinates) else { return }
 		URLSession.shared.dataTask(with: url) { data, response, error in
 			if let error = error {
@@ -49,7 +41,7 @@ extension YandexGeocoder: IYandexGeocoder
 		.resume()
 	}
 
-	func getGeoposition(coordinates: CLLocationCoordinate2D,
+	static func getGeoposition(coordinates: CLLocationCoordinate2D,
 						completionHandler: @escaping (GeocoderResponseResult) -> Void) {
 		getGeocoderRequest(coordinates: coordinates) { result in
 			switch result {
