@@ -72,10 +72,12 @@ final class PinListViewController: UIViewController
 				glassIconView.tintColor = Colors.carriage
 			}
 		}
+		UISearchBar.appearance().tintColor = Colors.complementary
+
 		UITextField.appearance().tintColor = Colors.carriage
 		searchController.searchResultsUpdater = self
 		searchController.obscuresBackgroundDuringPresentation = false
-		searchController.searchBar.placeholder = "Enter pin name"
+		searchController.searchBar.placeholder = Constants.searchTextFieldTitle
 		navigationItem.hidesSearchBarWhenScrolling = false
 		navigationItem.searchController = searchController
 		definesPresentationContext = true

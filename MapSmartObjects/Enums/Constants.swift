@@ -51,5 +51,6 @@ enum Constants
 	static let nameLabelText = "Name"
 	static let radiusLabelText = "Radius (meters)"
 	static let adressLabelText = "Address"
+	static let searchTextFieldTitle = "Enter pin name"
 	static let timeFormat = "%0.2d:%0.2d:%0.2d"
 }
