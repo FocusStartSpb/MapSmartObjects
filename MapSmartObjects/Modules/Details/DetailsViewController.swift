@@ -7,6 +7,7 @@
 //
 
 import MapKit
+
 final class DetailsViewController: UIViewController
 {
 	private let detailsView = DetailsView()
