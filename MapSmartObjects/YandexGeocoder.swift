@@ -6,7 +6,6 @@
 //  Copyright © 2019 Максим Шалашников. All rights reserved.
 //
 
-import Foundation
 import MapKit
 
 typealias GeocoderResult = Result<Data, Error>

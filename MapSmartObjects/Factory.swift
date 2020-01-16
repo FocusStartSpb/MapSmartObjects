@@ -17,7 +17,7 @@ final class Factory
 		repository = Repository(dataService: dataService)
 	}
 
-	//create repository
+	//get repository
 	func getRepository() -> Repository {
 		return self.repository
 	}

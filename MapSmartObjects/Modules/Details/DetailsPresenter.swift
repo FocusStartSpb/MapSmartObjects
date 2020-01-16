@@ -37,7 +37,6 @@ final class DetailsPresenter
 extension DetailsPresenter: IDetailsPresenter
 {
 	func changeSmartObjects(from smartObject: SmartObject, name: String, radius: Double) {
-//		let newSmartObjects =
 		repository.saveSmartObjects(repository.getSmartObjects().filter { $0.identifier != smartObject.identifier })
 		createSmartObject(old: smartObject, name: name, radius: radius, address: smartObject.address)
 	}
