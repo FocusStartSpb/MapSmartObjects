@@ -8,26 +8,17 @@
 
 import MapKit
 
-protocol IPinListViewController
-{
-	func updateTableView()
-	func checkEditMode()
-}
-
 final class PinListViewController: UIViewController
 {
-	private let pinTableView = UITableView()
 	private let presenter: IPinListPresenter
-	private let searchController = UISearchController(searchResultsController: nil)
-	private let backgroundImage = UIImageView()
-	private let backgroundImageLabel = UILabel()
-	private let emptyImage = UIImage(named: Constants.emptyImageName)
-	private let searchImage = UIImage(named: Constants.searchImageName)
+	private let pinListView = PinListView()
+	private let searchController = UISearchController()
 
 	private var searchBarIsEmpty: Bool {
 		guard let text = searchController.searchBar.text else { return false }
 		return text.isEmpty
 	}
+
 	private var isFiltering: Bool {
 		return searchController.isActive && searchBarIsEmpty == false
 	}
@@ -42,21 +33,30 @@ final class PinListViewController: UIViewController
 		fatalError(Constants.fatalError)
 	}
 
+	override func loadView() {
+		self.view = pinListView
+	}
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		view.addSubview(pinTableView)
-		view.addSubview(backgroundImage)
-		view.addSubview(backgroundImageLabel)
-		pinTableView.dataSource = self
-		pinTableView.delegate = self
+		pinListView.pinTableView.dataSource = self
+		pinListView.pinTableView.delegate = self
 		setupSearchController()
-		configureViews()
-		setConstraints()
+		setupNavigationBar()
 	}
+
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		pinTableView.reloadData()
+		pinListView.pinTableView.reloadData()
 		checkEditMode()
+	}
+
+	override func setEditing(_ editing: Bool, animated: Bool) {
+		super.setEditing(editing, animated: animated)
+		pinListView.pinTableView.isEditing
+			? pinListView.pinTableView.setEditing(false, animated: true)
+			: pinListView.pinTableView.setEditing(true, animated: true)
+		editButtonItem.title = pinListView.pinTableView.isEditing ? Constants.doneTitle : Constants.editTitle
 	}
 
 	private func setupSearchController() {
@@ -79,70 +79,27 @@ final class PinListViewController: UIViewController
 		navigationItem.searchController = searchController
 		definesPresentationContext = true
 	}
-	private func configureViews() {
+
+	private func setupNavigationBar() {
 		title = Constants.pinsTitle
 		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
 		navigationController?.navigationBar.barTintColor = Colors.mainStyle
 		navigationController?.navigationBar.tintColor = Colors.complementary
-		backgroundImage.image = UIImage(named: Constants.emptyImageName)
-		backgroundImageLabel.numberOfLines = 0
-		backgroundImageLabel.textAlignment = .center
-		backgroundImageLabel.textColor = Colors.mainStyle
-		pinTableView.register(PinListCell.self, forCellReuseIdentifier: PinListCell.cellID)
 		navigationItem.leftBarButtonItem = editButtonItem
-		pinTableView.tableFooterView = UIView()
 	}
 
-	private func setConstraints() {
-		pinTableView.translatesAutoresizingMaskIntoConstraints = false
-		backgroundImage.translatesAutoresizingMaskIntoConstraints = false
-		backgroundImageLabel.translatesAutoresizingMaskIntoConstraints = false
-
-		NSLayoutConstraint.activate([
-			pinTableView.topAnchor.constraint(equalTo: view.topAnchor),
-			pinTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-			pinTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-			pinTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-
-			backgroundImage.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-			backgroundImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-			backgroundImage.widthAnchor.constraint(equalToConstant: backgroundImage.image?.size.width ?? 0),
-			backgroundImage.heightAnchor.constraint(equalToConstant: backgroundImage.image?.size.height ?? 0),
-
-			backgroundImageLabel.leadingAnchor.constraint(equalTo: backgroundImage.leadingAnchor, constant: 16),
-			backgroundImageLabel.trailingAnchor.constraint(equalTo: backgroundImage.trailingAnchor, constant: -16),
-			backgroundImageLabel.topAnchor.constraint(equalTo: backgroundImage.bottomAnchor),
-			])
-	}
-
-	override func setEditing(_ editing: Bool, animated: Bool) {
-		super.setEditing(editing, animated: animated)
-		pinTableView.isEditing
-			? pinTableView.setEditing(false, animated: true)
-			: pinTableView.setEditing(true, animated: true)
-		editButtonItem.title = pinTableView.isEditing ? Constants.doneTitle : Constants.editTitle
-	}
-
-	func disableEdit() {
+	private func disableEdit() {
 		navigationItem.leftBarButtonItem?.title = Constants.editTitle
 		navigationItem.leftBarButtonItem?.isEnabled = false
-		pinTableView.isEditing = false
-		backgroundImage.isHidden = false
-		backgroundImageLabel.isHidden = false
+		pinListView.pinTableView.isEditing = false
+		pinListView.backgroundImage.isHidden = false
+		pinListView.backgroundImageLabel.isHidden = false
 	}
 
-	func enableEdit() {
+	private func enableEdit() {
 		navigationItem.leftBarButtonItem?.isEnabled = true
-		backgroundImage.isHidden = true
-		backgroundImageLabel.isHidden = true
-	}
-
-	func checkEditMode() {
-		backgroundImage.image = isFiltering ? searchImage : emptyImage
-		if isFiltering == false {
-			backgroundImageLabel.text = Constants.emptyListText
-		}
-		pinTableView.visibleCells.isEmpty ? disableEdit() : enableEdit()
+		pinListView.backgroundImage.isHidden = true
+		pinListView.backgroundImageLabel.isHidden = true
 	}
 }
 
@@ -159,10 +116,6 @@ extension PinListViewController: UITableViewDataSource
 		cell.titleLabel.text = smartObject.name
 		cell.descriptionLabel.text = smartObject.address
 		return cell
-	}
-
-	func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-		return true
 	}
 
 	func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
@@ -190,10 +143,18 @@ extension PinListViewController: UITableViewDelegate
 	}
 }
 
-extension PinListViewController: IPinListViewController
+extension PinListViewController
 {
 	func updateTableView() {
-		pinTableView.reloadData()
+		pinListView.pinTableView.reloadData()
+	}
+
+	func checkEditMode() {
+		pinListView.backgroundImage.image = isFiltering ? pinListView.searchImage : pinListView.emptyImage
+		if isFiltering == false {
+			pinListView.backgroundImageLabel.text = Constants.emptyListText
+		}
+		pinListView.pinTableView.visibleCells.isEmpty ? disableEdit() : enableEdit()
 	}
 }
 
@@ -201,7 +162,7 @@ extension PinListViewController: UISearchResultsUpdating
 {
 	func updateSearchResults(for searchController: UISearchController) {
 		guard let text = searchController.searchBar.text else { return }
-		backgroundImageLabel.text = "\(Constants.nothingOnQueryText) \(text)"
+		pinListView.backgroundImageLabel.text = "\(Constants.nothingOnQueryText) \(text)"
 		presenter.filterContentForSearchText(text)
 	}
 }
