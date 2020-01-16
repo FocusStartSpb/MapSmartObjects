@@ -33,7 +33,7 @@ final class MapPresenter
 	private let locationManager = CLLocationManager()
 	private var smartObjects: [SmartObject] {
 		get {
-			repository.loadSmartObjects()
+			repository.getSmartObjects()
 		}
 		set {
 			repository.saveSmartObjects(newValue)
@@ -201,7 +201,7 @@ extension MapPresenter: IMapPresenter
 	}
 
 	func handleEvent(for region: CLRegion) {
-		let smartObject = repository.loadSmartObjects().first { $0.identifier == region.identifier }
+		let smartObject = repository.getSmartObjects().first { $0.identifier == region.identifier }
 		guard let currentObject = smartObject else { return }
 		let message = Constants.enterMessage + "\(currentObject.name)"
 		// показать алерт, если приложение активно
@@ -232,7 +232,7 @@ extension MapPresenter: IMapPresenter
 	}
 
 	func getSmartObjects() -> [SmartObject] {
-		return repository.loadSmartObjects()
+		return repository.getSmartObjects()
 	}
 
 	//проверяем включена ли служба геолокации

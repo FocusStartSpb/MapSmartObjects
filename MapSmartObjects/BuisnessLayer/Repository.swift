@@ -10,13 +10,14 @@ import MapKit
 
 protocol IRepository
 {
-	func loadSmartObjects() -> [SmartObject]
+	func getSmartObjects() -> [SmartObject]
 	func saveSmartObjects(_ smartObjects: [SmartObject])
 }
 
 final class Repository
 {
 	private let dataService: IDataService
+	private(set) var smartObjects = [SmartObject]()
 
 	init(dataService: DataService) {
 		self.dataService = dataService
@@ -26,13 +27,21 @@ final class Repository
 extension Repository: IRepository
 {
 	func saveSmartObjects(_ smartObjects: [SmartObject]) {
+		self.smartObjects = smartObjects
+	}
+
+	func getSmartObjects() -> [SmartObject] {
+		return self.smartObjects
+	}
+
+	func saveSmartObjectsToDB() {
 		guard let data = try? PropertyListEncoder().encode(smartObjects) else { return }
 		dataService.saveData(data)
 	}
 
-	func loadSmartObjects() -> [SmartObject] {
+	func loadSmartObjectsFromDB() {
 		guard let data = dataService.loadData(),
-			let smartObjects = try? PropertyListDecoder().decode([SmartObject].self, from: data) else { return [] }
-		return smartObjects
+			let smartObjects = try? PropertyListDecoder().decode([SmartObject].self, from: data) else { return }
+		self.smartObjects = smartObjects
 	}
 }

@@ -25,7 +25,7 @@ final class PinListPresenter
 	private let router: IPinListRouter
 	private var smartObjects: [SmartObject] {
 		get {
-			repository.loadSmartObjects()
+			repository.getSmartObjects()
 		}
 		set {
 			repository.saveSmartObjects(newValue)

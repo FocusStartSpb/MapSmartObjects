@@ -29,7 +29,7 @@ final class DetailsPresenter
 		let newObject = SmartObject(name: name, address: address, coordinate: smartObject.coordinate, circleRadius: radius)
 		newObject.insideTime = smartObject.insideTime
 		newObject.visitCount = smartObject.visitCount
-		let newSmartObjects = repository.loadSmartObjects() + [newObject]
+		let newSmartObjects = repository.getSmartObjects() + [newObject]
 		repository.saveSmartObjects(newSmartObjects)
 	}
 }
@@ -38,7 +38,7 @@ extension DetailsPresenter: IDetailsPresenter
 {
 	func changeSmartObjects(from smartObject: SmartObject, name: String, radius: Double) {
 //		let newSmartObjects =
-		repository.saveSmartObjects(repository.loadSmartObjects().filter { $0.identifier != smartObject.identifier })
+		repository.saveSmartObjects(repository.getSmartObjects().filter { $0.identifier != smartObject.identifier })
 		createSmartObject(old: smartObject, name: name, radius: radius, address: smartObject.address)
 	}
 

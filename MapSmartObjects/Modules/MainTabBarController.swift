@@ -10,7 +10,7 @@ import UIKit
 
 final class MainTabBarController: UITabBarController
 {
-	private let factory = Factory()
+	let factory = Factory()
 	private let imageInset = UIEdgeInsets(top: 30.0, left: 30.0, bottom: 30.0, right: 30.0)
 
 	override func viewDidLoad() {
