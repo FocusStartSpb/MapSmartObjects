@@ -10,5 +10,12 @@ import Foundation
 
 enum SmartObjectCodingKeys: String, CodingKey
 {
-	case latitude, longitude, circleRadius, name, address, identifier, visitCount, insideTime
+	case latitude
+	case longitude
+	case circleRadius
+	case name
+	case address
+	case identifier
+	case visitCount
+	case insideTime
 }
