@@ -10,11 +10,13 @@ import Foundation
 import MapKit
 
 typealias GeocoderResult = Result<Data, Error>
+typealias GeocoderResponseResult = Result<String, Error>
+
 protocol IYandexGeocoder
 {
-	func getGeocoderAddressRequest(coordinates: CLLocationCoordinate2D) -> URL?
-	func getGeocoderRequest(coordinates: CLLocationCoordinate2D, completionHandler: @escaping ((GeocoderResult) -> Void))
+	func getGeoposition(coordinates: CLLocationCoordinate2D, completionHandler: @escaping (GeocoderResponseResult) -> Void)
 }
+
 final class YandexGeocoder
 {
 }
@@ -45,5 +47,25 @@ extension YandexGeocoder: IYandexGeocoder
 			completionHandler(.success(data))
 		}
 		.resume()
+	}
+
+	func getGeoposition(coordinates: CLLocationCoordinate2D,
+						completionHandler: @escaping (GeocoderResponseResult) -> Void) {
+		getGeocoderRequest(coordinates: coordinates) { result in
+			switch result {
+			case .success(let data):
+				do {
+					let geocoderResponseResult = try JSONDecoder().decode(GeocoderResponse.self, from: data)
+					let geocoderResult = geocoderResponseResult.response.geoObjectCollection.featureMember
+					.first?.geoObject.metaDataProperty?.geocoderMetaData?.text ?? ""
+					completionHandler(.success(geocoderResult))
+				}
+				catch {
+					completionHandler(.failure(error))
+				}
+			case .failure(let message):
+				completionHandler(.failure(message))
+			}
+		}
 	}
 }

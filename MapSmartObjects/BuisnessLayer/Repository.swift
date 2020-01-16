@@ -8,22 +8,17 @@
 
 import MapKit
 
-typealias GeocoderResponseResult = Result<String, Error>
 protocol IRepository
 {
 	func loadSmartObjects() -> [SmartObject]
 	func saveSmartObjects(_ smartObjects: [SmartObject])
-	func getGeoposition(coordinates: CLLocationCoordinate2D,
-						completionHandler: @escaping (GeocoderResponseResult) -> Void)
 }
 
 final class Repository
 {
-	private let geocoder: IYandexGeocoder
 	private let dataService: IDataService
 
-	init(geocoder: YandexGeocoder, dataService: DataService) {
-		self.geocoder = geocoder
+	init(dataService: DataService) {
 		self.dataService = dataService
 	}
 }
@@ -39,25 +34,5 @@ extension Repository: IRepository
 		guard let data = dataService.loadData(),
 			let smartObjects = try? PropertyListDecoder().decode([SmartObject].self, from: data) else { return [] }
 		return smartObjects
-	}
-
-	func getGeoposition(coordinates: CLLocationCoordinate2D,
-						completionHandler: @escaping (GeocoderResponseResult) -> Void) {
-		geocoder.getGeocoderRequest(coordinates: coordinates) { result in
-			switch result {
-			case .success(let data):
-				do {
-					let geocoderResponseResult = try JSONDecoder().decode(GeocoderResponse.self, from: data)
-					let geocoderResult = geocoderResponseResult.response.geoObjectCollection.featureMember
-					.first?.geoObject.metaDataProperty?.geocoderMetaData?.text ?? ""
-					completionHandler(.success(geocoderResult))
-				}
-				catch {
-					completionHandler(.failure(error))
-				}
-			case .failure(let message):
-				completionHandler(.failure(message))
-			}
-		}
 	}
 }

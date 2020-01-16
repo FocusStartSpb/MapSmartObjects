@@ -29,6 +29,7 @@ final class MapPresenter
 	weak var mapViewController: MapViewController?
 	private let repository: IRepository
 	private let router: IMapRouter
+	private let geocoder: IYandexGeocoder
 	private let locationManager = CLLocationManager()
 	private var smartObjects: [SmartObject] {
 		get {
@@ -39,9 +40,10 @@ final class MapPresenter
 		}
 	}
 
-	init(repository: IRepository, router: IMapRouter) {
+	init(repository: IRepository, router: IMapRouter, geocoder: IYandexGeocoder) {
 		self.repository = repository
 		self.router = router
+		self.geocoder = geocoder
 	}
 
 	private func showAlertRequestLocation(title: String, message: String?, url: URL?) {
@@ -69,7 +71,7 @@ final class MapPresenter
 	private func addSmartObject(name: String,
 								radius: Double,
 								coordinate: CLLocationCoordinate2D) {
-		repository.getGeoposition(coordinates: coordinate) { [weak self] geocoderResult in
+		geocoder.getGeoposition(coordinates: coordinate) { [weak self] geocoderResult in
 			guard let self = self else { return }
 			switch geocoderResult {
 			case .success(let position):

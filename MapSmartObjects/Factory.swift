@@ -15,12 +15,12 @@ final class Factory
 	private let repository: Repository
 
 	init() {
-		repository = Repository(geocoder: geocoder, dataService: dataService)
+		repository = Repository(dataService: dataService)
 	}
 	//create map module
 	func createMapModule() -> MapViewController {
 		let mapRouter = MapRouter(factory: self)
-		let mapPresenter = MapPresenter(repository: repository, router: mapRouter)
+		let mapPresenter = MapPresenter(repository: repository, router: mapRouter, geocoder: geocoder)
 		let mapVC = MapViewController(presenter: mapPresenter)
 		mapPresenter.mapViewController = mapVC
 		mapRouter.mapViewController = mapVC
