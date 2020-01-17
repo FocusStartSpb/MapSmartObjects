@@ -162,7 +162,7 @@ extension PinListViewController: UISearchResultsUpdating
 {
 	func updateSearchResults(for searchController: UISearchController) {
 		guard let text = searchController.searchBar.text else { return }
-		backgroundImageLabel.text = Constants.nothingOnQueryText + text
+		pinListView.backgroundImageLabel.text = Constants.nothingOnQueryText + text
 		presenter.filterContentForSearchText(text)
 	}
 }
