@@ -55,5 +55,5 @@ enum Constants
 	static let radiusLabelText = "Radius (meters)"
 	static let adressLabelText = "Address"
 	static let timeFormat = "%0.2d:%0.2d:%0.2d"
-	static let zero = "0"
+	static let defaultvalue = "0"
 }
