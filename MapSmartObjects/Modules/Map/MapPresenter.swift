@@ -16,7 +16,6 @@ protocol IMapPresenter
 	func addNewPin(on location: CLLocationCoordinate2D?)
 	func handleEvent(for region: CLRegion)
 	func showPinDetails(with smartObject: SmartObject)
-	func saveToDB()
 	func getSmartObject(from: CLRegion) -> SmartObject?
 	func getSmartObjects() -> [SmartObject]
 	func updateSmartObjects(on mapView: MKMapView)
@@ -166,10 +165,6 @@ extension MapPresenter: IMapPresenter
 			mapViewController?.setMonitoringPlacesCount()
 		}
 		mapViewController?.setMonitoringPlacesCount()
-	}
-
-	func saveToDB() {
-		repository.saveSmartObjects(smartObjects)
 	}
 
 	func showPinDetails(with smartObject: SmartObject) {

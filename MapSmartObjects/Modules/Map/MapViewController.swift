@@ -158,7 +158,6 @@ extension MapViewController: CLLocationManagerDelegate
 	func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
 		entryDate = Date()
 		presenter.handleEvent(for: region)
-		presenter.saveToDB()
 	}
 
 	func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
@@ -167,7 +166,6 @@ extension MapViewController: CLLocationManagerDelegate
 		let insideTime = Date().timeIntervalSince(entryDate)
 		currentSmartObject.insideTime += insideTime
 		currentSmartObject.visitCount += 1
-		presenter.saveToDB()
 	}
 }
 
