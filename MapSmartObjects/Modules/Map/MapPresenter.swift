@@ -176,13 +176,27 @@ extension MapPresenter: IMapPresenter
 		router.showDetails(smartObject: smartObject, type: .edit)
 	}
 
+	private func showNotification(with notificationContent: UNMutableNotificationContent) {
+		let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+		let request = UNNotificationRequest(identifier: Constants.changeLocationID,
+											content: notificationContent,
+											trigger: trigger)
+		UNUserNotificationCenter.current().add(request) { error in
+			if let error = error {
+				print(Constants.errorText + "\(error)")
+			}
+		}
+	}
+	
 	func handleEvent(for region: CLRegion) {
 		let smartObject = repository.getSmartObjects().first { $0.identifier == region.identifier }
 		guard let currentObject = smartObject else { return }
 		let message = Constants.enterMessage + "\(currentObject.name)"
 		// показать алерт, если приложение активно
 		if UIApplication.shared.applicationState == .active {
-			self.router.showAlert(withTitle: Constants.attention, message: message)
+			let notificationContent = UNMutableNotificationContent()
+			notificationContent.body = message
+			showNotification(with: notificationContent)
 		}
 		else {
 			// отправить нотификацию, если приложение не активно
@@ -190,15 +204,7 @@ extension MapPresenter: IMapPresenter
 			notificationContent.body = message
 			notificationContent.sound = UNNotificationSound.default
 			notificationContent.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
-			let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-			let request = UNNotificationRequest(identifier: Constants.changeLocationID,
-												content: notificationContent,
-												trigger: trigger)
-			UNUserNotificationCenter.current().add(request) { error in
-				if let error = error {
-					print(Constants.errorText + "\(error)")
-				}
-			}
+			showNotification(with: notificationContent)
 		}
 	}
 
