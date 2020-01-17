@@ -40,6 +40,7 @@ enum Constants
 	static let objectPlaceholderName = "Enter place name"
 	static let radiusPlaceholderName = "Enter monitoring radius"
 	static let pinsTitle = "My Pins"
+	static let mapTitle = "Map"
 	static let editTitle = "Edit"
 	static let doneTitle = "Done"
 	static let createTitle = "Create"
@@ -49,7 +50,10 @@ enum Constants
 	static let timerImageName = "timer"
 	static let counterImageName = "counter"
 	static let nameLabelText = "Name"
+	static let menuImageName = "menu"
+	static let mapImageName = "map"
 	static let radiusLabelText = "Radius (meters)"
 	static let adressLabelText = "Address"
 	static let timeFormat = "%0.2d:%0.2d:%0.2d"
+	static let defaultvalue = "0"
 }

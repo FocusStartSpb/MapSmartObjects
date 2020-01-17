@@ -74,7 +74,7 @@ final class PinListViewController: UIViewController
 		UITextField.appearance().tintColor = Colors.carriage
 		searchController.searchResultsUpdater = self
 		searchController.obscuresBackgroundDuringPresentation = false
-		searchController.searchBar.placeholder = "Enter pin name"
+		searchController.searchBar.placeholder = Constants.searchPlaceholderName
 		navigationItem.hidesSearchBarWhenScrolling = false
 		navigationItem.searchController = searchController
 		definesPresentationContext = true
@@ -201,7 +201,7 @@ extension PinListViewController: UISearchResultsUpdating
 {
 	func updateSearchResults(for searchController: UISearchController) {
 		guard let text = searchController.searchBar.text else { return }
-		backgroundImageLabel.text = "\(Constants.nothingOnQueryText) \(text)"
+		backgroundImageLabel.text = Constants.nothingOnQueryText + text
 		presenter.filterContentForSearchText(text)
 	}
 }

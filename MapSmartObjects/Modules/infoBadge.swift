@@ -34,7 +34,7 @@ final class InfoBadge: UIView
 		imageView.image = UIImage(named: Constants.timerImageName)
 		imageView.contentMode = .scaleAspectFit
 		title.font = UIFont(name: Constants.helveticaFont, size: 21.0)
-		title.text = "0"
+		title.text = Constants.defaultvalue
 	}
 	private func addSubviews() {
 		addSubview(imageView)
