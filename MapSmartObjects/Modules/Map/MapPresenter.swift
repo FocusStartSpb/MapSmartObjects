@@ -187,7 +187,7 @@ extension MapPresenter: IMapPresenter
 			}
 		}
 	}
-	
+
 	func handleEvent(for region: CLRegion) {
 		let smartObject = repository.getSmartObjects().first { $0.identifier == region.identifier }
 		guard let currentObject = smartObject else { return }
