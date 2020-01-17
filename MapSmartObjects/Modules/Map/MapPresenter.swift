@@ -44,28 +44,6 @@ final class MapPresenter
 		self.router = router
 	}
 
-	private func showAlertRequestLocation(title: String, message: String?, url: URL?) {
-		let alert = UIAlertController(title: title,
-									  message: message,
-									  preferredStyle: .alert)
-		let settingsAction = UIAlertAction(title: Constants.settingsTitle, style: .default) { _ in
-			if let url = url {
-				UIApplication.shared.open(url, options: [:], completionHandler: nil)
-			}
-		}
-		let cancelAction = UIAlertAction(title: Constants.cancelTitle, style: .cancel, handler: nil)
-		alert.addAction(settingsAction)
-		alert.addAction(cancelAction)
-		mapViewController?.present(alert, animated: true, completion: nil)
-	}
-
-	private func showAlert(withTitle title: String?, message: String?) {
-		let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-		let action = UIAlertAction(title: Constants.okTitle, style: .cancel, handler: nil)
-		alert.addAction(action)
-		mapViewController?.present(alert, animated: true, completion: nil)
-	}
-
 	private func addSmartObject(name: String,
 								radius: Double,
 								coordinate: CLLocationCoordinate2D) {
@@ -82,7 +60,7 @@ final class MapPresenter
 				}
 			case .failure(let error):
 				DispatchQueue.main.async {
-					self.showAlert(withTitle: Constants.warningTitle, message: error.localizedDescription)
+					self.router.showAlert(withTitle: Constants.warningTitle, message: error.localizedDescription)
 				}
 			}
 		}
@@ -94,7 +72,7 @@ final class MapPresenter
 			locationManager.requestAlwaysAuthorization()
 			mapViewController?.showCurrentLocation(getCurrentLocation())
 		case .denied, .restricted:
-			showAlertRequestLocation(title: Constants.bunnedTitle,
+			self.router.showAlertRequestLocation(title: Constants.bunnedTitle,
 									 message: Constants.allowMessage,
 									 url: URL(string: UIApplication.openSettingsURLString))
 		default:
@@ -204,7 +182,7 @@ extension MapPresenter: IMapPresenter
 		let message = Constants.enterMessage + "\(currentObject.name)"
 		// показать алерт, если приложение активно
 		if UIApplication.shared.applicationState == .active {
-			showAlert(withTitle: Constants.attention, message: message)
+			self.router.showAlert(withTitle: Constants.attention, message: message)
 		}
 		else {
 			// отправить нотификацию, если приложение не активно
@@ -240,7 +218,7 @@ extension MapPresenter: IMapPresenter
 			setupLocationManager()
 		}
 		else {
-			showAlertRequestLocation(title: Constants.turnOffServiceTitle,
+			self.router.showAlertRequestLocation(title: Constants.turnOffServiceTitle,
 									 message: Constants.turnOnMessage,
 									 url: URL(string: Constants.locationServicesString))
 		}
