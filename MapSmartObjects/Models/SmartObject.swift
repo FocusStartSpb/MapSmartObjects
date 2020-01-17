@@ -6,7 +6,6 @@
 //  Copyright © 2019 Максим Шалашников. All rights reserved.
 //
 
-import Foundation
 import MapKit
 
 final class SmartObject: NSObject
@@ -61,6 +60,16 @@ final class SmartObject: NSObject
 		region.notifyOnEntry = true
 		region.notifyOnExit = true
 		return region
+	}
+
+	// сравниваем объекты по identifier
+	override func isEqual(_ object: Any?) -> Bool {
+		if let object = object as? SmartObject {
+			return identifier == object.identifier
+		}
+		else {
+			return false
+		}
 	}
 }
 

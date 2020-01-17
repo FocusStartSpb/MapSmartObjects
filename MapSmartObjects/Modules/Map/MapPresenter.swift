@@ -16,7 +16,6 @@ protocol IMapPresenter
 	func addNewPin(on location: CLLocationCoordinate2D?)
 	func handleEvent(for region: CLRegion)
 	func showPinDetails(with smartObject: SmartObject)
-	func saveToDB()
 	func getSmartObject(from: CLRegion) -> SmartObject?
 	func getSmartObjects() -> [SmartObject]
 	func updateSmartObjects(on mapView: MKMapView)
@@ -30,38 +29,24 @@ final class MapPresenter
 	private let repository: IRepository
 	private let router: IMapRouter
 	private let locationManager = CLLocationManager()
+	private var smartObjects: [SmartObject] {
+		get {
+			repository.getSmartObjects()
+		}
+		set {
+			repository.saveSmartObjects(newValue)
+		}
+	}
 
 	init(repository: IRepository, router: IMapRouter) {
 		self.repository = repository
 		self.router = router
 	}
 
-	private func showAlertRequestLocation(title: String, message: String?, url: URL?) {
-		let alert = UIAlertController(title: title,
-									  message: message,
-									  preferredStyle: .alert)
-		let settingsAction = UIAlertAction(title: Constants.settingsTitle, style: .default) { _ in
-			if let url = url {
-				UIApplication.shared.open(url, options: [:], completionHandler: nil)
-			}
-		}
-		let cancelAction = UIAlertAction(title: Constants.cancelTitle, style: .cancel, handler: nil)
-		alert.addAction(settingsAction)
-		alert.addAction(cancelAction)
-		mapViewController?.present(alert, animated: true, completion: nil)
-	}
-
-	private func showAlert(withTitle title: String?, message: String?) {
-		let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-		let action = UIAlertAction(title: Constants.okTitle, style: .cancel, handler: nil)
-		alert.addAction(action)
-		mapViewController?.present(alert, animated: true, completion: nil)
-	}
-
 	private func addSmartObject(name: String,
 								radius: Double,
 								coordinate: CLLocationCoordinate2D) {
-		repository.getGeoposition(coordinates: coordinate) { [weak self] geocoderResult in
+		YandexGeocoder.getGeoposition(coordinates: coordinate) { [weak self] geocoderResult in
 			guard let self = self else { return }
 			switch geocoderResult {
 			case .success(let position):
@@ -74,7 +59,7 @@ final class MapPresenter
 				}
 			case .failure(let error):
 				DispatchQueue.main.async {
-					self.showAlert(withTitle: Constants.warningTitle, message: error.localizedDescription)
+					self.router.showAlert(withTitle: Constants.warningTitle, message: error.localizedDescription)
 				}
 			}
 		}
@@ -86,7 +71,7 @@ final class MapPresenter
 			locationManager.requestAlwaysAuthorization()
 			mapViewController?.showCurrentLocation(getCurrentLocation())
 		case .denied, .restricted:
-			showAlertRequestLocation(title: Constants.bunnedTitle,
+			self.router.showAlertRequestLocation(title: Constants.bunnedTitle,
 									 message: Constants.allowMessage,
 									 url: URL(string: UIApplication.openSettingsURLString))
 		default:
@@ -182,20 +167,31 @@ extension MapPresenter: IMapPresenter
 		mapViewController?.setMonitoringPlacesCount()
 	}
 
-	func saveToDB() {
-		repository.saveSmartObjects()
-	}
-
 	func showPinDetails(with smartObject: SmartObject) {
 		router.showDetails(smartObject: smartObject, type: .edit)
 	}
 
+	private func showNotification(with notificationContent: UNMutableNotificationContent) {
+		let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+		let request = UNNotificationRequest(identifier: Constants.changeLocationID,
+											content: notificationContent,
+											trigger: trigger)
+		UNUserNotificationCenter.current().add(request) { error in
+			if let error = error {
+				print(Constants.errorText + "\(error)")
+			}
+		}
+	}
+
 	func handleEvent(for region: CLRegion) {
-		guard let currentObject = repository.getSmartObject(with: region.identifier) else { return }
+		let smartObject = repository.getSmartObjects().first { $0.identifier == region.identifier }
+		guard let currentObject = smartObject else { return }
 		let message = Constants.enterMessage + "\(currentObject.name)"
 		// показать алерт, если приложение активно
 		if UIApplication.shared.applicationState == .active {
-			showAlert(withTitle: Constants.attention, message: message)
+			let notificationContent = UNMutableNotificationContent()
+			notificationContent.body = message
+			showNotification(with: notificationContent)
 		}
 		else {
 			// отправить нотификацию, если приложение не активно
@@ -203,15 +199,7 @@ extension MapPresenter: IMapPresenter
 			notificationContent.body = message
 			notificationContent.sound = UNNotificationSound.default
 			notificationContent.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
-			let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-			let request = UNNotificationRequest(identifier: Constants.changeLocationID,
-												content: notificationContent,
-												trigger: trigger)
-			UNUserNotificationCenter.current().add(request) { error in
-				if let error = error {
-					print(Constants.errorText + "\(error)")
-				}
-			}
+			showNotification(with: notificationContent)
 		}
 	}
 
@@ -231,7 +219,7 @@ extension MapPresenter: IMapPresenter
 			setupLocationManager()
 		}
 		else {
-			showAlertRequestLocation(title: Constants.turnOffServiceTitle,
+			self.router.showAlertRequestLocation(title: Constants.turnOffServiceTitle,
 									 message: Constants.turnOnMessage,
 									 url: URL(string: Constants.locationServicesString))
 		}

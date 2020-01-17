@@ -31,6 +31,7 @@ final class MapViewController: UIViewController
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		UNUserNotificationCenter.current().delegate = self
 		presenter.checkLocationEnabled()
 		setupMapScreen()
 		addTargets()
@@ -157,7 +158,6 @@ extension MapViewController: CLLocationManagerDelegate
 	func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
 		entryDate = Date()
 		presenter.handleEvent(for: region)
-		presenter.saveToDB()
 	}
 
 	func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
@@ -166,6 +166,14 @@ extension MapViewController: CLLocationManagerDelegate
 		let insideTime = Date().timeIntervalSince(entryDate)
 		currentSmartObject.insideTime += insideTime
 		currentSmartObject.visitCount += 1
-		presenter.saveToDB()
+	}
+}
+
+extension MapViewController: UNUserNotificationCenterDelegate
+{
+	func userNotificationCenter(_ center: UNUserNotificationCenter,
+								willPresent notification: UNNotification,
+								withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+		completionHandler([.alert])
 	}
 }
