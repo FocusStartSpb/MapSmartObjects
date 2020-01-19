@@ -16,6 +16,7 @@ final class SmartObject: NSObject
 	private(set) var circleRadius: Double
 	private(set) var address: String
 	private(set) var identifier: String
+	var entryDate: Date?
 	var visitCount: Int
 	var insideTime: TimeInterval
 
@@ -41,6 +42,7 @@ final class SmartObject: NSObject
 		identifier = try values.decode(String.self, forKey: .identifier)
 		visitCount = try values.decode(Int.self, forKey: .visitCount)
 		insideTime = try values.decode(TimeInterval.self, forKey: .insideTime)
+		entryDate = try values.decode(Date?.self, forKey: .entryDate)
 	}
 
 	func encode(to encoder: Encoder) throws {
@@ -53,6 +55,7 @@ final class SmartObject: NSObject
 		try container.encode(identifier, forKey: .identifier)
 		try container.encode(visitCount, forKey: .visitCount)
 		try container.encode(insideTime, forKey: .insideTime)
+		try container.encode(entryDate, forKey: .entryDate)
 	}
 
 	func toCircularRegion() -> CLCircularRegion {
