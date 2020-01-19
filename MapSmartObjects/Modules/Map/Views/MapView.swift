@@ -50,6 +50,11 @@ final class MapView: UIView
 		buttonsView.addSubview(addButton)
 		buttonsView.addSubview(currentLocationButton)
 	}
+
+	override func layoutSubviews() {
+		buttonsView.layer.cornerRadius = buttonsView.frame.size.height / 10
+	}
+
 	private func configureViews() {
 		currentLocationButton.setImage(UIImage(named: Constants.locationImageName)?
 			.withRenderingMode(.alwaysTemplate), for: .normal)
