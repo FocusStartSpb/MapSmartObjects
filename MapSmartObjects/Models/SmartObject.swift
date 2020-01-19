@@ -6,7 +6,6 @@
 //  Copyright © 2019 Максим Шалашников. All rights reserved.
 //
 
-import Foundation
 import MapKit
 
 final class SmartObject: NSObject
@@ -17,6 +16,7 @@ final class SmartObject: NSObject
 	private(set) var circleRadius: Double
 	private(set) var address: String
 	private(set) var identifier: String
+	var entryDate: Date?
 	var visitCount: Int
 	var insideTime: TimeInterval
 
@@ -42,6 +42,7 @@ final class SmartObject: NSObject
 		identifier = try values.decode(String.self, forKey: .identifier)
 		visitCount = try values.decode(Int.self, forKey: .visitCount)
 		insideTime = try values.decode(TimeInterval.self, forKey: .insideTime)
+		entryDate = try values.decode(Date?.self, forKey: .entryDate)
 	}
 
 	func encode(to encoder: Encoder) throws {
@@ -54,6 +55,7 @@ final class SmartObject: NSObject
 		try container.encode(identifier, forKey: .identifier)
 		try container.encode(visitCount, forKey: .visitCount)
 		try container.encode(insideTime, forKey: .insideTime)
+		try container.encode(entryDate, forKey: .entryDate)
 	}
 
 	func toCircularRegion() -> CLCircularRegion {
@@ -61,6 +63,16 @@ final class SmartObject: NSObject
 		region.notifyOnEntry = true
 		region.notifyOnExit = true
 		return region
+	}
+
+	// сравниваем объекты по identifier
+	override func isEqual(_ object: Any?) -> Bool {
+		if let object = object as? SmartObject {
+			return identifier == object.identifier
+		}
+		else {
+			return false
+		}
 	}
 }
 

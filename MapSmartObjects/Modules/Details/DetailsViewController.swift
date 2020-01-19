@@ -7,6 +7,7 @@
 //
 
 import MapKit
+
 final class DetailsViewController: UIViewController
 {
 	private let detailsView = DetailsView()
@@ -82,7 +83,7 @@ final class DetailsViewController: UIViewController
 	@objc
 	private func radiusChanged() {
 		detailsView.mapView.removeOverlays(detailsView.mapView.overlays)
-		let radius = Double(detailsView.radiusTextField.text ?? "0") ?? 0.0
+		let radius = Double(detailsView.radiusTextField.text ?? Constants.defaultvalue) ?? 0.0
 		guard radius < CLLocationManager().maximumRegionMonitoringDistance else { return }
 		showOnMap(radius: radius, center: currentSmartObject.coordinate)
 	}

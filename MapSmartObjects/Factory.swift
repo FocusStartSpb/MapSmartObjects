@@ -10,13 +10,13 @@ import Foundation
 
 final class Factory
 {
-	private let geocoder = YandexGeocoder()
 	private let dataService = DataService()
 	private let repository: Repository
 
 	init() {
-		repository = Repository(geocoder: geocoder, dataService: dataService)
+		repository = Repository(dataService: dataService)
 	}
+
 	//create map module
 	func createMapModule() -> MapViewController {
 		let mapRouter = MapRouter(factory: self)

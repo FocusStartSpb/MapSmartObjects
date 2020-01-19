@@ -10,7 +10,7 @@ import UIKit
 
 final class MainTabBarController: UITabBarController
 {
-	private let factory = Factory()
+	let factory = Factory()
 	private let imageInset = UIEdgeInsets(top: 30.0, left: 30.0, bottom: 30.0, right: 30.0)
 
 	override func viewDidLoad() {
@@ -22,11 +22,15 @@ final class MainTabBarController: UITabBarController
 		self.addChild(mapController)
 		self.addChild(pinListController)
 
-		mapController.tabBarItem = UITabBarItem(title: "Map", image: UIImage(named: "map"), tag: 1)
+		mapController.tabBarItem = UITabBarItem(title: Constants.mapTitle,
+												image: UIImage(named: Constants.mapImageName),
+												tag: 1)
 		mapController.tabBarItem.badgeColor = Colors.mainStyle
 		mapController.tabBarItem.imageInsets = imageInset
 
-		pinListController.tabBarItem = UITabBarItem(title: "My Pins", image: UIImage(named: "menu"), tag: 2)
+		pinListController.tabBarItem = UITabBarItem(title: Constants.pinsTitle,
+													image: UIImage(named: Constants.menuImageName),
+													tag: 2)
 		pinListController.tabBarItem.badgeColor = Colors.mainStyle
 		pinListController.tabBarItem.imageInsets = imageInset
 	}
@@ -34,8 +38,9 @@ final class MainTabBarController: UITabBarController
 	init() {
 		super.init(nibName: nil, bundle: nil)
 	}
+
 	@available (*, unavailable)
 	required init?(coder aDecoder: NSCoder) {
-		fatalError("init(coder:) has not been implemented")
+		fatalError(Constants.fatalError)
 	}
 }

@@ -13,6 +13,7 @@ protocol IDataService
 	func saveData(_ data: Data)
 	func loadData() -> Data?
 }
+
 final class DataService
 {
 	private let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
@@ -21,6 +22,7 @@ final class DataService
 		documentDirectory.unsafelyUnwrapped
 	}
 }
+
 extension DataService: IDataService
 {
 	func saveData(_ data: Data) {

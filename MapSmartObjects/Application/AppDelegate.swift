@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import CoreData
 import UserNotifications
 
 @UIApplicationMain
@@ -17,12 +16,14 @@ final class AppDelegate: UIResponder, UIApplicationDelegate
 
 	func application(_ application: UIApplication,
 					 didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+		let mainTabBarController = MainTabBarController()
 		self.window = UIWindow(frame: UIScreen.main.bounds)
-		self.window?.rootViewController = MainTabBarController()
+		self.window?.rootViewController = mainTabBarController
 		self.window?.makeKeyAndVisible()
 		UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in }
 		return true
 	}
+
 	func applicationDidBecomeActive(_ application: UIApplication) {
 		application.applicationIconBadgeNumber = 0
 		UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
