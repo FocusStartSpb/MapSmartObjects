@@ -52,6 +52,7 @@ final class MapView: UIView
 	}
 
 	override func layoutSubviews() {
+		super.layoutSubviews()
 		buttonsView.layer.cornerRadius = buttonsView.frame.size.height / 10
 	}
 
