@@ -139,6 +139,7 @@ extension MapViewController
 	func addCircle(_ smartObject: SmartObject) {
 		mapScreen.mapView.addOverlay(MKCircle(center: smartObject.coordinate, radius: smartObject.circleRadius))
 		smartObject.entryDate = presenter.checkUserInCircle(smartObject)
+		presenter.updateSmartObject(smartObject)
 	}
 
 	func showCurrentLocation(_ location: CLLocationCoordinate2D?) {

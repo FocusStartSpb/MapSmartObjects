@@ -19,6 +19,7 @@ protocol IMapPresenter
 	func getSmartObject(from: CLRegion) -> SmartObject?
 	func getSmartObjects() -> [SmartObject]
 	func updateSmartObjects(on mapView: MKMapView)
+	func updateSmartObject(_ smartObject: SmartObject)
 	func getMonitoringRegionsCount() -> Int
 	func checkUserInCircle(_ smartObject: SmartObject) -> Date?
 }
@@ -134,6 +135,12 @@ extension MapPresenter: IMapPresenter
 		return locationManager.monitoredRegions.count
 	}
 
+	func updateSmartObject(_ smartObject: SmartObject) {
+		let filtredObjects = smartObjects.filter { $0.identifier != smartObject.identifier }
+		let updatesSmartObjects = filtredObjects + [smartObject]
+		repository.saveSmartObjects(updatesSmartObjects)
+	}
+
 	//Проверка внутри ли пользователь при создании объекта, если внутри дата входа == дата создания объекта
 	func checkUserInCircle(_ smartObject: SmartObject) -> Date? {
 		guard let userCoordinate = getCurrentLocation() else { return nil }
@@ -246,7 +253,7 @@ extension MapPresenter: CLLocationManagerDelegate
 		guard let currentSmartObject = getSmartObject(from: region) else { return }
 		currentSmartObject.entryDate = Date()
 		handleEvent(for: region)
-		repository.updateSmartObject(currentSmartObject)
+		updateSmartObject(currentSmartObject)
 	}
 
 	func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
@@ -256,7 +263,7 @@ extension MapPresenter: CLLocationManagerDelegate
 		currentSmartObject.insideTime += insideTime
 		currentSmartObject.visitCount += 1
 		currentSmartObject.entryDate = nil
-		repository.updateSmartObject(currentSmartObject)
+		updateSmartObject(currentSmartObject)
 	}
 }
 

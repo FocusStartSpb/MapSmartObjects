@@ -12,7 +12,6 @@ protocol IRepository
 {
 	func getSmartObjects() -> [SmartObject]
 	func saveSmartObjects(_ smartObjects: [SmartObject])
-	func updateSmartObject(_ smartObject: SmartObject)
 }
 
 final class Repository
@@ -35,11 +34,5 @@ extension Repository: IRepository
 		guard let data = dataService.loadData(),
 			let smartObjects = try? PropertyListDecoder().decode([SmartObject].self, from: data) else { return [] }
 		return smartObjects
-	}
-
-	func updateSmartObject(_ smartObject: SmartObject) {
-		let filtredObjects = getSmartObjects().filter { $0.identifier != smartObject.identifier }
-		let updatesSmartObjects = filtredObjects + [smartObject]
-		saveSmartObjects(updatesSmartObjects)
 	}
 }
