@@ -13,7 +13,6 @@ final class MapViewController: UIViewController
 	private let presenter: IMapPresenter
 	private let mapScreen = MapView()
 	private let effectFeedbackgenerator = UIImpactFeedbackGenerator(style: .light)
-	private var entryDate: Date?
 
 	init(presenter: IMapPresenter) {
 		self.presenter = presenter
@@ -139,41 +138,12 @@ extension MapViewController
 
 	func addCircle(_ smartObject: SmartObject) {
 		mapScreen.mapView.addOverlay(MKCircle(center: smartObject.coordinate, radius: smartObject.circleRadius))
-		entryDate = presenter.checkUserInCircle(smartObject)
+		smartObject.entryDate = presenter.checkUserInCircle(smartObject)
 	}
 
 	func showCurrentLocation(_ location: CLLocationCoordinate2D?) {
 		guard let location = location else { return }
 		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
 		mapScreen.mapView.setRegion(region, animated: true)
-	}
-}
-
-extension MapViewController: CLLocationManagerDelegate
-{
-	func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-		presenter.checkLocationEnabled()
-	}
-
-	func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-		entryDate = Date()
-		presenter.handleEvent(for: region)
-	}
-
-	func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-		guard let currentSmartObject = presenter.getSmartObject(from: region) else { return }
-		guard let entryDate = entryDate else { return }
-		let insideTime = Date().timeIntervalSince(entryDate)
-		currentSmartObject.insideTime += insideTime
-		currentSmartObject.visitCount += 1
-	}
-}
-
-extension MapViewController: UNUserNotificationCenterDelegate
-{
-	func userNotificationCenter(_ center: UNUserNotificationCenter,
-								willPresent notification: UNNotification,
-								withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-		completionHandler([.alert])
 	}
 }

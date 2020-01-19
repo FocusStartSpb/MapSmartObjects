@@ -1,5 +1,5 @@
 //
-//  MapPresenter.swift
+//  Mapswift
 //  MapSmartObjects
 //
 //  Created by Максим Шалашников on 17.12.2019.
@@ -23,7 +23,7 @@ protocol IMapPresenter
 	func checkUserInCircle(_ smartObject: SmartObject) -> Date?
 }
 
-final class MapPresenter
+final class MapPresenter: NSObject
 {
 	weak var mapViewController: MapViewController?
 	private let repository: IRepository
@@ -80,7 +80,7 @@ final class MapPresenter
 	}
 
 	private func setupLocationManager() {
-		locationManager.delegate = mapViewController
+		locationManager.delegate = self
 		locationManager.desiredAccuracy = kCLLocationAccuracyBest
 		locationManager.startUpdatingLocation()
 	}
@@ -127,7 +127,7 @@ final class MapPresenter
 extension MapPresenter: IMapPresenter
 {
 	func getSmartObject(from: CLRegion) -> SmartObject? {
-		return getSmartObjects().first(where: { $0.identifier == from.identifier })
+		return smartObjects.first(where: { $0.identifier == from.identifier })
 	}
 
 	func getMonitoringRegionsCount() -> Int {
@@ -233,5 +233,38 @@ extension MapPresenter: IMapPresenter
 			guard let currentUserLocation = getCurrentLocation() else { return }
 			addSmartObject(name: "", radius: 0, coordinate: currentUserLocation)
 		}
+	}
+}
+
+extension MapPresenter: CLLocationManagerDelegate
+{
+	func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+		checkLocationEnabled()
+	}
+
+	func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+		guard let currentSmartObject = getSmartObject(from: region) else { return }
+		currentSmartObject.entryDate = Date()
+		handleEvent(for: region)
+		repository.updateSmartObject(currentSmartObject)
+	}
+
+	func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+		guard let currentSmartObject = getSmartObject(from: region) else { return }
+		guard let entryDate = currentSmartObject.entryDate else { return }
+		let insideTime = Date().timeIntervalSince(entryDate)
+		currentSmartObject.insideTime += insideTime
+		currentSmartObject.visitCount += 1
+		currentSmartObject.entryDate = nil
+		repository.updateSmartObject(currentSmartObject)
+	}
+}
+
+extension MapViewController: UNUserNotificationCenterDelegate
+{
+	func userNotificationCenter(_ center: UNUserNotificationCenter,
+								willPresent notification: UNNotification,
+								withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+		completionHandler([.alert])
 	}
 }
