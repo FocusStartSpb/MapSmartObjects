@@ -43,11 +43,6 @@ final class MapViewController: UIViewController
 		presenter.updateSmartObjects(on: mapScreen.mapView)
 	}
 
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
-		mapScreen.layoutSubviews()
-	}
-
 	private func setupMapScreen() {
 		mapScreen.mapView.delegate = self
 		mapScreen.mapView.showsUserLocation = true
