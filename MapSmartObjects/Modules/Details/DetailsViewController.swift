@@ -51,7 +51,7 @@ final class DetailsViewController: UIViewController
 		saveBarButton.isEnabled = (self.type == .edit)
 		let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
 		self.view.addGestureRecognizer(tapGesture)
-		detailsView.radiusTextField.addTarget(self, action: #selector(radiusChanged), for: .editingDidEnd)
+		detailsView.radiusTextField.addTarget(self, action: #selector(radiusChanged), for: .editingChanged)
 		detailsView.radiusTextField.addTarget(self, action: #selector(textFieldEditingChanged), for: .editingChanged)
 		detailsView.nameTextField.addTarget(self, action: #selector(textFieldEditingChanged), for: .editingChanged)
 	}
@@ -82,6 +82,12 @@ final class DetailsViewController: UIViewController
 
 	@objc
 	private func radiusChanged() {
+		NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(showCircleOnDitailsMap), object: nil)
+		perform(#selector(showCircleOnDitailsMap), with: nil, afterDelay: 1.0)
+	}
+
+	@objc
+	private func showCircleOnDitailsMap() {
 		detailsView.mapView.removeOverlays(detailsView.mapView.overlays)
 		let radius = Double(detailsView.radiusTextField.text ?? Constants.defaultvalue) ?? 0.0
 		guard radius < CLLocationManager().maximumRegionMonitoringDistance else { return }
