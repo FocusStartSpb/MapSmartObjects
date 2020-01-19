@@ -8,12 +8,6 @@
 
 import MapKit
 
-protocol IPinListViewController
-{
-	func updateTableView()
-	func checkEditMode()
-}
-
 final class PinListViewController: UIViewController
 {
 	private let presenter: IPinListPresenter
@@ -68,7 +62,7 @@ final class PinListViewController: UIViewController
 			searchTextField.clipsToBounds = true
 			if let version = Double(UIDevice.current.systemVersion),
 				version >= 12.0 && version <= 13.0 {
-				IOS12SearchTextFieldSubviewsConfiguration(searchTextField)
+				ios12SearchTextFieldSubviewsConfiguration(searchTextField)
 			}
 			else {
 				//Изменяем цвет иконки лупы
@@ -92,7 +86,7 @@ final class PinListViewController: UIViewController
 		definesPresentationContext = true
 	}
 
-	private func IOS12SearchTextFieldSubviewsConfiguration(_ searchTextField: UITextField) {
+	private func ios12SearchTextFieldSubviewsConfiguration(_ searchTextField: UITextField) {
 		if let systemPlaceholderLabel = searchTextField.value(forKey: "placeholderLabel") as? UILabel {
 			let placeholderLabel = UILabel(frame: .zero)
 			placeholderLabel.text = Constants.searchTextFieldTitle
@@ -140,6 +134,18 @@ final class PinListViewController: UIViewController
 		pinListView.backgroundImage.isHidden = true
 		pinListView.backgroundImageLabel.isHidden = true
 	}
+
+	func updateTableView() {
+		pinListView.pinTableView.reloadData()
+	}
+
+	func checkEditMode() {
+		pinListView.backgroundImage.image = isFiltering ? pinListView.searchImage : pinListView.emptyImage
+		if isFiltering == false {
+			pinListView.backgroundImageLabel.text = Constants.emptyListText
+		}
+		pinListView.pinTableView.visibleCells.isEmpty ? disableEdit() : enableEdit()
+	}
 }
 
 extension PinListViewController: UITableViewDataSource
@@ -183,21 +189,6 @@ extension PinListViewController: UITableViewDelegate
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)
 		presenter.showDetails(at: indexPath.row)
-	}
-}
-
-extension PinListViewController
-{
-	func updateTableView() {
-		pinListView.pinTableView.reloadData()
-	}
-
-	func checkEditMode() {
-		pinListView.backgroundImage.image = isFiltering ? pinListView.searchImage : pinListView.emptyImage
-		if isFiltering == false {
-			pinListView.backgroundImageLabel.text = Constants.emptyListText
-		}
-		pinListView.pinTableView.visibleCells.isEmpty ? disableEdit() : enableEdit()
 	}
 }
 
