@@ -54,7 +54,9 @@ enum Constants
 	static let mapImageName = "map"
 	static let radiusLabelText = "Radius (meters)"
 	static let adressLabelText = "Address"
-	static let searchTextFieldTitle = "Enter pin name"
 	static let timeFormat = "%0.2d:%0.2d:%0.2d"
 	static let defaultvalue = "0"
+	static let placeholderKey = "placeholderLabel"
+	static let searchIconName = "search"
+	static let searchTextFieldKey = "searchField"
 }

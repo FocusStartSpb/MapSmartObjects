@@ -55,7 +55,7 @@ final class PinListViewController: UIViewController
 	}
 
 	private func setupSearchController() {
-		if let searchTextField = searchController.searchBar.value(forKey: "searchField") as? UITextField {
+		if let searchTextField = searchController.searchBar.value(forKey: Constants.searchFieldKey) as? UITextField {
 			searchTextField.backgroundColor = Colors.complementary
 			searchTextField.borderStyle = .none
 			searchTextField.layer.cornerRadius = 10
@@ -80,16 +80,16 @@ final class PinListViewController: UIViewController
 
 		searchController.searchResultsUpdater = self
 		searchController.obscuresBackgroundDuringPresentation = false
-		searchController.searchBar.placeholder = Constants.searchTextFieldTitle
+		searchController.searchBar.placeholder = Constants.searchPlaceholderName
 		navigationItem.hidesSearchBarWhenScrolling = false
 		navigationItem.searchController = searchController
 		definesPresentationContext = true
 	}
 
 	private func ios12SearchTextFieldSubviewsConfiguration(_ searchTextField: UITextField) {
-		if let systemPlaceholderLabel = searchTextField.value(forKey: "placeholderLabel") as? UILabel {
+		if let systemPlaceholderLabel = searchTextField.value(forKey: Constants.placeholderKey) as? UILabel {
 			let placeholderLabel = UILabel(frame: .zero)
-			placeholderLabel.text = Constants.searchTextFieldTitle
+			placeholderLabel.text = Constants.searchPlaceholderName
 			placeholderLabel.font = UIFont.systemFont(ofSize: 17.0, weight: .regular)
 			placeholderLabel.textColor = Colors.carriage
 			systemPlaceholderLabel.addSubview(placeholderLabel)
@@ -100,7 +100,7 @@ final class PinListViewController: UIViewController
 			placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
 			placeholderLabel.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
 		}
-		let searchImage = UIImage(named: "search")?.withRenderingMode(.alwaysTemplate)
+		let searchImage = UIImage(named: Constants.searchIconName)?.withRenderingMode(.alwaysTemplate)
 		searchController.searchBar.tintColor = Colors.carriage
 		searchController.searchBar.setImage(searchImage, for: .search, state: .normal)
 	}
