@@ -8,12 +8,17 @@
 
 import MapKit
 
+protocol IPinListViewController
+{
+	func updateTableView()
+	func checkEditMode()
+}
+
 final class PinListViewController: UIViewController
 {
 	private let presenter: IPinListPresenter
+	private let searchController = UISearchController(searchResultsController: nil)
 	private let pinListView = PinListView()
-	private let searchController = UISearchController()
-
 	override var preferredStatusBarStyle: UIStatusBarStyle {
 		return .lightContent
 	}
@@ -22,7 +27,6 @@ final class PinListViewController: UIViewController
 		guard let text = searchController.searchBar.text else { return false }
 		return text.isEmpty
 	}
-
 	private var isFiltering: Bool {
 		return searchController.isActive && searchBarIsEmpty == false
 	}
@@ -43,12 +47,9 @@ final class PinListViewController: UIViewController
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		view.addSubview(pinTableView)
-		view.addSubview(backgroundImage)
-		view.addSubview(backgroundImageLabel)
-		pinTableView.dataSource = self
 		setNeedsStatusBarAppearanceUpdate()
-		pinTableView.delegate = self
+		pinListView.pinTableView.dataSource = self
+		pinListView.pinTableView.delegate = self
 		setupSearchController()
 		setupNavigationBar()
 	}
@@ -57,14 +58,6 @@ final class PinListViewController: UIViewController
 		super.viewWillAppear(animated)
 		pinListView.pinTableView.reloadData()
 		checkEditMode()
-	}
-
-	override func setEditing(_ editing: Bool, animated: Bool) {
-		super.setEditing(editing, animated: animated)
-		pinListView.pinTableView.isEditing
-			? pinListView.pinTableView.setEditing(false, animated: true)
-			: pinListView.pinTableView.setEditing(true, animated: true)
-		editButtonItem.title = pinListView.pinTableView.isEditing ? Constants.doneTitle : Constants.editTitle
 	}
 
 	private func setupSearchController() {
@@ -93,11 +86,12 @@ final class PinListViewController: UIViewController
 
 		searchController.searchResultsUpdater = self
 		searchController.obscuresBackgroundDuringPresentation = false
-		searchController.searchBar.placeholder = Constants.searchPlaceholderName
+		searchController.searchBar.placeholder = Constants.searchTextFieldTitle
 		navigationItem.hidesSearchBarWhenScrolling = false
 		navigationItem.searchController = searchController
 		definesPresentationContext = true
 	}
+
 	private func IOS12SearchTextFieldSubviewsConfiguration(_ searchTextField: UITextField) {
 		if let systemPlaceholderLabel = searchTextField.value(forKey: "placeholderLabel") as? UILabel {
 			let placeholderLabel = UILabel(frame: .zero)
@@ -116,13 +110,21 @@ final class PinListViewController: UIViewController
 		searchController.searchBar.tintColor = Colors.carriage
 		searchController.searchBar.setImage(searchImage, for: .search, state: .normal)
 	}
-	private func configureViews() {
+	private func setupNavigationBar() {
 		title = Constants.pinsTitle
 		navigationController?.navigationBar.barStyle = .black
 		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
 		navigationController?.navigationBar.barTintColor = Colors.mainStyle
 		navigationController?.navigationBar.tintColor = Colors.complementary
 		navigationItem.leftBarButtonItem = editButtonItem
+	}
+
+	override func setEditing(_ editing: Bool, animated: Bool) {
+		super.setEditing(editing, animated: animated)
+		pinListView.pinTableView.isEditing
+			? pinListView.pinTableView.setEditing(false, animated: true)
+			: pinListView.pinTableView.setEditing(true, animated: true)
+		editButtonItem.title = pinListView.pinTableView.isEditing ? Constants.doneTitle : Constants.editTitle
 	}
 
 	private func disableEdit() {
@@ -153,6 +155,10 @@ extension PinListViewController: UITableViewDataSource
 		cell.titleLabel.text = smartObject.name
 		cell.descriptionLabel.text = smartObject.address
 		return cell
+	}
+
+	func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+		return true
 	}
 
 	func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
