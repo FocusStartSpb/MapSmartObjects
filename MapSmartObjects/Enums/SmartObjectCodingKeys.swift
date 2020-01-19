@@ -18,4 +18,5 @@ enum SmartObjectCodingKeys: String, CodingKey
 	case identifier
 	case visitCount
 	case insideTime
+	case entryDate
 }

@@ -13,16 +13,13 @@ import UserNotifications
 final class AppDelegate: UIResponder, UIApplicationDelegate
 {
 	var window: UIWindow?
-	private(set) var factory: Factory?
 
 	func application(_ application: UIApplication,
 					 didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		let mainTabBarController = MainTabBarController()
 		self.window = UIWindow(frame: UIScreen.main.bounds)
 		self.window?.rootViewController = mainTabBarController
-		self.factory = mainTabBarController.factory
 		self.window?.makeKeyAndVisible()
-		factory?.getRepository().loadSmartObjectsFromDB()
 		UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in }
 		return true
 	}
@@ -31,9 +28,5 @@ final class AppDelegate: UIResponder, UIApplicationDelegate
 		application.applicationIconBadgeNumber = 0
 		UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
 		UNUserNotificationCenter.current().removeAllDeliveredNotifications()
-	}
-
-	func applicationWillResignActive(_ application: UIApplication) {
-		factory?.getRepository().saveSmartObjectsToDB()
 	}
 }

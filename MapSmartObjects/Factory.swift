@@ -17,11 +17,6 @@ final class Factory
 		repository = Repository(dataService: dataService)
 	}
 
-	//get repository
-	func getRepository() -> Repository {
-		return self.repository
-	}
-
 	//create map module
 	func createMapModule() -> MapViewController {
 		let mapRouter = MapRouter(factory: self)
