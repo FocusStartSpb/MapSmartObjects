@@ -24,6 +24,10 @@ final class PinListViewController: UIViewController
 	private let emptyImage = UIImage(named: Constants.emptyImageName)
 	private let searchImage = UIImage(named: Constants.searchImageName)
 
+	override var preferredStatusBarStyle: UIStatusBarStyle {
+		return .lightContent
+	}
+
 	private var searchBarIsEmpty: Bool {
 		guard let text = searchController.searchBar.text else { return false }
 		return text.isEmpty
@@ -48,6 +52,7 @@ final class PinListViewController: UIViewController
 		view.addSubview(backgroundImage)
 		view.addSubview(backgroundImageLabel)
 		pinTableView.dataSource = self
+		setNeedsStatusBarAppearanceUpdate()
 		pinTableView.delegate = self
 		setupSearchController()
 		configureViews()
@@ -65,22 +70,48 @@ final class PinListViewController: UIViewController
 			searchTextField.borderStyle = .none
 			searchTextField.layer.cornerRadius = 10
 			searchTextField.clipsToBounds = true
-			UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self])
-				.defaultTextAttributes = [NSAttributedString.Key.foregroundColor: Colors.carriage]
-			if let glassIconView = searchTextField.leftView as? UIImageView {
-				glassIconView.image = glassIconView.image?.withRenderingMode(.alwaysTemplate)
-				glassIconView.tintColor = Colors.carriage
+			if let version = Double(UIDevice.current.systemVersion),
+				version >= 12.0 && version <= 13.0 {
+				IOS12SearchTextFieldSubviewsConfiguration(searchTextField)
+			}
+			else {
+				//Изменяем цвет иконки лупы
+				if let glassIconView = searchTextField.leftView as? UIImageView {
+					glassIconView.image = glassIconView.image?.withRenderingMode(.alwaysTemplate)
+					glassIconView.tintColor = Colors.carriage
+				}
 			}
 		}
+		//Изменяем цвет вводимого текста, карттеки, и кнопки cancel
+		UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self])
+			.defaultTextAttributes = [NSAttributedString.Key.foregroundColor: Colors.carriage]
 		UISearchBar.appearance().tintColor = Colors.complementary
-
 		UITextField.appearance().tintColor = Colors.carriage
+
 		searchController.searchResultsUpdater = self
 		searchController.obscuresBackgroundDuringPresentation = false
 		searchController.searchBar.placeholder = Constants.searchTextFieldTitle
 		navigationItem.hidesSearchBarWhenScrolling = false
 		navigationItem.searchController = searchController
 		definesPresentationContext = true
+	}
+	private func IOS12SearchTextFieldSubviewsConfiguration(_ searchTextField: UITextField) {
+		if let systemPlaceholderLabel = searchTextField.value(forKey: "placeholderLabel") as? UILabel {
+			let placeholderLabel = UILabel(frame: .zero)
+			placeholderLabel.text = Constants.searchTextFieldTitle
+			placeholderLabel.font = UIFont.systemFont(ofSize: 17.0, weight: .regular)
+			placeholderLabel.textColor = Colors.carriage
+			systemPlaceholderLabel.addSubview(placeholderLabel)
+
+			placeholderLabel.leadingAnchor.constraint(equalTo: systemPlaceholderLabel.leadingAnchor).isActive = true
+			placeholderLabel.topAnchor.constraint(equalTo: systemPlaceholderLabel.topAnchor).isActive = true
+			placeholderLabel.bottomAnchor.constraint(equalTo: systemPlaceholderLabel.bottomAnchor).isActive = true
+			placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
+			placeholderLabel.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+		}
+		let searchImage = UIImage(named: "search")?.withRenderingMode(.alwaysTemplate)
+		searchController.searchBar.tintColor = Colors.carriage
+		searchController.searchBar.setImage(searchImage, for: .search, state: .normal)
 	}
 	private func configureViews() {
 		title = Constants.pinsTitle
