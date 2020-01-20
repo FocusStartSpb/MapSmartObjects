@@ -2,7 +2,7 @@
 
 Проект "Умные объекты на карте" представляет собой приложение-карту в котором пользователь наносит пины с радиусом.
 
-![alt tag](https://github.com/Engwar/screenshots/blob/master/RM_start_screen.png)
+![alt tag](https://github.com/Engwar/screenshots/blob/master/RM_main_screen.png)
 
 Пользователь добавляет объекты на карту, задает им название и радиус активной зоны
 
