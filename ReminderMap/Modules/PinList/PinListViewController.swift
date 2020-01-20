@@ -105,7 +105,7 @@ final class PinListViewController: UIViewController
 		searchController.searchBar.setImage(searchImage, for: .search, state: .normal)
 	}
 	private func setupNavigationBar() {
-		title = Constants.pinsTitle
+		title = Constants.remindersTitle
 		navigationController?.navigationBar.barStyle = .black
 		navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
 		navigationController?.navigationBar.barTintColor = Colors.mainStyle
@@ -118,7 +118,7 @@ final class PinListViewController: UIViewController
 		pinListView.pinTableView.isEditing
 			? pinListView.pinTableView.setEditing(false, animated: true)
 			: pinListView.pinTableView.setEditing(true, animated: true)
-		editButtonItem.title = pinListView.pinTableView.isEditing ? Constants.doneTitle : Constants.editTitle
+		editButtonItem.title = pinListView.pinTableView.isEditing ? Constants.saveTitle : Constants.editTitle
 	}
 
 	private func disableEdit() {

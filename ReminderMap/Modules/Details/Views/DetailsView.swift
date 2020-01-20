@@ -34,7 +34,7 @@ final class DetailsView: UIView
 
 	private let nameLabel: UILabel = {
 		let label = UILabel()
-		label.text = Constants.nameLabelText
+		label.text = Constants.reminderLabelText
 		label.textAlignment = .left
 		label.font = UIFont(name: Constants.helveticaFont, size: 16.0)
 		return label

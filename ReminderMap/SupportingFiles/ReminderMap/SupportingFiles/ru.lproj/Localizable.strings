@@ -1,0 +1,31 @@
+/* 
+  Localizable.strings
+  ReminderMap
+
+  Created by Максим Шалашников on 20.01.2020.
+  Copyright © 2020 Максим Шалашников. All rights reserved.
+*/
+"searchPlaceholderName" = "Поиск";
+"objectPlaceholderName" = "Введите напоминание";
+"enterMessage" = "Напоминание: ";
+"attention" = "Внимание!";
+"errorText" = "Ошибка: ";
+"okTitle" = "OK";
+"settingsTitle" = "Настройки";
+"cancelTitle" = "Отмена";
+"warningTitle" = "Предупреждение!";
+"turnOffServiceTitle" = "Отключена служба геолокации";
+"turnOnMessage" = "Перейдите в настройки чтобы включить ее";
+"bunnedTitle" = "Вы запретили использование местоположения";
+"allowMessage" = "Перейдите в настройки чтобы разрешить использование местоположения";
+"radiusPlaceholderName" = "Введите радиус мониторинга";
+"mapTitle" = "Карта";
+"editTitle" = "Изменить";
+"saveTitle" = "Сохранить";
+"createTitle" = "Создать";
+"emptyListText" = "Список пуст. Добавьте новое напоминание на карту!";
+"nothingOnQueryText" = "Ничего не найдено по запросу: ";
+"reminderLabelText" = "Напоминание";
+"radiusLabelText" = "Радиус (метры)";
+"adressLabelText" = "Адрес";
+"remindersTitle" = "Напоминания";
