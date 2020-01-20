@@ -120,7 +120,9 @@ extension MapViewController: MKMapViewDelegate
 				 annotationView view: MKAnnotationView,
 				 calloutAccessoryControlTapped control: UIControl) {
 		guard let smartObject = view.annotation as? SmartObject else { return }
-		presenter.showPinDetails(with: smartObject)
+		let currentSmartObject = presenter.getSmartObjects().first { $0.identifier == smartObject.identifier }
+		guard let tappedSmartObject = currentSmartObject else { return }
+		presenter.showPinDetails(with: tappedSmartObject)
 	}
 }
 
