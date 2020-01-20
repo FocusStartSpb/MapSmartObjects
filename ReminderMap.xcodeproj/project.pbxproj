@@ -10,7 +10,6 @@
 		4B43F6BD23A664C9003BF176 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B43F6BC23A664C9003BF176 /* AppDelegate.swift */; };
 		4B43F6C923A664CB003BF176 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B43F6C823A664CB003BF176 /* Assets.xcassets */; };
 		4B43F6CC23A664CB003BF176 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4B43F6CA23A664CB003BF176 /* LaunchScreen.storyboard */; };
-		4B43F6D723A664CB003BF176 /* MapSmartObjectsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B43F6D623A664CB003BF176 /* MapSmartObjectsTests.swift */; };
 		4B44328F23C7C050005AC5F8 /* DetailVCTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B44328E23C7C050005AC5F8 /* DetailVCTypes.swift */; };
 		4B44329123CA64A5005AC5F8 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B44329023CA64A5005AC5F8 /* Colors.swift */; };
 		4B44329323CB3527005AC5F8 /* infoBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B44329223CB3527005AC5F8 /* infoBadge.swift */; };
@@ -40,25 +39,12 @@
 		941283B223ABA34800A0077D /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 941283B123ABA34800A0077D /* DataService.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		4B43F6D323A664CB003BF176 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 4B43F6B123A664C9003BF176 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 4B43F6B823A664C9003BF176;
-			remoteInfo = MapSmartObjects;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
-		4B43F6B923A664C9003BF176 /* MapSmartObjects.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MapSmartObjects.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4B43F6B923A664C9003BF176 /* ReminderMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReminderMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B43F6BC23A664C9003BF176 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4B43F6C823A664CB003BF176 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4B43F6CB23A664CB003BF176 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4B43F6CD23A664CB003BF176 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4B43F6D223A664CB003BF176 /* MapSmartObjectsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MapSmartObjectsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		4B43F6D623A664CB003BF176 /* MapSmartObjectsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapSmartObjectsTests.swift; sourceTree = "<group>"; };
-		4B43F6D823A664CB003BF176 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4B44328E23C7C050005AC5F8 /* DetailVCTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailVCTypes.swift; sourceTree = "<group>"; };
 		4B44329023CA64A5005AC5F8 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		4B44329223CB3527005AC5F8 /* infoBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = infoBadge.swift; sourceTree = "<group>"; };
@@ -96,21 +82,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		4B43F6CF23A664CB003BF176 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		4B43F6B023A664C9003BF176 = {
 			isa = PBXGroup;
 			children = (
-				4B43F6BB23A664C9003BF176 /* MapSmartObjects */,
-				4B43F6D523A664CB003BF176 /* MapSmartObjectsTests */,
+				4B43F6BB23A664C9003BF176 /* ReminderMap */,
 				4B43F6BA23A664C9003BF176 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -118,13 +96,12 @@
 		4B43F6BA23A664C9003BF176 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				4B43F6B923A664C9003BF176 /* MapSmartObjects.app */,
-				4B43F6D223A664CB003BF176 /* MapSmartObjectsTests.xctest */,
+				4B43F6B923A664C9003BF176 /* ReminderMap.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		4B43F6BB23A664C9003BF176 /* MapSmartObjects */ = {
+		4B43F6BB23A664C9003BF176 /* ReminderMap */ = {
 			isa = PBXGroup;
 			children = (
 				5C028C1F23AA9BF7009FA3E8 /* Application */,
@@ -135,16 +112,7 @@
 				4B43F6E223A664F9003BF176 /* SupportingFiles */,
 				5C1F9B5423B748B500A3D1C9 /* Extensions */,
 			);
-			path = MapSmartObjects;
-			sourceTree = "<group>";
-		};
-		4B43F6D523A664CB003BF176 /* MapSmartObjectsTests */ = {
-			isa = PBXGroup;
-			children = (
-				4B43F6E323A6650E003BF176 /* SupportingFiles */,
-				4B43F6D623A664CB003BF176 /* MapSmartObjectsTests.swift */,
-			);
-			path = MapSmartObjectsTests;
+			path = ReminderMap;
 			sourceTree = "<group>";
 		};
 		4B43F6E223A664F9003BF176 /* SupportingFiles */ = {
@@ -153,14 +121,6 @@
 				4B43F6CA23A664CB003BF176 /* LaunchScreen.storyboard */,
 				4B43F6C823A664CB003BF176 /* Assets.xcassets */,
 				4B43F6CD23A664CB003BF176 /* Info.plist */,
-			);
-			path = SupportingFiles;
-			sourceTree = "<group>";
-		};
-		4B43F6E323A6650E003BF176 /* SupportingFiles */ = {
-			isa = PBXGroup;
-			children = (
-				4B43F6D823A664CB003BF176 /* Info.plist */,
 			);
 			path = SupportingFiles;
 			sourceTree = "<group>";
@@ -294,9 +254,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		4B43F6B823A664C9003BF176 /* MapSmartObjects */ = {
+		4B43F6B823A664C9003BF176 /* ReminderMap */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4B43F6DB23A664CB003BF176 /* Build configuration list for PBXNativeTarget "MapSmartObjects" */;
+			buildConfigurationList = 4B43F6DB23A664CB003BF176 /* Build configuration list for PBXNativeTarget "ReminderMap" */;
 			buildPhases = (
 				4B43F6B523A664C9003BF176 /* Sources */,
 				4B43F6B623A664C9003BF176 /* Frameworks */,
@@ -307,28 +267,10 @@
 			);
 			dependencies = (
 			);
-			name = MapSmartObjects;
+			name = ReminderMap;
 			productName = MapSmartObjects;
-			productReference = 4B43F6B923A664C9003BF176 /* MapSmartObjects.app */;
+			productReference = 4B43F6B923A664C9003BF176 /* ReminderMap.app */;
 			productType = "com.apple.product-type.application";
-		};
-		4B43F6D123A664CB003BF176 /* MapSmartObjectsTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 4B43F6DE23A664CB003BF176 /* Build configuration list for PBXNativeTarget "MapSmartObjectsTests" */;
-			buildPhases = (
-				4B43F6CE23A664CB003BF176 /* Sources */,
-				4B43F6CF23A664CB003BF176 /* Frameworks */,
-				4B43F6D023A664CB003BF176 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				4B43F6D423A664CB003BF176 /* PBXTargetDependency */,
-			);
-			name = MapSmartObjectsTests;
-			productName = MapSmartObjectsTests;
-			productReference = 4B43F6D223A664CB003BF176 /* MapSmartObjectsTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -343,13 +285,9 @@
 					4B43F6B823A664C9003BF176 = {
 						CreatedOnToolsVersion = 11.2.1;
 					};
-					4B43F6D123A664CB003BF176 = {
-						CreatedOnToolsVersion = 11.2.1;
-						TestTargetID = 4B43F6B823A664C9003BF176;
-					};
 				};
 			};
-			buildConfigurationList = 4B43F6B423A664C9003BF176 /* Build configuration list for PBXProject "MapSmartObjects" */;
+			buildConfigurationList = 4B43F6B423A664C9003BF176 /* Build configuration list for PBXProject "ReminderMap" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -362,8 +300,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				4B43F6B823A664C9003BF176 /* MapSmartObjects */,
-				4B43F6D123A664CB003BF176 /* MapSmartObjectsTests */,
+				4B43F6B823A664C9003BF176 /* ReminderMap */,
 			);
 		};
 /* End PBXProject section */
@@ -375,13 +312,6 @@
 			files = (
 				4B43F6CC23A664CB003BF176 /* LaunchScreen.storyboard in Resources */,
 				4B43F6C923A664CB003BF176 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		4B43F6D023A664CB003BF176 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -444,23 +374,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		4B43F6CE23A664CB003BF176 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				4B43F6D723A664CB003BF176 /* MapSmartObjectsTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		4B43F6D423A664CB003BF176 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 4B43F6B823A664C9003BF176 /* MapSmartObjects */;
-			targetProxy = 4B43F6D323A664CB003BF176 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		4B43F6CA23A664CB003BF176 /* LaunchScreen.storyboard */ = {
@@ -594,7 +508,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JJLJJKU7AK;
-				INFOPLIST_FILE = MapSmartObjects/SupportingFiles/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/ReminderMap/SupportingFiles/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -613,7 +527,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JJLJJKU7AK;
-				INFOPLIST_FILE = MapSmartObjects/SupportingFiles/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/ReminderMap/SupportingFiles/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -626,54 +540,10 @@
 			};
 			name = Release;
 		};
-		4B43F6DF23A664CB003BF176 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = JJLJJKU7AK;
-				INFOPLIST_FILE = MapSmartObjectsTests/SupportingFiles/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = MyCompany.MapSmartObjectsTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MapSmartObjects.app/MapSmartObjects";
-			};
-			name = Debug;
-		};
-		4B43F6E023A664CB003BF176 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = JJLJJKU7AK;
-				INFOPLIST_FILE = MapSmartObjectsTests/SupportingFiles/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = MyCompany.MapSmartObjectsTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MapSmartObjects.app/MapSmartObjects";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		4B43F6B423A664C9003BF176 /* Build configuration list for PBXProject "MapSmartObjects" */ = {
+		4B43F6B423A664C9003BF176 /* Build configuration list for PBXProject "ReminderMap" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4B43F6D923A664CB003BF176 /* Debug */,
@@ -682,20 +552,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4B43F6DB23A664CB003BF176 /* Build configuration list for PBXNativeTarget "MapSmartObjects" */ = {
+		4B43F6DB23A664CB003BF176 /* Build configuration list for PBXNativeTarget "ReminderMap" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4B43F6DC23A664CB003BF176 /* Debug */,
 				4B43F6DD23A664CB003BF176 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		4B43F6DE23A664CB003BF176 /* Build configuration list for PBXNativeTarget "MapSmartObjectsTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				4B43F6DF23A664CB003BF176 /* Debug */,
-				4B43F6E023A664CB003BF176 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
