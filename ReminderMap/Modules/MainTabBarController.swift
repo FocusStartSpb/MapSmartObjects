@@ -28,7 +28,7 @@ final class MainTabBarController: UITabBarController
 		mapController.tabBarItem.badgeColor = Colors.mainStyle
 		mapController.tabBarItem.imageInsets = imageInset
 
-		pinListController.tabBarItem = UITabBarItem(title: Constants.pinsTitle,
+		pinListController.tabBarItem = UITabBarItem(title: Constants.remindersTitle,
 													image: UIImage(named: Constants.menuImageName),
 													tag: 2)
 		pinListController.tabBarItem.badgeColor = Colors.mainStyle

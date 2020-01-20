@@ -1,0 +1,31 @@
+/* 
+  Localizable.strings
+  ReminderMap
+
+  Created by Максим Шалашников on 20.01.2020.
+  Copyright © 2020 Максим Шалашников. All rights reserved.
+*/
+"searchPlaceholderName" = "Search";
+"objectPlaceholderName" = "Enter a reminder";
+"enterMessage" = "Reminder: ";
+"attention" = "Attention!";
+"errorText" = "Error: ";
+"okTitle" = "OK";
+"settingsTitle" = "Settings";
+"cancelTitle" = "Cancel";
+"warningTitle" = "Warning!";
+"turnOffServiceTitle" = "Your geolocation service is turned off";
+"turnOnMessage" = "Go to settings to enable it";
+"bunnedTitle" = "You have banned the use of location";
+"allowMessage" = "Go to settings to enable location use";
+"radiusPlaceholderName" = "Enter monitoring radius";
+"mapTitle" = "Map";
+"editTitle" = "Edit";
+"saveTitle" = "Save";
+"createTitle" = "Create";
+"emptyListText" = "The list is empty now. Add new reminder on the map!";
+"nothingOnQueryText" = "Nothing found on query: ";
+"reminderLabelText" = "Reminder";
+"radiusLabelText" = "Radius (meters)";
+"adressLabelText" = "Adress";
+"remindersTitle" = "Reminders";
