@@ -76,11 +76,7 @@ final class SmartObject: NSObject
 	}
 }
 
-extension SmartObject: Codable
-{
-}
-
-extension SmartObject: MKAnnotation
+extension SmartObject: MKAnnotation, Codable
 {
 	var title: String? {
 		return name
