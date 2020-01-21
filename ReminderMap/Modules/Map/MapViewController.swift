@@ -43,6 +43,18 @@ final class MapViewController: UIViewController
 		presenter.updateSmartObjects(on: mapScreen.mapView)
 	}
 
+	func showActivityIndicator() {
+		mapScreen.loadHUD.show()
+		mapScreen.mapView.gestureRecognizers?.first?.isEnabled = false
+		mapScreen.addButton.isEnabled = false
+	}
+
+	func hideActivityIndicator() {
+		mapScreen.loadHUD.hide()
+		mapScreen.mapView.gestureRecognizers?.first?.isEnabled = true
+		mapScreen.addButton.isEnabled = true
+	}
+
 	private func setupMapScreen() {
 		mapScreen.mapView.delegate = self
 		mapScreen.mapView.showsUserLocation = true

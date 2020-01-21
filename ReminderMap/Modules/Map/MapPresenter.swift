@@ -47,6 +47,7 @@ final class MapPresenter: NSObject
 	private func addSmartObject(name: String,
 								radius: Double,
 								coordinate: CLLocationCoordinate2D) {
+		mapViewController?.showActivityIndicator()
 		YandexGeocoder.getGeoposition(coordinates: coordinate) { [weak self] geocoderResult in
 			guard let self = self else { return }
 			switch geocoderResult {
@@ -56,10 +57,12 @@ final class MapPresenter: NSObject
 					: radius
 				let smartObject = SmartObject(name: name, address: position, coordinate: coordinate, circleRadius: maxRadius)
 				DispatchQueue.main.async {
+					self.mapViewController?.hideActivityIndicator()
 					self.router.showDetails(smartObject: smartObject, type: .create)
 				}
 			case .failure(let error):
 				DispatchQueue.main.async {
+					self.mapViewController?.hideActivityIndicator()
 					self.router.showAlert(withTitle: Constants.warningTitle, message: error.localizedDescription)
 				}
 			}

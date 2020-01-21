@@ -58,4 +58,5 @@ enum Constants
 	static let defaultvalue = "0"
 	static let placeholderKey = "placeholderLabel"
 	static let searchIconName = "search"
+	static let loadingTitle = "loadingTitle".localized
 }

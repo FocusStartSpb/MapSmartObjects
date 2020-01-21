@@ -27,6 +27,7 @@ final class MapView: UIView
 		info.layer.shadowRadius = 5
 		return info
 	}()
+	let loadHUD = LoadHUD(text: Constants.loadingTitle)
 	let addButton = UIButton()
 	let currentLocationButton = UIButton()
 	private let imageInset = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
@@ -47,6 +48,7 @@ final class MapView: UIView
 		self.addSubview(mapView)
 		self.addSubview(buttonsView)
 		self.addSubview(pinCounterView)
+		self.addSubview(loadHUD)
 		buttonsView.addSubview(addButton)
 		buttonsView.addSubview(currentLocationButton)
 	}
@@ -84,12 +86,17 @@ final class MapView: UIView
 		addButton.translatesAutoresizingMaskIntoConstraints = false
 		currentLocationButton.translatesAutoresizingMaskIntoConstraints = false
 		pinCounterView.translatesAutoresizingMaskIntoConstraints = false
+		loadHUD.translatesAutoresizingMaskIntoConstraints = false
 
 		NSLayoutConstraint.activate([
 			mapView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
 			mapView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
 			mapView.topAnchor.constraint(equalTo: self.topAnchor),
 			mapView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+
+			loadHUD.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+			loadHUD.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+			loadHUD.heightAnchor.constraint(equalToConstant: 50),
 
 			buttonsView.heightAnchor.constraint(equalToConstant: 90),
 			buttonsView.widthAnchor.constraint(equalToConstant: 45),
