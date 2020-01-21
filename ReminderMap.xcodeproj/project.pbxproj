@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		4B1D888623D5DB2E00838AA7 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4B1D888423D5DB2E00838AA7 /* Localizable.strings */; };
 		4B1D888A23D5DC7A00838AA7 /* String+localizable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B1D888923D5DC7A00838AA7 /* String+localizable.swift */; };
+		4B1D888C23D715A300838AA7 /* LoadHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B1D888B23D715A300838AA7 /* LoadHUD.swift */; };
 		4B43F6BD23A664C9003BF176 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B43F6BC23A664C9003BF176 /* AppDelegate.swift */; };
 		4B43F6C923A664CB003BF176 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4B43F6C823A664CB003BF176 /* Assets.xcassets */; };
 		4B43F6CC23A664CB003BF176 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4B43F6CA23A664CB003BF176 /* LaunchScreen.storyboard */; };
@@ -47,6 +48,7 @@
 		4B1D888723D5DB4500838AA7 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = ReminderMap/SupportingFiles/en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4B1D888823D5DB4600838AA7 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ReminderMap/SupportingFiles/ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4B1D888923D5DC7A00838AA7 /* String+localizable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+localizable.swift"; sourceTree = "<group>"; };
+		4B1D888B23D715A300838AA7 /* LoadHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadHUD.swift; sourceTree = "<group>"; };
 		4B43F6B923A664C9003BF176 /* ReminderMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReminderMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B43F6BC23A664C9003BF176 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4B43F6C823A664CB003BF176 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 		4B43F6BB23A664C9003BF176 /* ReminderMap */ = {
 			isa = PBXGroup;
 			children = (
+				4B62349223D7335C000AD1BB /* CustomUIElements */,
 				5C028C1F23AA9BF7009FA3E8 /* Application */,
 				5C028C1E23AA9B75009FA3E8 /* BuisnessLayer */,
 				5C028C2023AA9C3D009FA3E8 /* Modules */,
@@ -154,6 +157,15 @@
 				4B58C21523A971EE00A430C0 /* MapRouter.swift */,
 			);
 			path = Map;
+			sourceTree = "<group>";
+		};
+		4B62349223D7335C000AD1BB /* CustomUIElements */ = {
+			isa = PBXGroup;
+			children = (
+				4B44329223CB3527005AC5F8 /* infoBadge.swift */,
+				4B1D888B23D715A300838AA7 /* LoadHUD.swift */,
+			);
+			path = CustomUIElements;
 			sourceTree = "<group>";
 		};
 		5C028C0C23A97C16009FA3E8 /* Models */ = {
@@ -247,7 +259,6 @@
 			isa = PBXGroup;
 			children = (
 				5CF4239323C4A6D500A1ED5A /* DetailsView.swift */,
-				4B44329223CB3527005AC5F8 /* infoBadge.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -375,6 +386,7 @@
 				5C028C2223AAA1AC009FA3E8 /* Repository.swift in Sources */,
 				5C1F9B5623B748FE00A3D1C9 /* SmartObjectCodingKeys.swift in Sources */,
 				4B58C20B23A93D8500A430C0 /* PinListViewController.swift in Sources */,
+				4B1D888C23D715A300838AA7 /* LoadHUD.swift in Sources */,
 				5C028C1823AA920F009FA3E8 /* YandexGeocoder.swift in Sources */,
 				4B1D888A23D5DC7A00838AA7 /* String+localizable.swift in Sources */,
 				4B58C21623A971EE00A430C0 /* MapRouter.swift in Sources */,

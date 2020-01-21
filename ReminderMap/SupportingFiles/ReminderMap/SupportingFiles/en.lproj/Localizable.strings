@@ -29,3 +29,4 @@
 "radiusLabelText" = "Radius (meters)";
 "adressLabelText" = "Adress";
 "remindersTitle" = "Reminders";
+"loadingTitle" = "Loading adress";
