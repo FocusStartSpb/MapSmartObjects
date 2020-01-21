@@ -91,6 +91,26 @@ final class MapViewController: UIViewController
 			presenter.addNewPin(on: coordinate)
 		}
 	}
+
+	func setMonitoringPlacesCount() {
+		mapScreen.pinCounterView.title.text = "\(presenter.getMonitoringRegionsCount())"
+	}
+
+	func addCircle(_ smartObject: SmartObject) {
+		mapScreen.mapView.addOverlay(MKCircle(center: smartObject.coordinate, radius: smartObject.circleRadius))
+		smartObject.entryDate = presenter.checkUserInCircle(smartObject)
+		presenter.updateSmartObject(smartObject)
+	}
+
+	func showCurrentLocation(_ location: CLLocationCoordinate2D?) {
+		guard let location = location else { return }
+		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+		mapScreen.mapView.setRegion(region, animated: true)
+	}
+
+	func setMonitoringCountLable(color: UIColor) {
+		mapScreen.pinCounterView.backgroundColor = color
+	}
 }
 
 extension MapViewController: MKMapViewDelegate
@@ -135,24 +155,5 @@ extension MapViewController: MKMapViewDelegate
 		let currentSmartObject = presenter.getSmartObjects().first { $0.identifier == smartObject.identifier }
 		guard let tappedSmartObject = currentSmartObject else { return }
 		presenter.showPinDetails(with: tappedSmartObject)
-	}
-}
-
-extension MapViewController
-{
-	func setMonitoringPlacesCount() {
-		mapScreen.pinCounterView.title.text = "\(presenter.getMonitoringRegionsCount())"
-	}
-
-	func addCircle(_ smartObject: SmartObject) {
-		mapScreen.mapView.addOverlay(MKCircle(center: smartObject.coordinate, radius: smartObject.circleRadius))
-		smartObject.entryDate = presenter.checkUserInCircle(smartObject)
-		presenter.updateSmartObject(smartObject)
-	}
-
-	func showCurrentLocation(_ location: CLLocationCoordinate2D?) {
-		guard let location = location else { return }
-		let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-		mapScreen.mapView.setRegion(region, animated: true)
 	}
 }

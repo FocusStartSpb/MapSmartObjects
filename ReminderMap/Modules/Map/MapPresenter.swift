@@ -175,6 +175,8 @@ extension MapPresenter: IMapPresenter
 			mapViewController?.setMonitoringPlacesCount()
 		}
 		mapViewController?.setMonitoringPlacesCount()
+		let currentColor = (locationManager.monitoredRegions.count == 20) ? Colors.pinsLimit : Colors.mainStyle
+		mapViewController?.setMonitoringCountLable(color: currentColor)
 	}
 
 	func showPinDetails(with smartObject: SmartObject) {
@@ -236,6 +238,10 @@ extension MapPresenter: IMapPresenter
 	}
 
 	func addNewPin(on location: CLLocationCoordinate2D?) {
+		guard locationManager.monitoredRegions.count != 20 else {
+			router.showAlert(withTitle: Constants.warningTitle, message: Constants.maxPinsMessage)
+			return
+		}
 		if let currentUserLocation = location {
 			addSmartObject(name: "", radius: 0, coordinate: currentUserLocation)
 		}
