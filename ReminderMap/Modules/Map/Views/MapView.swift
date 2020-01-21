@@ -69,7 +69,6 @@ final class MapView: UIView
 		buttonsView.alpha = 0.95
 		dropShadow(from: buttonsView)
 		mapView.showsCompass = false
-		mapView.isRotateEnabled = false
 	}
 
 	private func dropShadow(from view: UIView) {
