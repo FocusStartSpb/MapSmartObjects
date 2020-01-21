@@ -58,6 +58,7 @@ final class MapPresenter: NSObject
 				let smartObject = SmartObject(name: name, address: position, coordinate: coordinate, circleRadius: maxRadius)
 				DispatchQueue.main.async {
 					self.mapViewController?.hideActivityIndicator()
+					self.mapViewController?.setMonitoringPlacesCount()
 					self.router.showDetails(smartObject: smartObject, type: .create)
 				}
 			case .failure(let error):
