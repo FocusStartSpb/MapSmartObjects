@@ -63,5 +63,5 @@ enum Constants
 	static let geoCodeName = "geocode"
 	static let formatName = "format"
 	static let formatValue = "json"
-	static let maxPinsMessage = "Maximum number of pins 20".localized
+	static let maxPinsMessage = "Pins limit exceeded".localized
 }

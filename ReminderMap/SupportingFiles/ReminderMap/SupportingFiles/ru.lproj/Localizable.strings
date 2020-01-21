@@ -30,4 +30,4 @@
 "adressLabelText" = "Адрес";
 "remindersTitle" = "Напоминания";
 "loadingTitle" = "Загружаем адрес";
-"Maximum number of pins 20" = "Максимальное количество геометок 20";
+"Pins limit exceeded" = "Певышен лимит количества меток";

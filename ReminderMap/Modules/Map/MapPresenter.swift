@@ -175,6 +175,8 @@ extension MapPresenter: IMapPresenter
 			mapViewController?.setMonitoringPlacesCount()
 		}
 		mapViewController?.setMonitoringPlacesCount()
+		let currentColor = (locationManager.monitoredRegions.count == 20) ? Colors.pinsLimit : Colors.mainStyle
+		mapViewController?.setMonitoringCountLable(color: currentColor)
 	}
 
 	func showPinDetails(with smartObject: SmartObject) {
