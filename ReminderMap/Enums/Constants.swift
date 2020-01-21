@@ -59,4 +59,5 @@ enum Constants
 	static let placeholderKey = "placeholderLabel"
 	static let searchIconName = "search"
 	static let loadingTitle = "loadingTitle".localized
+	static let maxPinsMessage = "Maximum number of pins 20".localized
 }
