@@ -69,7 +69,6 @@ final class MapView: UIView
 		buttonsView.alpha = 0.95
 		dropShadow(from: buttonsView)
 		mapView.showsCompass = false
-		setCustomCompass()
 	}
 
 	private func dropShadow(from view: UIView) {
@@ -77,19 +76,6 @@ final class MapView: UIView
 		view.layer.shadowOpacity = 0.2
 		view.layer.shadowOffset = .zero
 		view.layer.shadowRadius = 5
-	}
-
-	private func setCustomCompass() {
-		let compassButton = MKCompassButton(mapView: mapView)
-		compassButton.compassVisibility = .visible
-		mapView.addSubview(compassButton)
-		compassButton.translatesAutoresizingMaskIntoConstraints = false
-		NSLayoutConstraint.activate([
-			compassButton.leadingAnchor.constraint(equalTo: buttonsView.leadingAnchor),
-			compassButton.topAnchor.constraint(equalTo: buttonsView.bottomAnchor, constant: 8),
-			compassButton.widthAnchor.constraint(equalTo: buttonsView.widthAnchor),
-			compassButton.heightAnchor.constraint(equalTo: buttonsView.heightAnchor, multiplier: 1 / 2),
-			])
 	}
 
 	private func setConstraints() {
