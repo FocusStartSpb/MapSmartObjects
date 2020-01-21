@@ -41,6 +41,7 @@ final class MapViewController: UIViewController
 		super.viewWillAppear(animated)
 		self.navigationController?.setNavigationBarHidden(true, animated: true)
 		presenter.updateSmartObjects(on: mapScreen.mapView)
+		setMonitoringPlacesCount()
 	}
 
 	func showActivityIndicator() {
