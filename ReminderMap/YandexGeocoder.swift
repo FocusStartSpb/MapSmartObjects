@@ -16,9 +16,9 @@ enum YandexGeocoder
 	static private func getGeocoderAddressRequest(coordinates: CLLocationCoordinate2D) -> URL? {
 		var components = URLComponents(string: Constants.baseUrl)
 		components?.queryItems = [
-			URLQueryItem(name: "apikey", value: Constants.apiKey),
-			URLQueryItem(name: "geocode", value: "\(coordinates.longitude), \(coordinates.latitude)"),
-			URLQueryItem(name: "format", value: "json"),
+			URLQueryItem(name: Constants.apiKeyName, value: Constants.apiKey),
+			URLQueryItem(name: Constants.geoCodeName, value: "\(coordinates.longitude), \(coordinates.latitude)"),
+			URLQueryItem(name: Constants.formatName, value: Constants.formatValue),
 		]
 		return components?.url
 	}

@@ -59,4 +59,8 @@ enum Constants
 	static let placeholderKey = "placeholderLabel"
 	static let searchIconName = "search"
 	static let loadingTitle = "loadingTitle".localized
+	static let apiKeyName = "apikey"
+	static let geoCodeName = "geocode"
+	static let formatName = "format"
+	static let formatValue = "json"
 }
