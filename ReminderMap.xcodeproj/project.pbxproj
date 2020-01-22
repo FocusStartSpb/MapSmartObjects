@@ -113,8 +113,8 @@
 		4B43F6BB23A664C9003BF176 /* ReminderMap */ = {
 			isa = PBXGroup;
 			children = (
-				4B62349223D7335C000AD1BB /* CustomUIElements */,
 				5C028C1F23AA9BF7009FA3E8 /* Application */,
+				4B62349223D7335C000AD1BB /* CustomUIElements */,
 				5C028C1E23AA9B75009FA3E8 /* BuisnessLayer */,
 				5C028C2023AA9C3D009FA3E8 /* Modules */,
 				5C028C0C23A97C16009FA3E8 /* Models */,
