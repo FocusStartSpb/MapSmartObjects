@@ -44,8 +44,8 @@ final class LoadHUD: UIVisualEffectView
 	private func configureView() {
 		activityIndicator.startAnimating()
 		label.text = text
-		label.textAlignment = NSTextAlignment.center
-		label.textColor = UIColor.gray
+		label.textAlignment = .center
+		label.textColor = Colors.carriage
 		label.font = UIFont.boldSystemFont(ofSize: 16)
 		hide()
 	}

@@ -36,9 +36,10 @@ final class PinListView: UIView
 
 	private func setupViews() {
 		backgroundImage.image = UIImage(named: Constants.emptyImageName)
-		backgroundImageLabel.numberOfLines = 0
+		backgroundImageLabel.numberOfLines = 3
 		backgroundImageLabel.textAlignment = .center
 		backgroundImageLabel.textColor = Colors.mainStyle
+		backgroundImage.contentMode = .scaleAspectFit
 		pinTableView.register(PinListCell.self, forCellReuseIdentifier: PinListCell.cellID)
 		pinTableView.tableFooterView = UIView()
 	}
@@ -56,8 +57,8 @@ final class PinListView: UIView
 
 			backgroundImage.centerYAnchor.constraint(equalTo: self.centerYAnchor),
 			backgroundImage.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-			backgroundImage.widthAnchor.constraint(equalToConstant: backgroundImage.image?.size.width ?? 0),
-			backgroundImage.heightAnchor.constraint(equalToConstant: backgroundImage.image?.size.height ?? 0),
+			backgroundImage.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
+			backgroundImage.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
 
 			backgroundImageLabel.leadingAnchor.constraint(equalTo: backgroundImage.leadingAnchor, constant: 16),
 			backgroundImageLabel.trailingAnchor.constraint(equalTo: backgroundImage.trailingAnchor, constant: -16),
